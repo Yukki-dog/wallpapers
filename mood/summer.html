@@ -1,1 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Summer Mood Wallpapers</title>
+<style>
+  body {
+    font-family: Arial, sans-serif; 
+    padding: 20px; 
+    max-width: 700px; 
+    margin: auto;
+    background: #e0f7fa;
+  }
+  h1 {
+    text-align: center; 
+    color: #0277bd;
+  }
+  .wallpaper {
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px #81d4fa;
+    text-align: center;
+  }
+  .wallpaper img {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  .caption {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #0288d1;
+  }
+  .buttons {
+    margin-top: 15px;
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 2em;
+    margin: 0 15px;
+    transition: transform 0.2s;
+    user-select: none;
+  }
+  button:hover {
+    transform: scale(1.3);
+  }
+  .label {
+    font-size: 0.8em;
+    color: #555;
+    user-select: none;
+  }
+  #secretAdminPanel {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(2, 119, 189, 0.85);
+    color: white;
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px #01579b;
+    font-family: monospace;
+    font-size: 14px;
+    z-index: 9999;
+    max-width: 320px;
+    user-select: text;
+  }
+  #secretAdminPanel button {
+    background: #0288d1;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 8px 12px;
+    margin: 6px 8px 0 0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  #secretAdminPanel button:hover {
+    background: #01579b;
+  }
+  #adminData {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+
+<h1>Summer Mood Wallpapers</h1>
+
+<div class="wallpaper" data-id="summer_phone">
+  <img src="Summer_phone.png" alt="Summer Wallpaper for Phone" />
+  <div class="caption">Phone size</div>
+  <div class="buttons">
+    <button class="like" title="Like">🌞</button><br />
+    <span class="label">Like</span>
+    <span class="counter" id="like-summer_phone">0</span>
+    <button class="dislike" title="Dislike">🦐</button><br />
+    <span class="label">Dislike</span>
+    <span class="counter" id="dislike-summer_phone">0</span>
+  </div>
+</div>
+
+<div class="wallpaper" data-id="summer_laptop_tablet">
+  <img src="Summer_Laptop_tablet.png" alt="Summer Wallpaper for Laptop / Tablet" />
+  <div class="caption">Laptop / Tablet size</div>
+  <div class="buttons">
+    <button class="like" title="Like">🌞</button><br />
+    <span class="label">Like</span>
+    <span class="counter" id="like-summer_laptop_tablet">0</span>
+    <button class="dislike" title="Dislike">🦐</button><br />
+    <span class="label">Dislike</span>
+    <span class="counter" id="dislike-summer_laptop_tablet">0</span>
+  </div>
+</div>
+
+<div id="secretAdminPanel">
+  <div id="adminData"></div>
+  <button id="resetLikesBtn">Reset Likes</button>
+  <button id="resetDislikesBtn">Reset Dislikes</button>
+  <button id="closeAdminBtn">Close</button>
+</div>
+
+<script>
+  const wallpapers = ['summer_phone', 'summer_laptop_tablet'];
+
+  function updateButtons(id) {
+    const liked = localStorage.getItem('liked_' + id);
+    const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
+    const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
+    likeBtn.disabled = liked === 'like';
+    dislikeBtn.disabled = liked === 'dislike';
+  }
+
+  function updateCounters() {
+    wallpapers.forEach(id => {
+      const likeCount = parseInt(localStorage.getItem('likes_' + id)) || 0;
+      const dislikeCount = parseInt(localStorage.getItem('dislikes_' + id)) || 0;
+      document.getElementById('like-' + id).textContent = likeCount;
+      document.getElementById('dislike-' + id).textContent = dislikeCount;
+      updateButtons(id);
+    });
+  }
+
+  wallpapers.forEach(id => {
+    const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
+    const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
+
+    likeBtn.addEventListener('click', () => {
+      if(localStorage.getItem('liked_' + id)) return;
+      let likes = parseInt(localStorage.getItem('likes_' + id)) || 0;
+      likes++;
+      localStorage.setItem('likes_' + id, likes);
+      localStorage.setItem('liked_' + id, 'like');
+      updateCounters();
+    });
+
+    dislikeBtn.addEventListener('click', () => {
+      if(localStorage.getItem('liked_' + id)) return;
+      let dislikes = parseInt(localStorage.getItem('dislikes_' + id)) || 0;
+      dislikes++;
+      localStorage.setItem('dislikes_' + id, dislikes);
+      localStorage.setItem('liked_' + id, 'dislike');
+      updateCounters();
+    });
+  });
+
+  updateCounters();
+
+
+  const secretAdminPassEnc = 'SG9zdF8yMDI1X0FkbWluXzAwNw=='; 
+
+  function decryptBase64(str) {
+    try {
+      return atob(str);
+    } catch(e) {
+      return '';
+    }
+  }
+
+  const adminPanel = document.getElementById('secretAdminPanel');
+  const adminData = document.getElementById('adminData');
+  const resetLikesBtn = document.getElementById('resetLikesBtn');
+  const resetDislikesBtn = document.getElementById('resetDislikesBtn');
+  const closeAdminBtn = document.getElementById('closeAdminBtn');
+
+  let keysPressed = {};
+  window.addEventListener('keydown', e => {
+    keysPressed[e.key.toLowerCase()] = true;
+
+    if (keysPressed['a'] && keysPressed['d'] && keysPressed['m']) {
+      keysPressed = {}; 
+      const pass = prompt('Enter password:');
+      if (pass === decryptBase64(secretAdminPassEnc)) {
+        showAdminPanel();
+      } else {
+        alert('Wrong password');
+      }
+    }
+  });
+
+  window.addEventListener('keyup', e => {
+    keysPressed[e.key.toLowerCase()] = false;
+  });
+
+  function showAdminPanel() {
+    updateAdminData();
+    adminPanel.style.display = 'block';
+  }
+
+  function updateAdminData() {
+    let data = '';
+    wallpapers.forEach(id => {
+      const likes = localStorage.getItem('likes_' + id) || 0;
+      const dislikes = localStorage.getItem('dislikes_' + id) || 0;
+      data += `${id}  🌞: ${likes}  🦐: ${dislikes}\n`;
+    });
+    adminData.textContent = data.trim();
+  }
+
+  resetLikesBtn.onclick = () => {
+    wallpapers.forEach(id => {
+      localStorage.setItem('likes_' + id, 0);
+    });
+    updateAdminData();
+    updateCounters();
+  };
+
+  resetDislikesBtn.onclick = () => {
+    wallpapers.forEach(id => {
+      localStorage.setItem('dislikes_' + id, 0);
+    });
+    updateAdminData();
+    updateCounters();
+  };
+
+  closeAdminBtn.onclick = () => {
+    adminPanel.style.display = 'none';
+  };
+</script>
+
+</body>
+</html>
 
