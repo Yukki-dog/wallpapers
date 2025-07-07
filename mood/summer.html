@@ -1,248 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Summer Mood Wallpapers</title>
-<style>
-  body {
-    font-family: Arial, sans-serif; 
-    padding: 20px; 
-    max-width: 700px; 
-    margin: auto;
-    background: #e0f7fa;
-  }
-  h1 {
-    text-align: center; 
-    color: #0277bd;
-  }
-  .wallpaper {
-    margin-bottom: 30px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 12px #81d4fa;
-    text-align: center;
-  }
-  .wallpaper img {
-    max-width: 100%;
-    border-radius: 12px;
-  }
-  .caption {
-    margin-top: 8px;
-    font-weight: bold;
-    color: #0288d1;
-  }
-  .buttons {
-    margin-top: 15px;
-  }
-  button {
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-size: 2em;
-    margin: 0 15px;
-    transition: transform 0.2s;
-    user-select: none;
-  }
-  button:hover {
-    transform: scale(1.3);
-  }
-  .label {
-    font-size: 0.8em;
-    color: #555;
-    user-select: none;
-  }
-  #secretAdminPanel {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(2, 119, 189, 0.85);
-    color: white;
-    padding: 12px 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 12px #01579b;
-    font-family: monospace;
-    font-size: 14px;
-    z-index: 9999;
-    max-width: 320px;
-    user-select: text;
-  }
-  #secretAdminPanel button {
-    background: #0288d1;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    padding: 8px 12px;
-    margin: 6px 8px 0 0;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  #secretAdminPanel button:hover {
-    background: #01579b;
-  }
-  #adminData {
-    max-height: 150px;
-    overflow-y: auto;
-    margin-top: 10px;
-    white-space: pre-wrap;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Summer Mood Wallpapers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
+  <style>
+    /* --- ОБЩИЕ СТИЛИ --- */
+    body {
+      font-family: 'Gloria Hallelujah', cursive, sans-serif;
+      margin: 0;
+      background: #e0f7fa;
+      color: #004d40;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      transition: background 0.6s ease;
+      user-select: none;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      user-select: text;
+    }
+
+    .wallpaper {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      width: 320px;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .wallpaper img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      user-select: none;
+    }
+
+    .caption {
+      margin-top: 14px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* --- КНОПКИ ЛАЙК/ДИЗЛАЙК --- */
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+    }
+
+    button.like, button.dislike {
+      font-size: 2.4rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      outline-offset: 3px;
+      outline-color: transparent;
+    }
+
+    button.like:hover:not(:disabled) {
+      color: #f9a825;
+      transform: scale(1.2);
+    }
+
+    button.dislike:hover:not(:disabled) {
+      color: #00838f;
+      transform: scale(1.2);
+    }
+
+    button.like.clicked {
+      color: #fbc02d;
+      cursor: default;
+    }
+
+    button.dislike.clicked {
+      color: #006064;
+      cursor: default;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    /* --- АДМИНКА --- */
+    #adminPanel {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 16px 20px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      font-family: 'Gloria Hallelujah', cursive, monospace;
+      font-size: 14px;
+      color: #004d40;
+      display: none;
+      z-index: 9999;
+      user-select: text;
+    }
+    #adminPanel h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+      color: #00796b;
+      text-align: center;
+    }
+    #adminPanel label {
+      display: block;
+      margin: 10px 0 6px;
+    }
+    #adminPanel select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid #00796b;
+      background: #b2dfdb;
+      color: #004d40;
+      outline-offset: 2px;
+      outline-color: transparent;
+      transition: outline-color 0.3s ease;
+      cursor: pointer;
+    }
+    #adminPanel select:focus {
+      outline-color: #004d40;
+    }
+
+    #adminPanel #visitsLog {
+      max-height: 180px;
+      overflow-y: auto;
+      background: #e0f2f1;
+      border-radius: 8px;
+      padding: 8px;
+      margin-top: 14px;
+      box-shadow: inset 0 0 5px rgba(0, 77, 64, 0.2);
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+
+    /* --- ТЕМЫ --- */
+    body.theme-redpink {
+      background: linear-gradient(135deg, #f43b47 0%, #f9d423 100%);
+      color: #410003;
+    }
+    body.theme-blue {
+      background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+      color: #023e58;
+    }
+    body.theme-purple {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: #2d004b;
+    }
+    body.theme-darkblue {
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      color: #bbdefb;
+    }
+    body.theme-yelloworange {
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      color: #5a3e00;
+    }
+    body.theme-green {
+      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+      color: #264d00;
+    }
+
+    /* --- СКРОМНАЯ ВЕРСИЯ ДЛЯ МОБИЛЬНЫХ --- */
+    @media (max-width: 480px) {
+      .wallpaper {
+        width: 90vw;
+      }
+      .buttons {
+        gap: 40px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Summer Mood Wallpapers</h1>
+  <h1>Summer Mood Wallpapers</h1>
 
-<div class="wallpaper" data-id="summer_phone">
-  <img src="Summer_phone.png" alt="Summer Wallpaper for Phone" />
-  <div class="caption">Phone size</div>
-  <div class="buttons">
-    <button class="like" title="Like">🌞</button><br />
-    <span class="label">Like</span>
-    <span class="counter" id="like-summer_phone">0</span>
-    <button class="dislike" title="Dislike">🦐</button><br />
-    <span class="label">Dislike</span>
-    <span class="counter" id="dislike-summer_phone">0</span>
+  <div class="wallpaper" data-id="summer_phone">
+    <img src="Summer_phone.png" alt="Summer Wallpaper Phone" />
+    <div class="caption">Phone size</div>
+    <div class="buttons">
+      <button class="like" title="Like" aria-label="Like">🌞</button>
+      <button class="dislike" title="Dislike" aria-label="Dislike">🦐</button>
+    </div>
   </div>
-</div>
 
-<div class="wallpaper" data-id="summer_laptop_tablet">
-  <img src="Summer_Laptop_tablet.png" alt="Summer Wallpaper for Laptop / Tablet" />
-  <div class="caption">Laptop / Tablet size</div>
-  <div class="buttons">
-    <button class="like" title="Like">🌞</button><br />
-    <span class="label">Like</span>
-    <span class="counter" id="like-summer_laptop_tablet">0</span>
-    <button class="dislike" title="Dislike">🦐</button><br />
-    <span class="label">Dislike</span>
-    <span class="counter" id="dislike-summer_laptop_tablet">0</span>
+  <div class="wallpaper" data-id="summer_laptop_tablet">
+    <img src="Summer_Laptop_tablet.png" alt="Summer Wallpaper Laptop and Tablet" />
+    <div class="caption">Laptop / tablet size</div>
+    <div class="buttons">
+      <button class="like" title="Like" aria-label="Like">🌞</button>
+      <button class="dislike" title="Dislike" aria-label="Dislike">🦐</button>
+    </div>
   </div>
-</div>
 
-<div id="secretAdminPanel">
-  <div id="adminData"></div>
-  <button id="resetLikesBtn">Reset Likes</button>
-  <button id="resetDislikesBtn">Reset Dislikes</button>
-  <button id="closeAdminBtn">Close</button>
-</div>
+  <div id="adminPanel" tabindex="0" aria-label="Secret Admin Panel">
+    <h3>⚙️ Panel</h3>
+    <label for="themeSelect">Select theme:</label>
+    <select id="themeSelect" aria-label="Select theme">
+      <option value="theme-redpink">Red-Pink Gradient</option>
+      <option value="theme-blue">Blue Gradient</option>
+      <option value="theme-purple">Purple Gradient</option>
+      <option value="theme-darkblue">Dark Blue Gradient</option>
+      <option value="theme-yelloworange">Yellow-Orange Gradient</option>
+      <option value="theme-green">Green Gradient</option>
+    </select>
+
+    <label>Visits log (last 50):</label>
+    <div id="visitsLog" aria-live="polite" role="log" tabindex="0"></div>
+  </div>
 
 <script>
-  const wallpapers = ['summer_phone', 'summer_laptop_tablet'];
+  // --- Секретный пароль в base64 ---
+  const encryptedAdminPass = 'SG9zdF8yMDI1X0FkbWluXzAwNw=='; // "Host_2025_Admin_007"
 
-  function updateButtons(id) {
-    const liked = localStorage.getItem('liked_' + id);
-    const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
-    const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
-    likeBtn.disabled = liked === 'like';
-    dislikeBtn.disabled = liked === 'dislike';
+  // --- Логика для админки (A + D + M + пароль) ---
+  let keySequence = [];
+  const secretSequence = ['a','d','m'];
+  let adminMode = false;
+
+  window.addEventListener('keydown', e => {
+    if(adminMode) return; // если уже админ - не трогаем
+    const key = e.key.toLowerCase();
+    keySequence.push(key);
+    if(keySequence.length > secretSequence.length) keySequence.shift();
+    if(JSON.stringify(keySequence) === JSON.stringify(secretSequence)) {
+      const pass = prompt('Enter admin password:');
+      if(pass === atob(encryptedAdminPass)) {
+        adminMode = true;
+        document.getElementById('adminPanel').style.display = 'block';
+        alert('Admin mode enabled');
+        loadVisitsLog();
+      } else {
+        alert('Wrong password');
+      }
+      keySequence = [];
+    }
+  });
+
+  // --- Тема ---
+  const themeSelect = document.getElementById('themeSelect');
+
+  // Сохраняем тему в localStorage
+  function setTheme(theme) {
+    document.body.className = theme;
+    localStorage.setItem('selectedTheme', theme);
   }
 
-  function updateCounters() {
-    wallpapers.forEach(id => {
-      const likeCount = parseInt(localStorage.getItem('likes_' + id)) || 0;
-      const dislikeCount = parseInt(localStorage.getItem('dislikes_' + id)) || 0;
-      document.getElementById('like-' + id).textContent = likeCount;
-      document.getElementById('dislike-' + id).textContent = dislikeCount;
-      updateButtons(id);
-    });
+  // При загрузке - применяем тему из localStorage
+  function applySavedTheme() {
+    const saved = localStorage.getItem('selectedTheme');
+    if(saved) setTheme(saved);
   }
 
-  wallpapers.forEach(id => {
-    const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
-    const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
+  themeSelect.addEventListener('change', () => {
+    setTheme(themeSelect.value);
+  });
+
+  applySavedTheme();
+  // Синхронизируем селект с выбранной темой
+  if(localStorage.getItem('selectedTheme')) {
+    themeSelect.value = localStorage.getItem('selectedTheme');
+  }
+
+  // --- Likes и Dislikes ---
+  const wallpapers = document.querySelectorAll('.wallpaper');
+
+  wallpapers.forEach(wp => {
+    const id = wp.getAttribute('data-id');
+    const likeBtn = wp.querySelector('button.like');
+    const dislikeBtn = wp.querySelector('button.dislike');
+
+    // Состояния в localStorage: 'like', 'dislike' или null
+    function updateButtons() {
+      const state = localStorage.getItem('liked_' + id);
+      if(state === 'like') {
+        likeBtn.classList.add('clicked');
+        dislikeBtn.classList.remove('clicked');
+        likeBtn.disabled = true;
+        dislikeBtn.disabled = true;
+      } else if(state === 'dislike') {
+        dislikeBtn.classList.add('clicked');
+        likeBtn.classList.remove('clicked');
+        likeBtn.disabled = true;
+        dislikeBtn.disabled = true;
+      } else {
+        likeBtn.classList.remove('clicked');
+        dislikeBtn.classList.remove('clicked');
+        likeBtn.disabled = false;
+        dislikeBtn.disabled = false;
+      }
+    }
+
+    updateButtons();
 
     likeBtn.addEventListener('click', () => {
       if(localStorage.getItem('liked_' + id)) return;
-      let likes = parseInt(localStorage.getItem('likes_' + id)) || 0;
-      likes++;
-      localStorage.setItem('likes_' + id, likes);
       localStorage.setItem('liked_' + id, 'like');
-      updateCounters();
+      updateButtons();
     });
 
     dislikeBtn.addEventListener('click', () => {
       if(localStorage.getItem('liked_' + id)) return;
-      let dislikes = parseInt(localStorage.getItem('dislikes_' + id)) || 0;
-      dislikes++;
-      localStorage.setItem('dislikes_' + id, dislikes);
       localStorage.setItem('liked_' + id, 'dislike');
-      updateCounters();
+      updateButtons();
     });
   });
 
-  updateCounters();
-
-
-  const secretAdminPassEnc = 'SG9zdF8yMDI1X0FkbWluXzAwNw=='; 
-
-  function decryptBase64(str) {
-    try {
-      return atob(str);
-    } catch(e) {
-      return '';
-    }
+  // --- Лог посещений в куки ---
+  function getCookie(name) {
+    const v = `; ${document.cookie}`;
+    const parts = v.split(`; ${name}=`);
+    if(parts.length === 2) return parts.pop().split(';').shift();
+    return null;
   }
 
-  const adminPanel = document.getElementById('secretAdminPanel');
-  const adminData = document.getElementById('adminData');
-  const resetLikesBtn = document.getElementById('resetLikesBtn');
-  const resetDislikesBtn = document.getElementById('resetDislikesBtn');
-  const closeAdminBtn = document.getElementById('closeAdminBtn');
-
-  let keysPressed = {};
-  window.addEventListener('keydown', e => {
-    keysPressed[e.key.toLowerCase()] = true;
-
-    if (keysPressed['a'] && keysPressed['d'] && keysPressed['m']) {
-      keysPressed = {}; 
-      const pass = prompt('Enter password:');
-      if (pass === decryptBase64(secretAdminPassEnc)) {
-        showAdminPanel();
-      } else {
-        alert('Wrong password');
-      }
-    }
-  });
-
-  window.addEventListener('keyup', e => {
-    keysPressed[e.key.toLowerCase()] = false;
-  });
-
-  function showAdminPanel() {
-    updateAdminData();
-    adminPanel.style.display = 'block';
+  function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days*864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
   }
 
-  function updateAdminData() {
-    let data = '';
-    wallpapers.forEach(id => {
-      const likes = localStorage.getItem('likes_' + id) || 0;
-      const dislikes = localStorage.getItem('dislikes_' + id) || 0;
-      data += `${id}  🌞: ${likes}  🦐: ${dislikes}\n`;
-    });
-    adminData.textContent = data.trim();
+  function setVisitCookie() {
+    const visits = JSON.parse(getCookie('visits') || '[]');
+    const now = new Date();
+    const visitRecord = {
+      time: now.toLocaleString(),
+      url: location.href
+    };
+    visits.push(visitRecord);
+    if(visits.length > 50) visits.shift();
+    setCookie('visits', JSON.stringify(visits), 365);
   }
 
-  resetLikesBtn.onclick = () => {
-    wallpapers.forEach(id => {
-      localStorage.setItem('likes_' + id, 0);
+  function loadVisitsLog() {
+    const visits = JSON.parse(getCookie('visits') || '[]');
+    const container = document.getElementById('visitsLog');
+    container.innerHTML = '';
+    visits.slice().reverse().forEach(v => {
+      const div = document.createElement('div');
+      div.textContent = `${v.time} — ${v.url}`;
+      container.appendChild(div);
     });
-    updateAdminData();
-    updateCounters();
-  };
+  }
 
-  resetDislikesBtn.onclick = () => {
-    wallpapers.forEach(id => {
-      localStorage.setItem('dislikes_' + id, 0);
-    });
-    updateAdminData();
-    updateCounters();
-  };
+  setVisitCookie();
 
-  closeAdminBtn.onclick = () => {
-    adminPanel.style.display = 'none';
-  };
+</script>
+</body>
+</html>
+
 </script>
 
 </body>
