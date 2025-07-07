@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🦐Summer Mood Wallpapers🌞</title>
+  <title>Summer Mood Wallpapers</title>
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
   <style>
     /* --- ОБЩИЕ СТИЛИ --- */
@@ -232,13 +232,12 @@
   // --- Секретный пароль в base64 ---
   const encryptedAdminPass = 'SG9zdF8yMDI1X0FkbWluXzAwNw=='; // "Host_2025_Admin_007"
 
-  // --- Логика для админки (A + D + M + пароль) ---
-  let keySequence = [];
+   let keySequence = [];
   const secretSequence = ['a','d','m'];
   let adminMode = false;
 
   window.addEventListener('keydown', e => {
-    if(adminMode) return; // если уже админ - не трогаем
+    if(adminMode) return; 
     const key = e.key.toLowerCase();
     keySequence.push(key);
     if(keySequence.length > secretSequence.length) keySequence.shift();
@@ -364,11 +363,6 @@
   setVisitCookie();
 
 </script>
-</body>
-</html>
-
-</script>
-
 </body>
 </html>
 
