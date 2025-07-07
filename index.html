@@ -3,45 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Yukki Wallpapers</title>
+  <title>Cute Wallpapers</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #0a0a0a;
-      color: #ffffff;
+      background: #f0f0f5; /* светлый нежный фон */
+      color: #222;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
     }
 
     h1 {
       font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #444;
     }
 
+    /* Секретное поле */
     #secretInput {
-  opacity: 0.2;          /* чуть менее прозрачное */
-  font-size: 12px;       /* чуть больше шрифт */
-  border-bottom: 1px solid #aaa;  /* тонкая линия снизу */
-  background: transparent;
-  color: #ccc;
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 110px;
-  padding: 2px 5px;
-  outline: none;
-  transition: opacity 0.3s;
-}
+      opacity: 0.4;
+      font-size: 14px;
+      border: none;
+      border-bottom: 1.5px solid #888;
+      background: transparent;
+      color: #666;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 120px;
+      padding: 4px 8px;
+      outline: none;
+      transition: opacity 0.3s, color 0.3s, border-color 0.3s;
+      border-radius: 4px 4px 0 0;
+      user-select: text;
+    }
 
-#secretInput:focus {
-  opacity: 1;
-  color: white;
-  border-color: #ff69b4; /* розоватый акцент при фокусе */
-}
-
+    #secretInput:focus {
+      opacity: 1;
+      color: #222;
+      border-color: #ff69b4; /* розоватый акцент */
+      background: #fff;
+      box-shadow: 0 0 8px #ff69b4aa;
     }
 
     /* Тест */
@@ -50,25 +57,33 @@
       top: 20%;
       left: 50%;
       transform: translateX(-50%);
-      background: #ffffff;
+      background: #fff;
       color: #000;
       padding: 20px;
       border-radius: 12px;
       max-width: 400px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
       z-index: 9999;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    .mood-popup h3 {
+      margin-top: 0;
+      color: #ff1493;
     }
 
     .mood-popup ul {
       list-style: none;
       padding-left: 0;
       font-size: 16px;
+      margin-bottom: 0;
     }
 
     .mood-popup li {
       margin: 8px 0;
       cursor: pointer;
       transition: 0.2s;
+      color: #333;
     }
 
     .mood-popup li:hover {
@@ -78,10 +93,10 @@
 </head>
 <body>
 
-  <h1>Welcome to Yukki Wallpapers</h1>
+  <h1>Welcome to Cute Wallpapers</h1>
 
   <!-- Секретное поле -->
-  <input type="text" id="secretInput" placeholder="..." />
+  <input type="text" id="secretInput" placeholder="..." autocomplete="off" spellcheck="false" />
 
   <script>
     document.getElementById('secretInput').addEventListener('input', function () {
@@ -89,18 +104,14 @@
       const today = new Date().getDate().toString().padStart(2, '0');
 
       if (value === '0103') {
-        // Пасхалка с Юкки
         window.location.href = 'secret/yukki.html';
       } else if (value === today) {
-        // Показать тест
         showMoodTest();
       }
     });
 
     function showMoodTest() {
-      // Удалим, если уже открыт
-      const existing = document.querySelector('.mood-popup');
-      if (existing) return;
+      if (document.querySelector('.mood-popup')) return;
 
       const container = document.createElement('div');
       container.className = 'mood-popup';
