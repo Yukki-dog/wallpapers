@@ -1,340 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Fire Mood Wallpapers</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #fff0f0; max-width: 700px; margin: auto; }
-    h1 { color: #d62828; text-align: center; }
-    .wallpaper {
-      margin-bottom: 30px;
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(214, 40, 40, 0.5);
-    }
-    .wallpaper img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      display: block;
-      margin: 0 auto;
-    }
-    .caption {
-      margin-top: 8px;
-      font-weight: bold;
-      color: #a32424;
-      text-align: center;
-    }
-    .buttons {
-      text-align: center;
-      margin-top: 10px;
-    }
-    button {
-      cursor: pointer;
-      padding: 6px 14px;
-      margin: 0 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1em;
-      font-weight: bold;
-      color: white;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    button.like { background-color: #4CAF50; }
-    button.like:hover { background-color: #45a049; }
-    button.dislike { background-color: #f44336; }
-    button.dislike:hover { background-color: #d32f2f; }
-    button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-    .counter {
-      margin-left: 8px;
-      font-weight: bold;
-      color: #222;
-    }
+<meta charset="UTF-8" />
+<title>Fire Mood Wallpapers - Debug Version</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #fff0f0; max-width: 900px; margin: auto; }
+  h1 { color: #d62828; text-align: center; }
+  .wallpaper {
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(214, 40, 40, 0.5);
+  }
+  .wallpaper img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+    margin: 0 auto 10px;
+  }
+  .caption {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #a32424;
+    text-align: center;
+  }
+  .buttons {
+    text-align: center;
+    margin-top: 10px;
+  }
+  button {
+    cursor: pointer;
+    padding: 8px 16px;
+    margin: 0 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  button.like { background-color: #4CAF50; }
+  button.like:hover { background-color: #45a049; }
+  button.dislike { background-color: #f44336; }
+  button.dislike:hover { background-color: #d32f2f; }
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 
-    #comments {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(150, 0, 0, 0.3);
-      margin-top: 40px;
-    }
-    #comments h2 {
-      text-align: center;
-      color: #d62828;
-      margin-bottom: 15px;
-    }
-    #commentForm input, #commentForm textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 1em;
-      font-family: inherit;
-      resize: vertical;
-    }
-    #commentForm button {
-      background: #d62828;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      font-size: 1.1em;
-      border-radius: 12px;
-      cursor: pointer;
-      width: 100%;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    #commentForm button:hover {
-      background-color: #a31c1c;
-    }
-    .comment {
-      border-bottom: 1px solid #eee;
-      padding: 8px 0;
-      position: relative;
-    }
-    .comment:last-child {
-      border-bottom: none;
-    }
-    .comment .nick {
-      font-weight: bold;
-      color: #a32424;
-      margin-bottom: 4px;
-    }
-    .comment .text {
-      white-space: pre-wrap;
-    }
-    .comment .delete-btn {
-      position: absolute;
-      right: 0;
-      top: 8px;
-      background: #f44336;
-      border: none;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      display: none;
-      user-select: none;
-    }
-    body.admin .comment .delete-btn {
-      display: block;
-    }
-  </style>
+  #comments {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(150, 0, 0, 0.3);
+    margin-top: 50px;
+  }
+  #comments h2 {
+    text-align: center;
+    color: #d62828;
+    margin-bottom: 20px;
+  }
+  #commentForm input, #commentForm textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 1em;
+    font-family: inherit;
+    resize: vertical;
+  }
+  #commentForm button {
+    background: #d62828;
+    color: white;
+    border: none;
+    padding: 14px 0;
+    font-size: 1.3em;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  #commentForm button:hover {
+    background-color: #a31c1c;
+  }
+  .comment {
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+    position: relative;
+  }
+  .comment:last-child {
+    border-bottom: none;
+  }
+  .comment .nick {
+    font-weight: bold;
+    color: #a32424;
+    margin-bottom: 6px;
+  }
+  .comment .text {
+    white-space: pre-wrap;
+    font-size: 1.1em;
+  }
+  .comment .delete-btn {
+    position: absolute;
+    right: 0;
+    top: 12px;
+    background: #f44336;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: none;
+    user-select: none;
+  }
+  body.admin .comment .delete-btn {
+    display: block;
+  }
+
+  #log {
+    background: #f7f7f7;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    font-size: 0.85em;
+    color: #333;
+    padding: 10px;
+    margin-top: 40px;
+    white-space: pre-wrap;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+</style>
 </head>
 <body>
 
-  <h1>Fire Mood Wallpapers</h1>
+<h1>Fire Mood Wallpapers - Debug Version</h1>
 
-  <div class="wallpaper" data-id="fire_phone">
-    <img src="fire_phone.png" alt="Fire Wallpaper for Phone" />
-    <div class="caption">Phone size</div>
-    <div class="buttons">
-      <button class="like">👍 <span class="counter" id="like-fire_phone">0</span></button>
-      <button class="dislike">👎 <span class="counter" id="dislike-fire_phone">0</span></button>
-    </div>
+<div class="wallpaper" data-id="fire_phone">
+  <img src="fire_phone.png" alt="Fire Wallpaper for Phone" />
+  <div class="caption">Phone size</div>
+  <div class="buttons">
+    <button class="like">👍 <span class="counter" id="like-fire_phone">0</span></button>
+    <button class="dislike">👎 <span class="counter" id="dislike-fire_phone">0</span></button>
   </div>
+</div>
 
-  <div class="wallpaper" data-id="fire_tablet">
-    <img src="fire_laptop.png" alt="Fire Wallpaper for Tablet" />
-    <div class="caption">Tablet size</div>
-    <div class="buttons">
-      <button class="like">👍 <span class="counter" id="like-fire_tablet">0</span></button>
-      <button class="dislike">👎 <span class="counter" id="dislike-fire_tablet">0</span></button>
-    </div>
+<div class="wallpaper" data-id="fire_tablet">
+  <img src="fire_laptop.png" alt="Fire Wallpaper for Tablet" />
+  <div class="caption">Tablet size</div>
+  <div class="buttons">
+    <button class="like">👍 <span class="counter" id="like-fire_tablet">0</span></button>
+    <button class="dislike">👎 <span class="counter" id="dislike-fire_tablet">0</span></button>
   </div>
+</div>
 
-  <div class="wallpaper" data-id="fire_laptop">
-    <img src="fire_laptop.png" alt="Fire Wallpaper for Laptop" />
-    <div class="caption">Laptop size</div>
-    <div class="buttons">
-      <button class="like">👍 <span class="counter" id="like-fire_laptop">0</span></button>
-      <button class="dislike">👎 <span class="counter" id="dislike-fire_laptop">0</span></button>
-    </div>
+<div class="wallpaper" data-id="fire_laptop">
+  <img src="fire_laptop.png" alt="Fire Wallpaper for Laptop" />
+  <div class="caption">Laptop size</div>
+  <div class="buttons">
+    <button class="like">👍 <span class="counter" id="like-fire_laptop">0</span></button>
+    <button class="dislike">👎 <span class="counter" id="dislike-fire_laptop">0</span></button>
   </div>
+</div>
 
-  <section id="comments">
-    <h2>Comments</h2>
-    <form id="commentForm">
-      <input type="text" id="nick" placeholder="Your nickname" required />
-      <textarea id="commentText" rows="3" placeholder="Your comment" required></textarea>
-      <button type="submit">Post Comment</button>
-    </form>
-    <div id="commentsList"></div>
-  </section>
+<section id="comments">
+  <h2>Comments</h2>
+  <form id="commentForm">
+    <input type="text" id="nick" placeholder="Your nickname" required />
+    <textarea id="commentText" rows="4" placeholder="Your comment" required></textarea>
+    <button type="submit">Post Comment</button>
+  </form>
+  <div id="commentsList"></div>
+</section>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+<h3>Debug Log:</h3>
+<pre id="log"></pre>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBpt086D1ycwIhA658p-82RjcwHSrLD0SY",
-      authDomain: "cute-wallpapers-87c64.firebaseapp.com",
-      databaseURL: "https://cute-wallpapers-87c64-default-rtdb.firebaseio.com",
-      projectId: "cute-wallpapers-87c64",
-      storageBucket: "cute-wallpapers-87c64.appspot.com",
-      messagingSenderId: "666112174223",
-      appId: "1:666112174223:web:53806801726b70c2bbe8fa",
-      measurementId: "G-1SDDYSQECK"
-    };
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
+<script>
+  const logElem = document.getElementById('log');
+  function log(text) {
+    console.log(text);
+    logElem.textContent += text + '\n';
+  }
 
-    const db = firebase.database();
-    const wallpapers = ['fire_phone', 'fire_tablet', 'fire_laptop'];
+  const firebaseConfig = {
+    apiKey: "AIzaSyBpt086D1ycwIhA658p-82RjcwHSrLD0SY",
+    authDomain: "cute-wallpapers-87c64.firebaseapp.com",
+    databaseURL: "https://cute-wallpapers-87c64-default-rtdb.firebaseio.com",
+    projectId: "cute-wallpapers-87c64",
+    storageBucket: "cute-wallpapers-87c64.appspot.com",
+    messagingSenderId: "666112174223",
+    appId: "1:666112174223:web:53806801726b70c2bbe8fa",
+    measurementId: "G-1SDDYSQECK"
+  };
 
-    function updateButtons(id) {
-      const liked = localStorage.getItem('liked_' + id);
-      const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
-      const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
-      likeBtn.disabled = liked === 'like';
-      dislikeBtn.disabled = liked === 'dislike';
-    }
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
 
-    wallpapers.forEach(id => {
-      const likeCounter = document.getElementById('like-' + id);
-      const dislikeCounter = document.getElementById('dislike-' + id);
-      const wallpaperRef = db.ref('wallpapers/' + id);
+  const db = firebase.database();
+  const wallpapers = ['fire_phone', 'fire_tablet', 'fire_laptop'];
 
-      wallpaperRef.on('value', snapshot => {
-        const data = snapshot.val() || {};
-        likeCounter.textContent = data.likes || 0;
-        dislikeCounter.textContent = data.dislikes || 0;
-      });
+  function updateButtons(id) {
+    const liked = localStorage.getItem('liked_' + id);
+    const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
+    const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
+    likeBtn.disabled = liked === 'like';
+    dislikeBtn.disabled = liked === 'dislike';
+  }
 
-      updateButtons(id);
+  wallpapers.forEach(id => {
+    const likeCounter = document.getElementById('like-' + id);
+    const dislikeCounter = document.getElementById('dislike-' + id);
+    const wallpaperRef = db.ref('wallpapers/' + id);
 
-      const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
-      const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
-
-      likeBtn.addEventListener('click', () => {
-        if(localStorage.getItem('liked_' + id)) return;
-        wallpaperRef.transaction(current => {
-          if(current) {
-            current.likes = (current.likes || 0) + 1;
-          } else {
-            current = {likes: 1, dislikes: 0};
-          }
-          return current;
-        });
-        localStorage.setItem('liked_' + id, 'like');
-        updateButtons(id);
-      });
-
-      dislikeBtn.addEventListener('click', () => {
-        if(localStorage.getItem('liked_' + id)) return;
-        wallpaperRef.transaction(current => {
-          if(current) {
-            current.dislikes = (current.dislikes || 0) + 1;
-          } else {
-            current = {likes: 0, dislikes: 1};
-          }
-          return current;
-        });
-        localStorage.setItem('liked_' + id, 'dislike');
-        updateButtons(id);
-      });
+    wallpaperRef.on('value', snapshot => {
+      const data = snapshot.val() || {};
+      likeCounter.textContent = data.likes || 0;
+      dislikeCounter.textContent = data.dislikes || 0;
+      log(`Loaded counts for ${id}: likes=${likeCounter.textContent}, dislikes=${dislikeCounter.textContent}`);
+    }, error => {
+      log(`Firebase error for ${id}: ${error.message}`);
     });
 
-    // Комментарии
-    const commentsList = document.getElementById('commentsList');
-    const commentForm = document.getElementById('commentForm');
-    const nickInput = document.getElementById('nick');
-    const commentTextInput = document.getElementById('commentText');
-    const commentsRef = db.ref('comments');
+    updateButtons(id);
 
-    let adminMode = false;
+    const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
+    const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
 
-    function escapeHtml(text) {
-      return text.replace(/[&<>"']/g, function(m) {
-        return ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m]);
-      });
-    }
-
-    function renderComments(comments) {
-      commentsList.innerHTML = '';
-      Object.entries(comments).forEach(([key, comment]) => {
-        const div = document.createElement('div');
-        div.className = 'comment';
-        if(adminMode) div.classList.add('admin');
-        div.dataset.key = key;
-        div.innerHTML = `
-          <div class="nick">${escapeHtml(comment.nick)}</div>
-          <div class="text">${escapeHtml(comment.text)}</div>
-          <button class="delete-btn" title="Delete comment">×</button>
-        `;
-        if(adminMode){
-          div.querySelector('.delete-btn').addEventListener('click', () => {
-            if(confirm('Delete this comment?')) {
-              commentsRef.child(key).remove();
-            }
-          });
-        }
-        commentsList.appendChild(div);
-      });
-    }
-
-    commentsRef.on('value', snapshot => {
-      const comments = snapshot.val() || {};
-      renderComments(comments);
-      window._lastComments = comments;
-    });
-
-    commentForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const nick = nickInput.value.trim();
-      const text = commentTextInput.value.trim();
-      if(!nick || !text) return alert('Please enter both nickname and comment.');
-
-      commentsRef.push({nick, text});
-      commentForm.reset();
-    });
-
-    // --- Скрытый админ режим ---
-    const encryptedAdminPass = 'SG9zdF8yMDI1'; // Host_2025 в base64
-
-    function decryptBase64(str) {
-      try {
-        return atob(str);
-      } catch(e) {
-        return '';
+    likeBtn.addEventListener('click', () => {
+      if(localStorage.getItem('liked_' + id)) {
+        log(`Already liked/disliked ${id} before.`);
+        return;
       }
-    }
-
-    window.addEventListener('keydown', e => {
-      if(e.key.toLowerCase() === 'a') window._admA = true;
-      if(e.key.toLowerCase() === 'd' && window._admA) window._admAD = true;
-      if(e.key.toLowerCase() === 'm' && window._admAD) {
-        const pass = prompt('Enter admin password:');
-        if(pass === decryptBase64(encryptedAdminPass)) {
-          alert('Admin mode enabled');
-          adminMode = true;
-          renderComments(window._lastComments || {});
-          document.body.classList.add('admin');
+      wallpaperRef.transaction(current => {
+        if(current) {
+          current.likes = (current.likes || 0) + 1;
         } else {
-          alert('Wrong password');
+          current = {likes: 1, dislikes: 0};
         }
-        window._admA = false;
-        window._admAD = false;
-      }
+        return current;
+      }).then(() => log(`Liked wallpaper ${id}`))
+        .catch(err => log(`Error liking ${id}: ${err}`));
+      localStorage.setItem('liked_' + id, 'like');
+      updateButtons(id);
     });
-  </script>
+
+    dislikeBtn.addEventListener('click', () => {
+      if(localStorage.getItem('liked_' + id)) {
+        log(`Already liked/disliked ${id} before.`);
+        return;
+      }
+      wallpaperRef.transaction(current => {
+        if(current) {
+          current.dislikes = (current.dislikes || 0) + 1;
+        } else {
+          current = {likes: 0, dislikes: 1};
+        }
+        return current;
+      }).then(() => log(`Disliked wallpaper ${id}`))
+        .catch(err => log(`Error disliking ${id}: ${err}`));
+      localStorage.setItem('liked_' + id, 'dislike');
+      updateButtons(id);
+    });
+  });
+
+  // Комментарии
+  const commentsRef = db.ref('comments');
+  const commentForm = document.getElementById('commentForm');
+  const commentsList = document.getElementById('commentsList');
+  const nickInput = document.getElementById('nick');
+  const commentTextInput = document.getElementById('commentText');
+
+  let adminMode = false;
+
+  function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, function(m) {
+      return ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m]);
+    });
+  }
+
+  function renderComments(comments) {
+    commentsList.innerHTML = '';
+    Object.entries(comments).forEach(([key, comment]) => {
+      const div = document.createElement('div');
+      div.className = 'comment';
+      if(adminMode) div.classList.add('admin');
+      div.dataset.key = key;
+      div.innerHTML = `
+        <div class="nick">${escapeHtml(comment.nick)}</div>
+        <div class="text">${escapeHtml(comment.text)}</div>
+        <button class="delete-btn" title="Delete comment">×</button>
+      `;
+      if(adminMode){
+        div.querySelector('.delete-btn').addEventListener('click', () => {
+          if(confirm('Delete this comment?')) {
+            commentsRef.child(key).remove();
+          }
+        });
+      }
+      commentsList.appendChild(div);
+    });
+  }
+
+  commentsRef.on('value', snapshot => {
+    const comments = snapshot.val() || {};
+    renderComments(comments);
+    window._lastComments = comments;
+    log(`Loaded ${Object.keys(comments).length} comments`);
+  }, error => {
+    log('Firebase comments read error: ' + error.message);
+  });
+
+  commentForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const nick = nickInput.value.trim();
+    const text = commentTextInput.value.trim();
+    if(!nick || !text) {
+      alert('Please enter both nickname and comment.');
+      return;
+    }
+
+    commentsRef.push({nick, text})
+      .then(() => {
+        commentForm.reset();
+        log(`Added comment by ${nick}`);
+      })
+      .catch(err => {
+        alert('Error posting comment: ' + err.message);
+        log('Error adding comment: ' + err.message);
+      });
+  });
+
+  // --- Скрытый админ режим ---
+  const encryptedAdminPass = 'SG9zdF8yMDI1'; // Host_2025 в base64
+
+  function decryptBase64(str) {
+    try {
+      return atob(str);
+    } catch(e) {
+      return '';
+    }
+  }
+
+  window.addEventListener('keydown', e => {
+    if(e.key.toLowerCase() === 'a') window._admA = true;
+    if(e.key.toLowerCase() === 'd' && window._admA) window._admAD = true;
+    if(e.key.toLowerCase() === 'm' && window._admAD) {
+      const pass = prompt('Enter admin password:');
+      if(pass === decryptBase64(encryptedAdminPass)) {
+        alert('Admin mode enabled');
+        adminMode = true;
+        renderComments(window._lastComments || {});
+        document.body.classList.add('admin');
+      } else {
+        alert('Wrong password');
+      }
+      window._admA = false;
+      window._admAD = false;
+    }
+  });
+</script>
 
 </body>
 </html>
-
-  </div>
-
-</body>
-</html>
-
