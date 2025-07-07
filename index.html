@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yukki Wallpapers</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+    }
+
+    /* Секретное поле */
+    #secretInput {
+      opacity: 0.05;
+      font-size: 10px;
+      border: none;
+      background: none;
+      color: #ffffff;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 100px;
+      outline: none;
+    }
+
+    /* Тест */
+    .mood-popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      color: #000;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+    }
+
+    .mood-popup ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 16px;
+    }
+
+    .mood-popup li {
+      margin: 8px 0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .mood-popup li:hover {
+      color: #ff1493;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to Yukki Wallpapers</h1>
+
+  <!-- Секретное поле -->
+  <input type="text" id="secretInput" placeholder="..." />
+
+  <script>
+    document.getElementById('secretInput').addEventListener('input', function () {
+      const value = this.value.trim();
+      const today = new Date().getDate().toString().padStart(2, '0');
+
+      if (value === '0103') {
+        // Пасхалка с Юкки
+        window.location.href = 'secret/yukki.html';
+      } else if (value === today) {
+        // Показать тест
+        showMoodTest();
+      }
+    });
+
+    function showMoodTest() {
+      // Удалим, если уже открыт
+      const existing = document.querySelector('.mood-popup');
+      if (existing) return;
+
+      const container = document.createElement('div');
+      container.className = 'mood-popup';
+      container.innerHTML = `
+        <h3>✨ What mood are you feeling today?</h3>
+        <ul>
+          <li onclick="goToMood('cute')">• Cute and cozy</li>
+          <li onclick="goToMood('fire')">• Fiery, explosive, intense</li>
+          <li onclick="goToMood('water')">• Watery, soft, like little fish 🐟❤️</li>
+          <li onclick="goToMood('sweet')">• Sweet like candy</li>
+          <li onclick="goToMood('salty')">• Something salty...</li>
+          <li onclick="goToMood('summer')">• Summery ☀️</li>
+          <li onclick="goToMood('winter')">• Wintry ❄️</li>
+        </ul>
+      `;
+      document.body.appendChild(container);
+    }
+
+    function goToMood(mood) {
+      window.location.href = `mood/${mood}.html`;
+    }
+  </script>
+</body>
+</html>
