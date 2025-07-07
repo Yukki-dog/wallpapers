@@ -2,198 +2,119 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Fire Mood Wallpapers - Debug Version</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yukki Wallpapers — Fire Mood</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; background: #fff0f0; max-width: 900px; margin: auto; }
-  h1 { color: #d62828; text-align: center; }
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff0f0;
+    color: #a32424;
+    padding: 15px;
+  }
+  h1 {
+    text-align: center;
+    color: #d62828;
+  }
   .wallpaper {
-    margin-bottom: 30px;
     background: white;
-    padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 0 8px rgba(214, 40, 40, 0.5);
+    box-shadow: 0 0 10px rgba(214, 40, 40, 0.5);
+    margin-bottom: 30px;
+    padding: 15px;
   }
   .wallpaper img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
     display: block;
+    max-width: 100%;
+    border-radius: 12px;
     margin: 0 auto 10px;
   }
   .caption {
-    margin-top: 8px;
     font-weight: bold;
-    color: #a32424;
     text-align: center;
+    margin-bottom: 10px;
   }
   .buttons {
     text-align: center;
-    margin-top: 10px;
+    margin-bottom: 10px;
   }
-  button {
+  button.like, button.dislike, a.download-btn {
     cursor: pointer;
-    padding: 8px 16px;
-    margin: 0 15px;
+    font-size: 1.2em;
+    padding: 10px 20px;
     border-radius: 10px;
     border: none;
-    font-size: 1.1em;
-    font-weight: bold;
     color: white;
+    margin: 0 10px;
     user-select: none;
     transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
   }
-  button.like { background-color: #4CAF50; }
-  button.like:hover { background-color: #45a049; }
-  button.dislike { background-color: #f44336; }
-  button.dislike:hover { background-color: #d32f2f; }
+  button.like {
+    background-color: #4caf50;
+  }
+  button.like:hover:not(:disabled) {
+    background-color: #3e8e41;
+  }
+  button.dislike {
+    background-color: #f44336;
+  }
+  button.dislike:hover:not(:disabled) {
+    background-color: #d32f2f;
+  }
   button:disabled {
     opacity: 0.5;
     cursor: default;
   }
-
-  #comments {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 8px rgba(150, 0, 0, 0.3);
-    margin-top: 50px;
+  a.download-btn {
+    background-color: #1976d2;
   }
-  #comments h2 {
-    text-align: center;
-    color: #d62828;
-    margin-bottom: 20px;
-  }
-  #commentForm input, #commentForm textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-size: 1em;
-    font-family: inherit;
-    resize: vertical;
-  }
-  #commentForm button {
-    background: #d62828;
-    color: white;
-    border: none;
-    padding: 14px 0;
-    font-size: 1.3em;
-    border-radius: 12px;
-    cursor: pointer;
-    width: 100%;
-    user-select: none;
-    transition: background-color 0.3s ease;
-  }
-  #commentForm button:hover {
-    background-color: #a31c1c;
-  }
-  .comment {
-    border-bottom: 1px solid #eee;
-    padding: 12px 0;
-    position: relative;
-  }
-  .comment:last-child {
-    border-bottom: none;
-  }
-  .comment .nick {
-    font-weight: bold;
-    color: #a32424;
-    margin-bottom: 6px;
-  }
-  .comment .text {
-    white-space: pre-wrap;
-    font-size: 1.1em;
-  }
-  .comment .delete-btn {
-    position: absolute;
-    right: 0;
-    top: 12px;
-    background: #f44336;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-    display: none;
-    user-select: none;
-  }
-  body.admin .comment .delete-btn {
-    display: block;
-  }
-
-  #log {
-    background: #f7f7f7;
-    border: 1px solid #ccc;
-    font-family: monospace;
-    font-size: 0.85em;
-    color: #333;
-    padding: 10px;
-    margin-top: 40px;
-    white-space: pre-wrap;
-    max-height: 150px;
-    overflow-y: auto;
+  a.download-btn:hover {
+    background-color: #125ea8;
   }
 </style>
 </head>
 <body>
 
-<h1>Fire Mood Wallpapers - Debug Version</h1>
+<h1>Fire Mood Wallpapers</h1>
 
 <div class="wallpaper" data-id="fire_phone">
-  <img src="fire_phone.png" alt="Fire Wallpaper for Phone" />
+  <img src="fire_phone.png" alt="Fire Wallpaper Phone" />
   <div class="caption">Phone size</div>
   <div class="buttons">
-    <button class="like">👍 <span class="counter" id="like-fire_phone">0</span></button>
-    <button class="dislike">👎 <span class="counter" id="dislike-fire_phone">0</span></button>
+    <button class="like" title="Like">❤️ <span class="counter" id="like-fire_phone">0</span></button>
+    <button class="dislike" title="Dislike">💔 <span class="counter" id="dislike-fire_phone">0</span></button>
+    <a href="fire_phone.png" download="fire_phone.png" class="download-btn" title="Download Wallpaper">⬇️ Download</a>
   </div>
 </div>
 
 <div class="wallpaper" data-id="fire_tablet">
-  <img src="fire_laptop.png" alt="Fire Wallpaper for Tablet" />
+  <img src="fire_tablet.png" alt="Fire Wallpaper Tablet" />
   <div class="caption">Tablet size</div>
   <div class="buttons">
-    <button class="like">👍 <span class="counter" id="like-fire_tablet">0</span></button>
-    <button class="dislike">👎 <span class="counter" id="dislike-fire_tablet">0</span></button>
+    <button class="like" title="Like">❤️ <span class="counter" id="like-fire_tablet">0</span></button>
+    <button class="dislike" title="Dislike">💔 <span class="counter" id="dislike-fire_tablet">0</span></button>
+    <a href="fire_tablet.png" download="fire_tablet.png" class="download-btn" title="Download Wallpaper">⬇️ Download</a>
   </div>
 </div>
 
 <div class="wallpaper" data-id="fire_laptop">
-  <img src="fire_laptop.png" alt="Fire Wallpaper for Laptop" />
+  <img src="fire_laptop.png" alt="Fire Wallpaper Laptop" />
   <div class="caption">Laptop size</div>
   <div class="buttons">
-    <button class="like">👍 <span class="counter" id="like-fire_laptop">0</span></button>
-    <button class="dislike">👎 <span class="counter" id="dislike-fire_laptop">0</span></button>
+    <button class="like" title="Like">❤️ <span class="counter" id="like-fire_laptop">0</span></button>
+    <button class="dislike" title="Dislike">💔 <span class="counter" id="dislike-fire_laptop">0</span></button>
+    <a href="fire_laptop.png" download="fire_laptop.png" class="download-btn" title="Download Wallpaper">⬇️ Download</a>
   </div>
 </div>
-
-<section id="comments">
-  <h2>Comments</h2>
-  <form id="commentForm">
-    <input type="text" id="nick" placeholder="Your nickname" required />
-    <textarea id="commentText" rows="4" placeholder="Your comment" required></textarea>
-    <button type="submit">Post Comment</button>
-  </form>
-  <div id="commentsList"></div>
-</section>
-
-<h3>Debug Log:</h3>
-<pre id="log"></pre>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
 
 <script>
-  const logElem = document.getElementById('log');
-  function log(text) {
-    console.log(text);
-    logElem.textContent += text + '\n';
-  }
-
   const firebaseConfig = {
     apiKey: "AIzaSyBpt086D1ycwIhA658p-82RjcwHSrLD0SY",
     authDomain: "cute-wallpapers-87c64.firebaseapp.com",
@@ -228,9 +149,6 @@
       const data = snapshot.val() || {};
       likeCounter.textContent = data.likes || 0;
       dislikeCounter.textContent = data.dislikes || 0;
-      log(`Loaded counts for ${id}: likes=${likeCounter.textContent}, dislikes=${dislikeCounter.textContent}`);
-    }, error => {
-      log(`Firebase error for ${id}: ${error.message}`);
     });
 
     updateButtons(id);
@@ -239,10 +157,7 @@
     const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
 
     likeBtn.addEventListener('click', () => {
-      if(localStorage.getItem('liked_' + id)) {
-        log(`Already liked/disliked ${id} before.`);
-        return;
-      }
+      if(localStorage.getItem('liked_' + id)) return;
       wallpaperRef.transaction(current => {
         if(current) {
           current.likes = (current.likes || 0) + 1;
@@ -250,17 +165,13 @@
           current = {likes: 1, dislikes: 0};
         }
         return current;
-      }).then(() => log(`Liked wallpaper ${id}`))
-        .catch(err => log(`Error liking ${id}: ${err}`));
+      });
       localStorage.setItem('liked_' + id, 'like');
       updateButtons(id);
     });
 
     dislikeBtn.addEventListener('click', () => {
-      if(localStorage.getItem('liked_' + id)) {
-        log(`Already liked/disliked ${id} before.`);
-        return;
-      }
+      if(localStorage.getItem('liked_' + id)) return;
       wallpaperRef.transaction(current => {
         if(current) {
           current.dislikes = (current.dislikes || 0) + 1;
@@ -268,91 +179,23 @@
           current = {likes: 0, dislikes: 1};
         }
         return current;
-      }).then(() => log(`Disliked wallpaper ${id}`))
-        .catch(err => log(`Error disliking ${id}: ${err}`));
+      });
       localStorage.setItem('liked_' + id, 'dislike');
       updateButtons(id);
     });
   });
 
-  // Комментарии
-  const commentsRef = db.ref('comments');
-  const commentForm = document.getElementById('commentForm');
-  const commentsList = document.getElementById('commentsList');
-  const nickInput = document.getElementById('nick');
-  const commentTextInput = document.getElementById('commentText');
-
-  let adminMode = false;
-
-  function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, function(m) {
-      return ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m]);
-    });
-  }
-
-  function renderComments(comments) {
-    commentsList.innerHTML = '';
-    Object.entries(comments).forEach(([key, comment]) => {
-      const div = document.createElement('div');
-      div.className = 'comment';
-      if(adminMode) div.classList.add('admin');
-      div.dataset.key = key;
-      div.innerHTML = `
-        <div class="nick">${escapeHtml(comment.nick)}</div>
-        <div class="text">${escapeHtml(comment.text)}</div>
-        <button class="delete-btn" title="Delete comment">×</button>
-      `;
-      if(adminMode){
-        div.querySelector('.delete-btn').addEventListener('click', () => {
-          if(confirm('Delete this comment?')) {
-            commentsRef.child(key).remove();
-          }
-        });
-      }
-      commentsList.appendChild(div);
-    });
-  }
-
-  commentsRef.on('value', snapshot => {
-    const comments = snapshot.val() || {};
-    renderComments(comments);
-    window._lastComments = comments;
-    log(`Loaded ${Object.keys(comments).length} comments`);
-  }, error => {
-    log('Firebase comments read error: ' + error.message);
-  });
-
-  commentForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const nick = nickInput.value.trim();
-    const text = commentTextInput.value.trim();
-    if(!nick || !text) {
-      alert('Please enter both nickname and comment.');
-      return;
-    }
-
-    commentsRef.push({nick, text})
-      .then(() => {
-        commentForm.reset();
-        log(`Added comment by ${nick}`);
-      })
-      .catch(err => {
-        alert('Error posting comment: ' + err.message);
-        log('Error adding comment: ' + err.message);
-      });
-  });
-
-  // --- Скрытый админ режим ---
-  const encryptedAdminPass = 'SG9zdF8yMDI1'; // Host_2025 в base64
+  const encryptedAdminPass = 'SG9zdF8yMDI1X0FkbUlOXzBPNw==';
 
   function decryptBase64(str) {
     try {
       return atob(str);
-    } catch(e) {
+    } catch {
       return '';
     }
   }
 
+  let adminMode = false;
   window.addEventListener('keydown', e => {
     if(e.key.toLowerCase() === 'a') window._admA = true;
     if(e.key.toLowerCase() === 'd' && window._admA) window._admAD = true;
@@ -361,7 +204,6 @@
       if(pass === decryptBase64(encryptedAdminPass)) {
         alert('Admin mode enabled');
         adminMode = true;
-        renderComments(window._lastComments || {});
         document.body.classList.add('admin');
       } else {
         alert('Wrong password');
@@ -369,6 +211,12 @@
       window._admA = false;
       window._admAD = false;
     }
+  });
+</script>
+
+</body>
+</html>
+
   });
 </script>
 
