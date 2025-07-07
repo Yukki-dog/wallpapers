@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Fire Wallpapers</title>
+  <title>Fire Mood Wallpapers</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #fff0f0; max-width: 700px; margin: auto; }
     h1 { color: #d62828; text-align: center; }
@@ -46,6 +46,10 @@
     button.like:hover { background-color: #45a049; }
     button.dislike { background-color: #f44336; }
     button.dislike:hover { background-color: #d32f2f; }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
     .counter {
       margin-left: 8px;
       font-weight: bold;
@@ -140,7 +144,7 @@
   </div>
 
   <div class="wallpaper" data-id="fire_tablet">
-    <img src="fire_tablet.png" alt="Fire Wallpaper for Tablet" />
+    <img src="fire_laptop.png" alt="Fire Wallpaper for Tablet" />
     <div class="caption">Tablet size</div>
     <div class="buttons">
       <button class="like">👍 <span class="counter" id="like-fire_tablet">0</span></button>
@@ -187,11 +191,16 @@
     firebase.analytics();
 
     const db = firebase.database();
-
-    // Все три обоя с их id
     const wallpapers = ['fire_phone', 'fire_tablet', 'fire_laptop'];
 
-    // Обновляем счетчики для всех обоев
+    function updateButtons(id) {
+      const liked = localStorage.getItem('liked_' + id);
+      const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
+      const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
+      likeBtn.disabled = liked === 'like';
+      dislikeBtn.disabled = liked === 'dislike';
+    }
+
     wallpapers.forEach(id => {
       const likeCounter = document.getElementById('like-' + id);
       const dislikeCounter = document.getElementById('dislike-' + id);
@@ -203,8 +212,13 @@
         dislikeCounter.textContent = data.dislikes || 0;
       });
 
-      // Кнопки
-      document.querySelector(`.wallpaper[data-id="${id}"] .like`).addEventListener('click', () => {
+      updateButtons(id);
+
+      const likeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .like`);
+      const dislikeBtn = document.querySelector(`.wallpaper[data-id="${id}"] .dislike`);
+
+      likeBtn.addEventListener('click', () => {
+        if(localStorage.getItem('liked_' + id)) return;
         wallpaperRef.transaction(current => {
           if(current) {
             current.likes = (current.likes || 0) + 1;
@@ -213,9 +227,12 @@
           }
           return current;
         });
+        localStorage.setItem('liked_' + id, 'like');
+        updateButtons(id);
       });
 
-      document.querySelector(`.wallpaper[data-id="${id}"] .dislike`).addEventListener('click', () => {
+      dislikeBtn.addEventListener('click', () => {
+        if(localStorage.getItem('liked_' + id)) return;
         wallpaperRef.transaction(current => {
           if(current) {
             current.dislikes = (current.dislikes || 0) + 1;
@@ -224,10 +241,12 @@
           }
           return current;
         });
+        localStorage.setItem('liked_' + id, 'dislike');
+        updateButtons(id);
       });
     });
 
-    // --- Комментарии ---
+    // Комментарии
     const commentsList = document.getElementById('commentsList');
     const commentForm = document.getElementById('commentForm');
     const nickInput = document.getElementById('nick');
@@ -237,13 +256,9 @@
     let adminMode = false;
 
     function escapeHtml(text) {
-      return text.replace(/[&<>"']/g, m => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
-      })[m]);
+      return text.replace(/[&<>"']/g, function(m) {
+        return ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m]);
+      });
     }
 
     function renderComments(comments) {
@@ -285,7 +300,7 @@
       commentForm.reset();
     });
 
-    // --- Секретный админ режим ---
+    // --- Скрытый админ режим ---
     const encryptedAdminPass = 'SG9zdF8yMDI1'; // Host_2025 в base64
 
     function decryptBase64(str) {
@@ -297,7 +312,6 @@
     }
 
     window.addEventListener('keydown', e => {
-      // Чтобы включить админ режим нужно нажать A + D + M (в любом порядке)
       if(e.key.toLowerCase() === 'a') window._admA = true;
       if(e.key.toLowerCase() === 'd' && window._admA) window._admAD = true;
       if(e.key.toLowerCase() === 'm' && window._admAD) {
