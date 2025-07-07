@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Liked Wallpapers</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8ff;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #d62828;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .wallpaper {
+      background: white;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .wallpaper img {
+      max-width: 100%;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .wallpaper img:hover {
+      transform: scale(1.05);
+    }
+    .caption {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .empty {
+      text-align: center;
+      font-style: italic;
+      color: #777;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>❤️ Your Liked Wallpapers</h1>
+<div id="gallery" class="gallery"></div>
+<div id="emptyMessage" class="empty" style="display: none;">No liked wallpapers yet...</div>
+
+<script>
+  const wallpapers = {
+    fire_phone: {
+      image: "fire_phone.png",
+      caption: "Phone size",
+      link: "fire.html"
+    },
+    fire_laptop: {
+      image: "fire_laptop.png",
+      caption: "Laptop / tablet size",
+      link: "fire.html"
+    },
+    // добавь сюда другие обои, если появятся
+  };
+
+  const gallery = document.getElementById("gallery");
+  const emptyMessage = document.getElementById("emptyMessage");
+
+  let found = false;
+
+  for (const [id, data] of Object.entries(wallpapers)) {
+    const liked = localStorage.getItem("rating_" + id);
+    if (liked === "like") {
+      found = true;
+      const div = document.createElement("div");
+      div.className = "wallpaper";
+      div.innerHTML = `
+        <a href="${data.link}">
+          <img src="${data.image}" alt="${data.caption}">
+        </a>
+        <div class="caption">${data.caption}</div>
+      `;
+      gallery.appendChild(div);
+    }
+  }
+
+  if (!found) {
+    emptyMessage.style.display = "block";
+  }
+</script>
+
+</body>
+</html>
