@@ -90,19 +90,11 @@
   </div>
 </div>
 
-<div class="wallpaper" data-id="fire_tablet">
-  <img src="fire_tablet.png" alt="Fire Wallpaper Tablet" />
-  <div class="caption">Tablet size</div>
-  <div class="buttons">
-    <button class="like" title="Like">❤️ <span class="counter" id="like-fire_tablet">0</span></button>
-    <button class="dislike" title="Dislike">💔 <span class="counter" id="dislike-fire_tablet">0</span></button>
-    <a href="fire_tablet.png" download="fire_tablet.png" class="download-btn" title="Download Wallpaper">⬇️ Download</a>
-  </div>
-</div>
+<!-- ПЛАНШЕТ УБРАН -->
 
 <div class="wallpaper" data-id="fire_laptop">
   <img src="fire_laptop.png" alt="Fire Wallpaper Laptop" />
-  <div class="caption">Laptop size</div>
+  <div class="caption">Laptop / tablet size</div>
   <div class="buttons">
     <button class="like" title="Like">❤️ <span class="counter" id="like-fire_laptop">0</span></button>
     <button class="dislike" title="Dislike">💔 <span class="counter" id="dislike-fire_laptop">0</span></button>
@@ -130,7 +122,7 @@
   firebase.analytics();
 
   const db = firebase.database();
-  const wallpapers = ['fire_phone', 'fire_tablet', 'fire_laptop'];
+  const wallpapers = ['fire_phone', 'fire_laptop'];
 
   function updateButtons(id) {
     const liked = localStorage.getItem('liked_' + id);
@@ -211,12 +203,6 @@
       window._admA = false;
       window._admAD = false;
     }
-  });
-</script>
-
-</body>
-</html>
-
   });
 </script>
 
