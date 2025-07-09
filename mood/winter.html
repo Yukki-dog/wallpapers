@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Winter Mood Wallpapers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #003366;
+      --bg2: radial-gradient(circle, #e0f7fa, #80deea);
+      --bg3: linear-gradient(to right, #d9d9d9, #f0f0f0);
+      --bg4: linear-gradient(to bottom, #001f3f, #003366);
+      --bg5: linear-gradient(to bottom, #ffffff, #eeeeee);
+      --bg6: repeating-linear-gradient(45deg, #d32f2f, #d32f2f 20px, #388e3c 20px, #388e3c 40px);
+    }
 
+    body {
+      font-family: 'Gloria Hallelujah', cursive;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg1);
+      transition: background 0.5s ease;
+      color: #111;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 40px;
+      color: #004d66;
+    }
+
+    .wallpaper {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .wallpaper img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
+    .caption {
+      margin-top: 10px;
+      font-size: 1.3em;
+      color: #005577;
+    }
+
+    .buttons {
+      margin-top: 15px;
+    }
+
+    .vote-btn {
+      background: none;
+      border: none;
+      font-size: 2em;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: transform 0.2s;
+    }
+
+    .vote-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .vote-btn.selected {
+      filter: drop-shadow(0 0 5px #00f);
+    }
+
+    .label {
+      font-size: 0.8em;
+      margin-top: 5px;
+      color: #333;
+    }
+
+    #themePanel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 10px 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+    }
+
+    #themePanel h3 {
+      margin: 0 0 10px;
+      font-size: 1em;
+    }
+
+    .theme-option {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #aaa;
+      margin: 5px;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .theme-1 { background: var(--bg1); }
+    .theme-2 { background: var(--bg2); }
+    .theme-3 { background: var(--bg3); }
+    .theme-4 { background: var(--bg4); }
+    .theme-5 { background: var(--bg5); }
+    .theme-6 { background: var(--bg6); }
+  </style>
+</head>
+<body>
+
+<h1>Winter Mood Wallpapers</h1>
+
+<div class="wallpaper" data-id="winter_phone">
+  <img src="Winter_phone.png" alt="Winter Wallpaper for Phone">
+  <div class="caption">Phone size</div>
+  <div class="buttons">
+    <button class="vote-btn like" title="Like">❄</button>
+    <button class="vote-btn dislike" title="Dislike">⛄</button>
+    <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+  </div>
+</div>
+
+<div class="wallpaper" data-id="winter_laptop">
+  <img src="Winter_Laptop_tablet.png" alt="Winter Wallpaper for Laptop">
+  <div class="caption">Laptop / Tablet size</div>
+  <div class="buttons">
+    <button class="vote-btn like" title="Like">❄</button>
+    <button class="vote-btn dislike" title="Dislike">⛄</button>
+    <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+  </div>
+</div>
+
+<div id="themePanel">
+  <h3>Choose Theme</h3>
+  <div class="theme-option theme-1" data-theme="1"></div>
+  <div class="theme-option theme-2" data-theme="2"></div>
+  <div class="theme-option theme-3" data-theme="3"></div>
+  <div class="theme-option theme-4" data-theme="4"></div>
+  <div class="theme-option theme-5" data-theme="5"></div>
+  <div class="theme-option theme-6" data-theme="6"></div>
+</div>
+
+<script>
+  const themes = {
+    1: 'var(--bg1)',
+    2: 'var(--bg2)',
+    3: 'var(--bg3)',
+    4: 'var(--bg4)',
+    5: 'var(--bg5)',
+    6: 'var(--bg6)'
+  };
+
+  function applyTheme(index) {
+    document.body.style.background = themes[index];
+    localStorage.setItem('winter-theme', index);
+  }
+
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const themeIndex = btn.getAttribute('data-theme');
+      applyTheme(themeIndex);
+    });
+  });
+
+  const savedTheme = localStorage.getItem('winter-theme') || '1';
+  applyTheme(savedTheme);
+
+  document.querySelectorAll('.wallpaper').forEach(box => {
+    const id = box.dataset.id;
+    const likeBtn = box.querySelector('.like');
+    const dislikeBtn = box.querySelector('.dislike');
+    const likeCount = box.querySelector('.like-count');
+    const dislikeCount = box.querySelector('.dislike-count');
+
+    let state = JSON.parse(localStorage.getItem('vote-' + id)) || {like: false, dislike: false};
+    if (state.like) likeBtn.classList.add('selected');
+    if (state.dislike) dislikeBtn.classList.add('selected');
+
+    likeCount.textContent = state.like ? 1 : 0;
+    dislikeCount.textContent = state.dislike ? 1 : 0;
+
+    likeBtn.addEventListener('click', () => {
+      if (state.like) return;
+      state.like = true;
+      state.dislike = false;
+      likeBtn.classList.add('selected');
+      dislikeBtn.classList.remove('selected');
+      likeCount.textContent = 1;
+      dislikeCount.textContent = 0;
+      localStorage.setItem('vote-' + id, JSON.stringify(state));
+    });
+
+    dislikeBtn.addEventListener('click', () => {
+      if (state.dislike) return;
+      state.like = false;
+      state.dislike = true;
+      dislikeBtn.classList.add('selected');
+      likeBtn.classList.remove('selected');
+      likeCount.textContent = 0;
+      dislikeCount.textContent = 1;
+      localStorage.setItem('vote-' + id, JSON.stringify(state));
+    });
+  });
+
+  const pass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
+  let admA = false, admD = false;
+  window.addEventListener('keydown', (e) => {
+    if(e.key.toLowerCase() === 'a') admA = true;
+    if(e.key.toLowerCase() === 'd' && admA) admD = true;
+    if(e.key.toLowerCase() === 'm' && admD) {
+      const input = prompt('Enter admin code:');
+      if(input === pass) {
+        document.getElementById('themePanel').style.display = 'block';
+        alert('Theme panel unlocked!');
+      }
+      admA = false;
+      admD = false;
+    }
+  });
+</script>
+</body>
+</html>
