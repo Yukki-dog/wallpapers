@@ -6,7 +6,6 @@
   <title>Summer Mood Wallpapers</title>
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
   <style>
-    /* --- ОБЩИЕ СТИЛИ --- */
     body {
       font-family: 'Gloria Hallelujah', cursive, sans-serif;
       margin: 0;
@@ -20,13 +19,11 @@
       transition: background 0.6s ease;
       user-select: none;
     }
-
     h1 {
       font-size: 3rem;
       margin-bottom: 30px;
       user-select: text;
     }
-
     .wallpaper {
       background: white;
       border-radius: 16px;
@@ -37,28 +34,23 @@
       padding: 20px;
       position: relative;
     }
-
     .wallpaper img {
       max-width: 100%;
       border-radius: 12px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.2);
       user-select: none;
     }
-
     .caption {
       margin-top: 14px;
       font-weight: 600;
       font-size: 1.1rem;
     }
-
-    /* --- КНОПКИ ЛАЙК/ДИЗЛАЙК --- */
     .buttons {
       margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 60px;
     }
-
     button.like, button.dislike {
       font-size: 2.4rem;
       border: none;
@@ -68,33 +60,47 @@
       outline-offset: 3px;
       outline-color: transparent;
     }
-
-    button.like:hover:not(:disabled) {
+    button.like:hover {
       color: #f9a825;
       transform: scale(1.2);
     }
-
-    button.dislike:hover:not(:disabled) {
+    button.dislike:hover {
       color: #00838f;
       transform: scale(1.2);
     }
-
     button.like.clicked {
       color: #fbc02d;
-      cursor: default;
     }
-
     button.dislike.clicked {
       color: #006064;
-      cursor: default;
     }
-
-    button:disabled {
-      cursor: default;
-      opacity: 0.6;
+    .counter {
+      margin-top: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #333;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
     }
-
-    /* --- АДМИНКА --- */
+    .counter span {
+      user-select: none;
+    }
+    .download-btn {
+      margin-top: 12px;
+      display: inline-block;
+      background: #00796b;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .download-btn:hover {
+      background: #004d40;
+    }
     #adminPanel {
       position: fixed;
       top: 12px;
@@ -140,54 +146,6 @@
     #adminPanel select:focus {
       outline-color: #004d40;
     }
-
-    #adminPanel #visitsLog {
-      max-height: 180px;
-      overflow-y: auto;
-      background: #e0f2f1;
-      border-radius: 8px;
-      padding: 8px;
-      margin-top: 14px;
-      box-shadow: inset 0 0 5px rgba(0, 77, 64, 0.2);
-      font-size: 0.85rem;
-      line-height: 1.3;
-    }
-
-    /* --- ТЕМЫ --- */
-    body.theme-redpink {
-      background: linear-gradient(135deg, #f43b47 0%, #f9d423 100%);
-      color: #410003;
-    }
-    body.theme-blue {
-      background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
-      color: #023e58;
-    }
-    body.theme-purple {
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-      color: #2d004b;
-    }
-    body.theme-darkblue {
-      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-      color: #bbdefb;
-    }
-    body.theme-yelloworange {
-      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
-      color: #5a3e00;
-    }
-    body.theme-green {
-      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-      color: #264d00;
-    }
-
-    /* --- СКРОМНАЯ ВЕРСИЯ ДЛЯ МОБИЛЬНЫХ --- */
-    @media (max-width: 480px) {
-      .wallpaper {
-        width: 90vw;
-      }
-      .buttons {
-        gap: 40px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -201,6 +159,8 @@
       <button class="like" title="Like" aria-label="Like">🌞</button>
       <button class="dislike" title="Dislike" aria-label="Dislike">🦐</button>
     </div>
+    <div class="counter"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+    <a href="Summer_phone.png" download class="download-btn">Download</a>
   </div>
 
   <div class="wallpaper" data-id="summer_laptop_tablet">
@@ -210,6 +170,8 @@
       <button class="like" title="Like" aria-label="Like">🌞</button>
       <button class="dislike" title="Dislike" aria-label="Dislike">🦐</button>
     </div>
+    <div class="counter"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+    <a href="Summer_Laptop_tablet.png" download class="download-btn">Download</a>
   </div>
 
   <div id="adminPanel" tabindex="0" aria-label="Secret Admin Panel">
@@ -223,16 +185,12 @@
       <option value="theme-yelloworange">Yellow-Orange Gradient</option>
       <option value="theme-green">Green Gradient</option>
     </select>
-
-    <label>Visits log (last 50):</label>
-    <div id="visitsLog" aria-live="polite" role="log" tabindex="0"></div>
   </div>
 
 <script>
-  // --- Секретный пароль в base64 ---
   const encryptedAdminPass = 'SG9zdF8yMDI1X0FkbWluXzAwNw=='; // "Host_2025_Admin_007"
 
-   let keySequence = [];
+  let keySequence = [];
   const secretSequence = ['a','d','m'];
   let adminMode = false;
 
@@ -247,7 +205,6 @@
         adminMode = true;
         document.getElementById('adminPanel').style.display = 'block';
         alert('Admin mode enabled');
-        loadVisitsLog();
       } else {
         alert('Wrong password');
       }
@@ -257,25 +214,18 @@
 
   // --- Тема ---
   const themeSelect = document.getElementById('themeSelect');
-
-  // Сохраняем тему в localStorage
   function setTheme(theme) {
     document.body.className = theme;
     localStorage.setItem('selectedTheme', theme);
   }
-
-  // При загрузке - применяем тему из localStorage
   function applySavedTheme() {
     const saved = localStorage.getItem('selectedTheme');
     if(saved) setTheme(saved);
   }
-
   themeSelect.addEventListener('change', () => {
     setTheme(themeSelect.value);
   });
-
   applySavedTheme();
-  // Синхронизируем селект с выбранной темой
   if(localStorage.getItem('selectedTheme')) {
     themeSelect.value = localStorage.getItem('selectedTheme');
   }
@@ -287,80 +237,57 @@
     const id = wp.getAttribute('data-id');
     const likeBtn = wp.querySelector('button.like');
     const dislikeBtn = wp.querySelector('button.dislike');
+    const likeCount = wp.querySelector('.like-count');
+    const dislikeCount = wp.querySelector('.dislike-count');
 
-    // Состояния в localStorage: 'like', 'dislike' или null
-    function updateButtons() {
-      const state = localStorage.getItem('liked_' + id);
+    function updateButtons(state) {
       if(state === 'like') {
         likeBtn.classList.add('clicked');
         dislikeBtn.classList.remove('clicked');
-        likeBtn.disabled = true;
-        dislikeBtn.disabled = true;
+        likeCount.textContent = '1';
+        dislikeCount.textContent = '0';
       } else if(state === 'dislike') {
         dislikeBtn.classList.add('clicked');
         likeBtn.classList.remove('clicked');
-        likeBtn.disabled = true;
-        dislikeBtn.disabled = true;
+        likeCount.textContent = '0';
+        dislikeCount.textContent = '1';
       } else {
         likeBtn.classList.remove('clicked');
         dislikeBtn.classList.remove('clicked');
-        likeBtn.disabled = false;
-        dislikeBtn.disabled = false;
+        likeCount.textContent = '0';
+        dislikeCount.textContent = '0';
       }
     }
 
-    updateButtons();
+    let state = localStorage.getItem('liked_' + id) || null;
+    updateButtons(state);
 
     likeBtn.addEventListener('click', () => {
-      if(localStorage.getItem('liked_' + id)) return;
-      localStorage.setItem('liked_' + id, 'like');
-      updateButtons();
+      if(state === 'like') {
+        state = null;
+        localStorage.removeItem('liked_' + id);
+      } else {
+        state = 'like';
+        localStorage.setItem('liked_' + id, 'like');
+      }
+      updateButtons(state);
     });
 
     dislikeBtn.addEventListener('click', () => {
-      if(localStorage.getItem('liked_' + id)) return;
-      localStorage.setItem('liked_' + id, 'dislike');
-      updateButtons();
+      if(state === 'dislike') {
+        state = null;
+        localStorage.removeItem('liked_' + id);
+      } else {
+        state = 'dislike';
+        localStorage.setItem('liked_' + id, 'dislike');
+      }
+      updateButtons(state);
     });
   });
+</script>
+</body>
+</html>
 
-  // --- Лог посещений в куки ---
-  function getCookie(name) {
-    const v = `; ${document.cookie}`;
-    const parts = v.split(`; ${name}=`);
-    if(parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-  }
-
-  function setCookie(name, value, days) {
-    const expires = new Date(Date.now() + days*864e5).toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
-  }
-
-  function setVisitCookie() {
-    const visits = JSON.parse(getCookie('visits') || '[]');
-    const now = new Date();
-    const visitRecord = {
-      time: now.toLocaleString(),
-      url: location.href
-    };
-    visits.push(visitRecord);
-    if(visits.length > 50) visits.shift();
-    setCookie('visits', JSON.stringify(visits), 365);
-  }
-
-  function loadVisitsLog() {
-    const visits = JSON.parse(getCookie('visits') || '[]');
-    const container = document.getElementById('visitsLog');
-    container.innerHTML = '';
-    visits.slice().reverse().forEach(v => {
-      const div = document.createElement('div');
-      div.textContent = `${v.time} — ${v.url}`;
-      container.appendChild(div);
-    });
-  }
-
-  setVisitCookie();
 
 </script>
 </body>
