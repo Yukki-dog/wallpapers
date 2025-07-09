@@ -6,7 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg1: #003366;
+      --bg1: linear-gradient(to bottom right, #cce7ff, #003366);
       --bg2: radial-gradient(circle, #e0f7fa, #80deea);
       --bg3: linear-gradient(to right, #d9d9d9, #f0f0f0);
       --bg4: linear-gradient(to bottom, #001f3f, #003366);
@@ -19,7 +19,7 @@
       margin: 0;
       padding: 20px;
       background: var(--bg1);
-      transition: background 0.5s ease;
+      transition: background 1s ease;
       color: #111;
     }
 
@@ -28,6 +28,11 @@
       font-size: 2.5em;
       margin-bottom: 40px;
       color: #004d66;
+      transition: color 1s ease;
+    }
+
+    body.dark h1 {
+      color: #e0f7ff;
     }
 
     .wallpaper {
@@ -38,21 +43,32 @@
       margin: 20px auto;
       max-width: 600px;
       text-align: center;
+      transition: background 0.5s ease;
     }
 
     .wallpaper img {
       max-width: 100%;
       border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .wallpaper img:hover {
+      transform: scale(1.02);
     }
 
     .caption {
       margin-top: 10px;
       font-size: 1.3em;
       color: #005577;
+      transition: color 0.3s ease;
     }
 
     .buttons {
       margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
     }
 
     .vote-btn {
@@ -61,7 +77,7 @@
       font-size: 2em;
       cursor: pointer;
       margin: 0 10px;
-      transition: transform 0.2s;
+      transition: transform 0.2s, filter 0.3s;
     }
 
     .vote-btn:hover {
@@ -74,8 +90,23 @@
 
     .label {
       font-size: 0.8em;
-      margin-top: 5px;
       color: #333;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #004d66;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 0.9em;
+      font-family: 'Gloria Hallelujah', cursive;
+      transition: background-color 0.3s ease;
+    }
+
+    .download-btn:hover {
+      background-color: #006f99;
     }
 
     #themePanel {
@@ -88,6 +119,7 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       display: none;
       z-index: 1000;
+      transition: opacity 0.5s ease;
     }
 
     #themePanel h3 {
@@ -103,6 +135,11 @@
       margin: 5px;
       display: inline-block;
       cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-option:hover {
+      transform: scale(1.1);
     }
 
     .theme-1 { background: var(--bg1); }
@@ -121,9 +158,12 @@
   <img src="Winter_phone.png" alt="Winter Wallpaper for Phone">
   <div class="caption">Phone size</div>
   <div class="buttons">
-    <button class="vote-btn like" title="Like">❄</button>
-    <button class="vote-btn dislike" title="Dislike">⛄</button>
+    <div>
+      <button class="vote-btn like" title="Like">❄</button>
+      <button class="vote-btn dislike" title="Dislike">⛄</button>
+    </div>
     <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+    <a class="download-btn" href="Winter_phone.png" download>Download</a>
   </div>
 </div>
 
@@ -131,9 +171,12 @@
   <img src="Winter_Laptop_tablet.png" alt="Winter Wallpaper for Laptop">
   <div class="caption">Laptop / Tablet size</div>
   <div class="buttons">
-    <button class="vote-btn like" title="Like">❄</button>
-    <button class="vote-btn dislike" title="Dislike">⛄</button>
+    <div>
+      <button class="vote-btn like" title="Like">❄</button>
+      <button class="vote-btn dislike" title="Dislike">⛄</button>
+    </div>
     <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+    <a class="download-btn" href="Winter_Laptop_tablet.png" download>Download</a>
   </div>
 </div>
 
@@ -160,6 +203,11 @@
   function applyTheme(index) {
     document.body.style.background = themes[index];
     localStorage.setItem('winter-theme', index);
+    if (index === '4') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
   }
 
   document.querySelectorAll('.theme-option').forEach(btn => {
