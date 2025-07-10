@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Water Mood Wallpapers</title>
-  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg1: linear-gradient(to bottom right, #a8e6ff, #004d73);
-      --bg2: linear-gradient(to top, #b2fefa, #0ed2f7);
-      --bg3: radial-gradient(circle, #c2f0f7, #007a99);
-      --bg4: linear-gradient(to bottom, #d0f0ff, #003f5c);
-      --bg5: linear-gradient(to right, #89f7fe, #66a6ff);
-      --bg6: repeating-linear-gradient(45deg, #33ccff, #33ccff 20px, #006699 20px, #006699 40px);
+      --bg1: linear-gradient(to bottom, #a2d4f2, #057d9f);
+      --bg2: linear-gradient(to bottom, #cceeff, #66ccff);
+      --bg3: linear-gradient(to right, #003f5c, #2f4b7c);
+      --bg4: linear-gradient(to bottom, #87cefa, #4682b4);
+      --bg5: linear-gradient(to bottom, #e0f7fa, #00acc1);
+      --bg6: linear-gradient(to bottom, #0077be, #001f3f);
     }
 
     body {
@@ -20,83 +19,98 @@
       margin: 0;
       padding: 20px;
       background: var(--bg1);
-      color: #003344;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: background 0.8s ease;
+      transition: background 1s ease;
+      color: #011627;
+      overflow-x: hidden;
+      position: relative;
     }
 
     h1 {
-      font-size: 2.6rem;
-      color: #e0fbff;
-      margin-bottom: 30px;
-      text-shadow: 0 0 6px #002b40;
+      text-align: center;
+      font-size: 2.7em;
+      margin-bottom: 40px;
+      color: #004d66;
+      text-shadow: 0 0 8px rgba(255,255,255,0.6);
+      position: relative;
+      z-index: 2;
     }
 
     .wallpaper {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.85);
       border-radius: 16px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
       padding: 20px;
       margin: 20px auto;
       max-width: 600px;
-      width: 90%;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
 
     .wallpaper img {
-      width: 100%;
+      max-width: 100%;
       border-radius: 10px;
     }
 
     .caption {
-      margin-top: 12px;
-      font-size: 1.2rem;
-      color: #004466;
+      margin-top: 10px;
+      font-size: 1.3em;
+      color: #005577;
     }
 
     .buttons {
-      margin-top: 14px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 60px;
+      position: relative;
     }
 
     .vote-btn {
-      font-size: 2.3rem;
       background: none;
       border: none;
+      font-size: 2.2em;
       cursor: pointer;
-      margin: 0 12px;
-      transition: transform 0.2s, filter 0.3s;
+      transition: transform 0.2s;
     }
 
     .vote-btn:hover {
       transform: scale(1.2);
     }
 
-    .vote-btn.clicked {
-      filter: drop-shadow(0 0 4px #0099cc);
+    .vote-btn.selected {
+      filter: drop-shadow(0 0 5px #00bcd4);
     }
 
-    .label {
-      font-size: 0.9rem;
-      margin-top: 6px;
-      color: #444;
+    .counter {
+      font-size: 1em;
+      color: #004d66;
+      position: absolute;
+      top: 60px;
     }
 
-    .download-btn {
+    .like-count {
+      left: 70px;
+    }
+
+    .dislike-count {
+      right: 70px;
+    }
+
+    .download {
+      margin-top: 15px;
       display: inline-block;
-      margin-top: 12px;
-      padding: 6px 14px;
-      background: #0099cc;
+      padding: 8px 16px;
+      background: #0077be;
       color: white;
       text-decoration: none;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: 8px;
       transition: background 0.3s;
     }
 
-    .download-btn:hover {
-      background: #007a99;
+    .download:hover {
+      background: #005f99;
     }
 
     #themePanel {
@@ -105,23 +119,23 @@
       right: 20px;
       background: white;
       border-radius: 12px;
-      padding: 12px 16px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      padding: 10px 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
       display: none;
-      z-index: 999;
+      z-index: 1000;
     }
 
     #themePanel h3 {
-      font-size: 1rem;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
+      font-size: 1em;
     }
 
     .theme-option {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      border: 1px solid #888;
-      margin: 4px;
+      border: 1px solid #aaa;
+      margin: 5px;
       display: inline-block;
       cursor: pointer;
     }
@@ -132,6 +146,33 @@
     .theme-4 { background: var(--bg4); }
     .theme-5 { background: var(--bg5); }
     .theme-6 { background: var(--bg6); }
+
+    .fish {
+      position: absolute;
+      font-size: 2rem;
+      animation: swim-left linear infinite;
+      pointer-events: none;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    @keyframes swim-left {
+      from { transform: translateX(150vw); }
+      to { transform: translateX(-150vw); }
+    }
+
+    .fish.dolphin {
+      animation-name: swim-left, jump;
+      animation-duration: 50s, 2s;
+      animation-iteration-count: infinite, infinite;
+      animation-timing-function: linear, ease-in-out;
+    }
+
+    @keyframes jump {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -139,25 +180,27 @@
 <h1>Water Mood Wallpapers</h1>
 
 <div class="wallpaper" data-id="water_phone">
-  <img src="Water_phone.png" alt="Water Wallpaper for Phone">
+  <img src="Water_phone.png" alt="Water Phone">
   <div class="caption">Phone size</div>
   <div class="buttons">
-    <button class="vote-btn like">🐬</button>
-    <button class="vote-btn dislike">🐡</button>
-    <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
-    <a class="download-btn" href="Water_phone.png" download>Download</a>
+    <button class="vote-btn like" title="Like">🐬</button>
+    <button class="vote-btn dislike" title="Dislike">🐡</button>
+    <div class="counter like-count">0</div>
+    <div class="counter dislike-count">0</div>
   </div>
+  <a class="download" href="Water_phone.png" download>Download</a>
 </div>
 
 <div class="wallpaper" data-id="water_laptop">
-  <img src="Water_laptop_tablet.png" alt="Water Wallpaper for Laptop">
+  <img src="Water_laptop_tablet.png" alt="Water Laptop">
   <div class="caption">Laptop / Tablet size</div>
   <div class="buttons">
-    <button class="vote-btn like">🐬</button>
-    <button class="vote-btn dislike">🐡</button>
-    <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
-    <a class="download-btn" href="Water_laptop_tablet.png" download>Download</a>
+    <button class="vote-btn like" title="Like">🐬</button>
+    <button class="vote-btn dislike" title="Dislike">🐡</button>
+    <div class="counter like-count">0</div>
+    <div class="counter dislike-count">0</div>
   </div>
+  <a class="download" href="Water_laptop_tablet.png" download>Download</a>
 </div>
 
 <div id="themePanel">
@@ -177,7 +220,7 @@
     3: 'var(--bg3)',
     4: 'var(--bg4)',
     5: 'var(--bg5)',
-    6: 'var(--bg6)',
+    6: 'var(--bg6)'
   };
 
   function applyTheme(index) {
@@ -185,10 +228,10 @@
     localStorage.setItem('water-theme', index);
   }
 
-  document.querySelectorAll('.theme-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      const t = opt.getAttribute('data-theme');
-      applyTheme(t);
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const themeIndex = btn.getAttribute('data-theme');
+      applyTheme(themeIndex);
     });
   });
 
@@ -201,43 +244,74 @@
     const dislikeBtn = box.querySelector('.dislike');
     const likeCount = box.querySelector('.like-count');
     const dislikeCount = box.querySelector('.dislike-count');
-    let state = localStorage.getItem('vote-' + id);
 
-    function updateState(newState) {
-      state = newState;
-      localStorage.setItem('vote-' + id, newState);
-      likeBtn.classList.toggle('clicked', state === 'like');
-      dislikeBtn.classList.toggle('clicked', state === 'dislike');
-      likeCount.textContent = state === 'like' ? '1' : '0';
-      dislikeCount.textContent = state === 'dislike' ? '1' : '0';
+    let state = localStorage.getItem('vote-' + id) || 'none';
+
+    function update() {
+      likeBtn.classList.remove('selected');
+      dislikeBtn.classList.remove('selected');
+      if (state === 'like') {
+        likeBtn.classList.add('selected');
+        likeCount.textContent = '1';
+        dislikeCount.textContent = '0';
+      } else if (state === 'dislike') {
+        dislikeBtn.classList.add('selected');
+        likeCount.textContent = '0';
+        dislikeCount.textContent = '1';
+      } else {
+        likeCount.textContent = '0';
+        dislikeCount.textContent = '0';
+      }
     }
 
-    updateState(state);
+    update();
 
     likeBtn.addEventListener('click', () => {
-      updateState(state === 'like' ? null : 'like');
+      state = (state === 'like') ? 'none' : 'like';
+      localStorage.setItem('vote-' + id, state);
+      update();
     });
 
     dislikeBtn.addEventListener('click', () => {
-      updateState(state === 'dislike' ? null : 'dislike');
+      state = (state === 'dislike') ? 'none' : 'dislike';
+      localStorage.setItem('vote-' + id, state);
+      update();
     });
   });
 
   const pass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
   let admA = false, admD = false;
-
   window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'a') admA = true;
-    if (e.key.toLowerCase() === 'd' && admA) admD = true;
-    if (e.key.toLowerCase() === 'm' && admD) {
+    if(e.key.toLowerCase() === 'a') admA = true;
+    if(e.key.toLowerCase() === 'd' && admA) admD = true;
+    if(e.key.toLowerCase() === 'm' && admD) {
       const input = prompt('Enter admin code:');
-      if (input === pass) {
+      if(input === pass) {
         document.getElementById('themePanel').style.display = 'block';
         alert('Theme panel unlocked!');
       }
       admA = false;
       admD = false;
     }
+  });
+
+  const emojis = ['🐠','🐳','🐟','🐡','🐬','🐙'];
+  for(let i = 0; i < 20; i++) {
+    const e = document.createElement('div');
+    const emoji = emojis[Math.floor(Math.random()*emojis.length)];
+    e.textContent = emoji;
+    e.className = 'fish';
+    if (emoji === '🐬') e.classList.add('dolphin');
+    e.style.top = `${Math.random()*90}%`;
+    e.style.left = `${100 + Math.random()*50}vw`;
+    e.style.animationDuration = `${30 + Math.random()*30}s`;
+    e.style.fontSize = `${1.5 + Math.random()*1.5}rem`;
+    document.body.appendChild(e);
+  }
+</script>
+</body>
+</html>
+
   });
 </script>
 </body>
