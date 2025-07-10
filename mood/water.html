@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>🐠Water Wallpapers🐬</title>
-  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg1: linear-gradient(to bottom, #a2d4f2, #057d9f);
@@ -23,6 +23,8 @@
       color: #011627;
       overflow-x: hidden;
       position: relative;
+      min-height: 100vh;
+      overflow-y: hidden;
     }
 
     h1 {
@@ -32,7 +34,7 @@
       color: #004d66;
       text-shadow: 0 0 8px rgba(255,255,255,0.6);
       position: relative;
-      z-index: 2;
+      z-index: 10;
     }
 
     .wallpaper {
@@ -44,7 +46,7 @@
       max-width: 600px;
       text-align: center;
       position: relative;
-      z-index: 2;
+      z-index: 10;
     }
 
     .wallpaper img {
@@ -88,6 +90,7 @@
       color: #004d66;
       position: absolute;
       top: 60px;
+      user-select: none;
     }
 
     .like-count {
@@ -107,6 +110,7 @@
       text-decoration: none;
       border-radius: 8px;
       transition: background 0.3s;
+      user-select: none;
     }
 
     .download:hover {
@@ -122,7 +126,8 @@
       padding: 10px 15px;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       display: none;
-      z-index: 1000;
+      z-index: 9999;
+      user-select: none;
     }
 
     #themePanel h3 {
@@ -138,6 +143,12 @@
       margin: 5px;
       display: inline-block;
       cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-option:hover {
+      transform: scale(1.1);
     }
 
     .theme-1 { background: var(--bg1); }
@@ -147,32 +158,76 @@
     .theme-5 { background: var(--bg5); }
     .theme-6 { background: var(--bg6); }
 
+    /* Рыбки анимация */
     .fish {
-      position: absolute;
+      position: fixed;
       font-size: 2rem;
-      animation: swim-left linear infinite;
+      animation-name: swim-left;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
       pointer-events: none;
       opacity: 0.5;
-      z-index: 0;
+      user-select: none;
+      will-change: transform;
+      z-index: 1;
     }
 
     @keyframes swim-left {
-      from { transform: translateX(150vw); }
-      to { transform: translateX(-150vw); }
+      from {
+        transform: translateX(150vw);
+      }
+      to {
+        transform: translateX(-150vw);
+      }
     }
 
-    .fish.dolphin {
-      animation-name: swim-left, jump;
-      animation-duration: 50s, 2s;
-      animation-iteration-count: infinite, infinite;
+    @keyframes dolphin-jump {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .dolphin {
+      animation-name: swim-left, dolphin-jump;
+      animation-duration: inherit, 2s;
       animation-timing-function: linear, ease-in-out;
+      animation-iteration-count: infinite, infinite;
     }
 
-    @keyframes jump {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-      100% { transform: translateY(0); }
+    /* Пузырьки */
+
+    .bubble {
+      position: fixed;
+      color: white;
+      font-weight: bold;
+      opacity: 0.6;
+      user-select: none;
+      pointer-events: none;
+      animation-name: bubble-rise;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      will-change: transform, opacity;
+      text-shadow: 0 0 5px rgba(255,255,255,0.8);
+      z-index: 0;
     }
+
+    @keyframes bubble-rise {
+      0% {
+        transform: translateY(100vh) scale(0.7);
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -180,7 +235,7 @@
 <h1>Water Mood Wallpapers</h1>
 
 <div class="wallpaper" data-id="water_phone">
-  <img src="Water_phone.png" alt="Water Phone">
+  <img src="Water_phone.png" alt="Water Phone" />
   <div class="caption">Phone size</div>
   <div class="buttons">
     <button class="vote-btn like" title="Like">🐬</button>
@@ -192,7 +247,7 @@
 </div>
 
 <div class="wallpaper" data-id="water_laptop">
-  <img src="Water_laptop_tablet.png" alt="Water Laptop">
+  <img src="Water_laptop_tablet.png" alt="Water Laptop" />
   <div class="caption">Laptop / Tablet size</div>
   <div class="buttons">
     <button class="vote-btn like" title="Like">🐬</button>
@@ -279,102 +334,98 @@
     });
   });
 
-  const pass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
-  let admA = false, admD = false;
+  // Админка (A + D + M, без проверки устройства)
+  const ADMIN_PASS = 'Host_2025_Admin_007';
+  let keysPressed = [];
+
   window.addEventListener('keydown', (e) => {
-    if(e.key.toLowerCase() === 'a') admA = true;
-    if(e.key.toLowerCase() === 'd' && admA) admD = true;
-    if(e.key.toLowerCase() === 'm' && admD) {
+    const key = e.key.toLowerCase();
+    keysPressed.push(key);
+    if (keysPressed.length > 3) keysPressed.shift();
+
+    if (keysPressed.join('') === 'adm') {
       const input = prompt('Enter admin code:');
-      if(input === pass) {
+      if (input === ADMIN_PASS) {
         document.getElementById('themePanel').style.display = 'block';
         alert('Theme panel unlocked!');
+      } else {
+        alert('Wrong password!');
       }
-      admA = false;
-      admD = false;
+      keysPressed = [];
     }
   });
 
-const emojis = ['🐠', '🐳', '🐟', '🐡', '🐬', '🐙'];
-const fishCount = 20;
+  // Рыбки анимация
+  const emojis = ['🐠', '🐳', '🐟', '🐡', '🐬', '🐙'];
+  const fishCount = 20;
 
-for (let i = 0; i < fishCount; i++) {
-  const fish = document.createElement('div');
+  for (let i = 0; i < fishCount; i++) {
+    const fish = document.createElement('div');
 
-  // Выбираем случайный эмодзи из массива
-  const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    // Выбираем случайный эмодзи из массива
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 
-  fish.textContent = emoji;
-  fish.classList.add('fish');
+    fish.textContent = emoji;
+    fish.classList.add('fish');
 
-  // Если эмодзи — дельфин, добавляем класс для подпрыгивания
-  if (emoji === '🐬') {
-    fish.classList.add('dolphin');
+    // Если эмодзи — дельфин, добавляем класс для подпрыгивания
+    if (emoji === '🐬') {
+      fish.classList.add('dolphin');
+    }
+
+    // Случайная позиция по вертикали (от 0 до 90%)
+    fish.style.top = `${Math.random() * 90}%`;
+
+    // Начальная позиция слева (справа за экраном: от 100vw до 150vw)
+    fish.style.left = `${100 + Math.random() * 50}vw`;
+
+    // Случайная продолжительность анимации движения (30–60 секунд)
+    const swimDuration = 30 + Math.random() * 30;
+    fish.style.animationDuration = `${swimDuration}s`;
+
+    // Размер шрифта от 1.5 до 3 rem
+    fish.style.fontSize = `${1.5 + Math.random() * 1.5}rem`;
+
+    document.body.appendChild(fish);
   }
 
-  // Случайная позиция по вертикали (от 0 до 90%)
-  fish.style.top = `${Math.random() * 90}%`;
+  // Пузырьки
+  const bubbleChars = ['О', '0', 'о'];
+  const bubbleCount = 40;
 
-  // Начальная позиция слева (справа за экраном: от 100vw до 150vw)
-  fish.style.left = `${100 + Math.random() * 50}vw`;
+  function createBubble() {
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
 
-  // Случайная продолжительность анимации движения (30–60 секунд)
-  const swimDuration = 30 + Math.random() * 30;
-  fish.style.animationDuration = `${swimDuration}s`;
+    // Выбираем случайный символ пузырька
+    const char = bubbleChars[Math.floor(Math.random() * bubbleChars.length)];
+    bubble.textContent = char;
 
-  // Размер шрифта от 1.5 до 3 rem
-  fish.style.fontSize = `${1.5 + Math.random() * 1.5}rem`;
+    // Случайный размер от 10 до 20 пикселей
+    const size = 10 + Math.random() * 10;
+    bubble.style.fontSize = size + 'px';
 
-  document.body.appendChild(fish);
-}
-css
-Копировать
-Редактировать
-/* Позиционируем рыбок */
-.fish {
-  position: fixed;
-  animation-name: swim-left;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  pointer-events: none;
-  user-select: none;
-  will-change: transform;
-}
+    // Случайная горизонтальная позиция по ширине окна
+    bubble.style.left = Math.random() * 100 + 'vw';
 
-/* Анимация плывёт влево */
-@keyframes swim-left {
-  from {
-    transform: translateX(0);
+    // Случайная продолжительность подъёма (от 8 до 15 секунд)
+    bubble.style.animationDuration = (8 + Math.random() * 7) + 's';
+
+    document.body.appendChild(bubble);
+
+    // Удаляем пузырёк после анимации
+    bubble.addEventListener('animationend', () => {
+      bubble.remove();
+    });
   }
-  to {
-    transform: translateX(-150vw);
-  }
-}
 
-/* Подпрыгивание дельфина */
-@keyframes dolphin-jump {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
+  // Запускаем создание пузырьков с интервалом
+  setInterval(createBubble, 400);
 
-/* Комбинация анимаций для дельфина */
-.dolphin {
-  animation-name: swim-left, dolphin-jump;
-  animation-duration: inherit, 2s;
-  animation-timing-function: linear, ease-in-out;
-  animation-iteration-count: infinite, infinite;
-}
-
+  // Создаём стартовый набор пузырьков сразу
+  for(let i = 0; i < bubbleCount; i++) {
+    setTimeout(createBubble, i * 400);
+  }
 </script>
 </body>
 </html>
-
-  });
-</script>
-</body>
-</html>
-
