@@ -1,1 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Water Mood Wallpapers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg1: linear-gradient(to bottom right, #a8e6ff, #004d73);
+      --bg2: linear-gradient(to top, #b2fefa, #0ed2f7);
+      --bg3: radial-gradient(circle, #c2f0f7, #007a99);
+      --bg4: linear-gradient(to bottom, #d0f0ff, #003f5c);
+      --bg5: linear-gradient(to right, #89f7fe, #66a6ff);
+      --bg6: repeating-linear-gradient(45deg, #33ccff, #33ccff 20px, #006699 20px, #006699 40px);
+    }
+
+    body {
+      font-family: 'Gloria Hallelujah', cursive;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg1);
+      color: #003344;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.8s ease;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      color: #e0fbff;
+      margin-bottom: 30px;
+      text-shadow: 0 0 6px #002b40;
+    }
+
+    .wallpaper {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .wallpaper img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .caption {
+      margin-top: 12px;
+      font-size: 1.2rem;
+      color: #004466;
+    }
+
+    .buttons {
+      margin-top: 14px;
+    }
+
+    .vote-btn {
+      font-size: 2.3rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin: 0 12px;
+      transition: transform 0.2s, filter 0.3s;
+    }
+
+    .vote-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .vote-btn.clicked {
+      filter: drop-shadow(0 0 4px #0099cc);
+    }
+
+    .label {
+      font-size: 0.9rem;
+      margin-top: 6px;
+      color: #444;
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 14px;
+      background: #0099cc;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+
+    .download-btn:hover {
+      background: #007a99;
+    }
+
+    #themePanel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 999;
+    }
+
+    #themePanel h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .theme-option {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #888;
+      margin: 4px;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .theme-1 { background: var(--bg1); }
+    .theme-2 { background: var(--bg2); }
+    .theme-3 { background: var(--bg3); }
+    .theme-4 { background: var(--bg4); }
+    .theme-5 { background: var(--bg5); }
+    .theme-6 { background: var(--bg6); }
+  </style>
+</head>
+<body>
+
+<h1>Water Mood Wallpapers</h1>
+
+<div class="wallpaper" data-id="water_phone">
+  <img src="Water_phone.png" alt="Water Wallpaper for Phone">
+  <div class="caption">Phone size</div>
+  <div class="buttons">
+    <button class="vote-btn like">🐬</button>
+    <button class="vote-btn dislike">🐡</button>
+    <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+    <a class="download-btn" href="Water_phone.png" download>Download</a>
+  </div>
+</div>
+
+<div class="wallpaper" data-id="water_laptop">
+  <img src="Water_laptop_tablet.png" alt="Water Wallpaper for Laptop">
+  <div class="caption">Laptop / Tablet size</div>
+  <div class="buttons">
+    <button class="vote-btn like">🐬</button>
+    <button class="vote-btn dislike">🐡</button>
+    <div class="label"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+    <a class="download-btn" href="Water_laptop_tablet.png" download>Download</a>
+  </div>
+</div>
+
+<div id="themePanel">
+  <h3>Choose Theme</h3>
+  <div class="theme-option theme-1" data-theme="1"></div>
+  <div class="theme-option theme-2" data-theme="2"></div>
+  <div class="theme-option theme-3" data-theme="3"></div>
+  <div class="theme-option theme-4" data-theme="4"></div>
+  <div class="theme-option theme-5" data-theme="5"></div>
+  <div class="theme-option theme-6" data-theme="6"></div>
+</div>
+
+<script>
+  const themes = {
+    1: 'var(--bg1)',
+    2: 'var(--bg2)',
+    3: 'var(--bg3)',
+    4: 'var(--bg4)',
+    5: 'var(--bg5)',
+    6: 'var(--bg6)',
+  };
+
+  function applyTheme(index) {
+    document.body.style.background = themes[index];
+    localStorage.setItem('water-theme', index);
+  }
+
+  document.querySelectorAll('.theme-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const t = opt.getAttribute('data-theme');
+      applyTheme(t);
+    });
+  });
+
+  const savedTheme = localStorage.getItem('water-theme') || '1';
+  applyTheme(savedTheme);
+
+  document.querySelectorAll('.wallpaper').forEach(box => {
+    const id = box.dataset.id;
+    const likeBtn = box.querySelector('.like');
+    const dislikeBtn = box.querySelector('.dislike');
+    const likeCount = box.querySelector('.like-count');
+    const dislikeCount = box.querySelector('.dislike-count');
+    let state = localStorage.getItem('vote-' + id);
+
+    function updateState(newState) {
+      state = newState;
+      localStorage.setItem('vote-' + id, newState);
+      likeBtn.classList.toggle('clicked', state === 'like');
+      dislikeBtn.classList.toggle('clicked', state === 'dislike');
+      likeCount.textContent = state === 'like' ? '1' : '0';
+      dislikeCount.textContent = state === 'dislike' ? '1' : '0';
+    }
+
+    updateState(state);
+
+    likeBtn.addEventListener('click', () => {
+      updateState(state === 'like' ? null : 'like');
+    });
+
+    dislikeBtn.addEventListener('click', () => {
+      updateState(state === 'dislike' ? null : 'dislike');
+    });
+  });
+
+  const pass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
+  let admA = false, admD = false;
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'a') admA = true;
+    if (e.key.toLowerCase() === 'd' && admA) admD = true;
+    if (e.key.toLowerCase() === 'm' && admD) {
+      const input = prompt('Enter admin code:');
+      if (input === pass) {
+        document.getElementById('themePanel').style.display = 'block';
+        alert('Theme panel unlocked!');
+      }
+      admA = false;
+      admD = false;
+    }
+  });
+</script>
+</body>
+</html>
 
