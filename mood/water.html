@@ -2,297 +2,333 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Water Wallpapers</title>
+  <title>🐠Water Wallpapers🐬</title>
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg1: linear-gradient(to bottom, #a2d4f2, #057d9f);
-      --bg2: linear-gradient(to bottom, #cceeff, #66ccff);
-      --bg3: linear-gradient(to right, #003f5c, #2f4b7c);
-      --bg4: linear-gradient(to bottom, #87cefa, #4682b4);
-      --bg5: linear-gradient(to bottom, #e0f7fa, #00acc1);
-      --bg6: linear-gradient(to bottom, #0077be, #001f3f);
+      --text-color: #011627;
+      --caption-color: #005577;
+      --btn-bg: #0077be;
+      --btn-bg-hover: #005f99;
+      --wallpaper-bg: rgba(255, 255, 255, 0.85);
+      --wallpaper-shadow: rgba(0, 0, 0, 0.1);
+      --vote-selected-glow: #00bcd4;
     }
-
     body {
       font-family: 'Gloria Hallelujah', cursive;
       margin: 0;
       padding: 20px;
       background: var(--bg1);
-      transition: background 1s ease;
-      color: #011627;
       overflow-x: hidden;
       position: relative;
-      min-height: 100vh;
-      overflow-y: hidden;
+      color: var(--text-color);
+      transition: background 0.5s, color 0.5s;
     }
-
+    body.winter {
+      --bg1: linear-gradient(to bottom, #cde6f7, #5b91bf);
+      --text-color: #112244;
+      --caption-color: #003366;
+      --btn-bg: #005f99;
+      --btn-bg-hover: #003f66;
+      --wallpaper-bg: rgba(240, 248, 255, 0.9);
+      --wallpaper-shadow: rgba(0, 30, 70, 0.2);
+      --vote-selected-glow: #3fa9f5;
+    }
     h1 {
       text-align: center;
       font-size: 2.7em;
       margin-bottom: 40px;
-      color: #004d66;
+      color: var(--caption-color);
       text-shadow: 0 0 8px rgba(255,255,255,0.6);
-      position: relative;
-      z-index: 10;
+      user-select: none;
     }
-
     .wallpaper {
-      background: rgba(255, 255, 255, 0.85);
+      background: var(--wallpaper-bg);
       border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px var(--wallpaper-shadow);
       padding: 20px;
       margin: 20px auto;
       max-width: 600px;
       text-align: center;
-      position: relative;
-      z-index: 10;
+      transition: background 0.5s, box-shadow 0.5s;
     }
-
     .wallpaper img {
       max-width: 100%;
       border-radius: 10px;
     }
-
     .caption {
       margin-top: 10px;
       font-size: 1.3em;
-      color: #005577;
+      color: var(--caption-color);
+      user-select: none;
     }
-
     .buttons {
       margin-top: 15px;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 60px;
-      position: relative;
     }
-
     .vote-btn {
       background: none;
       border: none;
       font-size: 2.2em;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, filter 0.3s;
+      color: var(--caption-color);
+      user-select: none;
     }
-
     .vote-btn:hover {
       transform: scale(1.2);
     }
-
     .vote-btn.selected {
-      filter: drop-shadow(0 0 5px #00bcd4);
+      filter: drop-shadow(0 0 5px var(--vote-selected-glow));
     }
-
     .counter {
       font-size: 1em;
-      color: #004d66;
-      position: absolute;
-      top: 60px;
+      color: var(--caption-color);
       user-select: none;
     }
-
-    .like-count {
-      left: 70px;
-    }
-
-    .dislike-count {
-      right: 70px;
-    }
-
     .download {
       margin-top: 15px;
       display: inline-block;
       padding: 8px 16px;
-      background: #0077be;
+      background: var(--btn-bg);
       color: white;
       text-decoration: none;
       border-radius: 8px;
       transition: background 0.3s;
-      user-select: none;
-    }
-
-    .download:hover {
-      background: #005f99;
-    }
-
-    #themePanel {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: white;
-      border-radius: 12px;
-      padding: 10px 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 9999;
-      user-select: none;
-    }
-
-    #themePanel h3 {
-      margin: 0 0 10px;
       font-size: 1em;
-    }
-
-    .theme-option {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 1px solid #aaa;
-      margin: 5px;
-      display: inline-block;
       cursor: pointer;
       user-select: none;
-      transition: transform 0.3s ease;
+      border: none;
     }
-
-    .theme-option:hover {
-      transform: scale(1.1);
+    .download:hover {
+      background: var(--btn-bg-hover);
     }
-
-    .theme-1 { background: var(--bg1); }
-    .theme-2 { background: var(--bg2); }
-    .theme-3 { background: var(--bg3); }
-    .theme-4 { background: var(--bg4); }
-    .theme-5 { background: var(--bg5); }
-    .theme-6 { background: var(--bg6); }
-
-    /* Рыбки анимация */
-    .fish {
+    #downloadModal {
       position: fixed;
-      font-size: 2rem;
-      animation-name: swim-left;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      pointer-events: none;
-      opacity: 0.5;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      color: var(--caption-color);
       user-select: none;
-      will-change: transform;
-      z-index: 1;
     }
-
-    @keyframes swim-left {
-      from {
-        transform: translateX(150vw);
-      }
-      to {
-        transform: translateX(-150vw);
-      }
+    .variant-options {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 15px;
     }
-
-    @keyframes dolphin-jump {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-20px);
-      }
-    }
-
-    .dolphin {
-      animation-name: swim-left, dolphin-jump;
-      animation-duration: inherit, 2s;
-      animation-timing-function: linear, ease-in-out;
-      animation-iteration-count: infinite, infinite;
-    }
-
-    /* Пузырьки */
-
-    .bubble {
-      position: fixed;
-      color: white;
-      font-weight: bold;
-      opacity: 0.6;
+    .variant-options img {
+      width: 30%;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s;
       user-select: none;
+    }
+    .variant-options img:hover {
+      transform: scale(1.05);
+    }
+    .close-modal {
+      margin-top: 20px;
+      background: #ccc;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .fish, .bubble {
+      position: absolute;
       pointer-events: none;
-      animation-name: bubble-rise;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      will-change: transform, opacity;
-      text-shadow: 0 0 5px rgba(255,255,255,0.8);
+      user-select: none;
+      opacity: 0.3;
       z-index: 0;
     }
-
-    @keyframes bubble-rise {
-      0% {
-        transform: translateY(100vh) scale(0.7);
-        opacity: 0.6;
-      }
-      80% {
-        opacity: 0.6;
-      }
-      100% {
-        transform: translateY(-10vh) scale(1);
-        opacity: 0;
-      }
+    .fish {
+      font-size: 2rem;
+      animation: swim-left linear infinite;
     }
+    @keyframes swim-left {
+      from { transform: translateX(150vw); }
+      to { transform: translateX(-150vw); }
+    }
+    .bubble {
+      font-size: 1.5rem;
+      color: white;
+      animation: float-up linear infinite;
+    }
+    @keyframes float-up {
+      from { transform: translateY(100vh); opacity: 0.5; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+    .bubble-small  { font-size: 1rem; }
+    .bubble-large  { font-size: 2rem; }
+    .bubble-medium { font-size: 1.5rem; }
 
+    /* Панель админки - скрыта */
+    #themePanel {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--wallpaper-bg);
+      box-shadow: 0 0 15px var(--wallpaper-shadow);
+      border-radius: 12px;
+      padding: 15px;
+      display: none;
+      user-select: none;
+      max-width: 300px;
+      z-index: 1100;
+    }
+    #themePanel button {
+      background: var(--btn-bg);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 5px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    #themePanel button:hover {
+      background: var(--btn-bg-hover);
+    }
   </style>
 </head>
 <body>
 
 <h1>Water Mood Wallpapers</h1>
 
-<div class="wallpaper" data-id="water_phone">
+<button id="themeToggleBtn" title="Switch Theme" style="display:block;margin: 0 auto 40px; cursor:pointer; font-size:1.2em; padding:8px 16px; border:none; border-radius:8px; background:#004d66; color:#fff; user-select:none;">
+  Switch Theme
+</button>
+
+<div class="wallpaper" data-id="phone">
   <img src="Water_phone.png" alt="Water Phone" />
   <div class="caption">Phone size</div>
   <div class="buttons">
-    <button class="vote-btn like" title="Like">🐬</button>
-    <button class="vote-btn dislike" title="Dislike">🐡</button>
-    <div class="counter like-count">0</div>
-    <div class="counter dislike-count">0</div>
+    <button class="vote-btn like">🐬</button>
+    <button class="vote-btn dislike">🐡</button>
   </div>
-  <a class="download" href="Water_phone.png" download>Download</a>
+  <div class="counter"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+  <button class="download" data-type="phone">Download</button>
 </div>
 
-<div class="wallpaper" data-id="water_laptop">
+<div class="wallpaper" data-id="laptop">
   <img src="Water_laptop_tablet.png" alt="Water Laptop" />
   <div class="caption">Laptop / Tablet size</div>
   <div class="buttons">
-    <button class="vote-btn like" title="Like">🐬</button>
-    <button class="vote-btn dislike" title="Dislike">🐡</button>
-    <div class="counter like-count">0</div>
-    <div class="counter dislike-count">0</div>
+    <button class="vote-btn like">🐬</button>
+    <button class="vote-btn dislike">🐡</button>
   </div>
-  <a class="download" href="Water_laptop_tablet.png" download>Download</a>
+  <div class="counter"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
+  <button class="download" data-type="laptop">Download</button>
 </div>
 
+<!-- MODAL -->
+<div id="downloadModal">
+  <div class="modal-content">
+    <h2>Choose a version to download</h2>
+    <div class="variant-options" id="variantOptions"></div>
+    <button class="close-modal">Close</button>
+  </div>
+</div>
+
+<!-- Админка: панель переключения темы -->
 <div id="themePanel">
-  <h3>Choose Theme</h3>
-  <div class="theme-option theme-1" data-theme="1"></div>
-  <div class="theme-option theme-2" data-theme="2"></div>
-  <div class="theme-option theme-3" data-theme="3"></div>
-  <div class="theme-option theme-4" data-theme="4"></div>
-  <div class="theme-option theme-5" data-theme="5"></div>
-  <div class="theme-option theme-6" data-theme="6"></div>
+  <div><strong>Theme Panel</strong></div>
+  <button data-theme="water">Water</button>
+  <button data-theme="winter">Winter</button>
 </div>
 
 <script>
-  const themes = {
-    1: 'var(--bg1)',
-    2: 'var(--bg2)',
-    3: 'var(--bg3)',
-    4: 'var(--bg4)',
-    5: 'var(--bg5)',
-    6: 'var(--bg6)'
+  // Темы
+  function setTheme(name) {
+    if (name === 'winter') {
+      document.body.classList.add('winter');
+      localStorage.setItem('theme', 'winter');
+    } else {
+      document.body.classList.remove('winter');
+      localStorage.setItem('theme', 'water');
+    }
+  }
+  // При загрузке восстанавливаем тему
+  const savedTheme = localStorage.getItem('theme') || 'water';
+  setTheme(savedTheme);
+
+  // Кнопка переключения темы (без админки)
+  document.getElementById('themeToggleBtn').onclick = () => {
+    if (document.body.classList.contains('winter')) {
+      setTheme('water');
+    } else {
+      setTheme('winter');
+    }
   };
 
-  function applyTheme(index) {
-    document.body.style.background = themes[index];
-    localStorage.setItem('water-theme', index);
-  }
+  // Варианты картинок
+  const variants = {
+    phone: [
+      'Winter_phone.png',
+      'Winter_phone2.png',
+      'Winter_phone3.png'
+    ],
+    laptop: [
+      'Winter_laptop_tablet.png',
+      'Winter_laptop_tablet2.png',
+      'Winter_laptop_tablet3.png'
+    ]
+  };
 
-  document.querySelectorAll('.theme-option').forEach(btn => {
+  // Открытие модального окна для скачивания
+  document.querySelectorAll('.download').forEach(btn => {
     btn.addEventListener('click', () => {
-      const themeIndex = btn.getAttribute('data-theme');
-      applyTheme(themeIndex);
+      const type = btn.dataset.type;
+      const container = document.getElementById('variantOptions');
+      container.innerHTML = '';
+      variants[type].forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = src;
+        img.title = 'Download ' + src;
+        img.onclick = () => {
+          const a = document.createElement('a');
+          a.href = src;
+          a.download = src;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          document.getElementById('downloadModal').style.display = 'none';
+        };
+        container.appendChild(img);
+      });
+      document.getElementById('downloadModal').style.display = 'flex';
     });
   });
 
-  const savedTheme = localStorage.getItem('water-theme') || '1';
-  applyTheme(savedTheme);
+  document.querySelector('.close-modal').addEventListener('click', () => {
+    document.getElementById('downloadModal').style.display = 'none';
+  });
 
+  // Голосование
   document.querySelectorAll('.wallpaper').forEach(box => {
     const id = box.dataset.id;
     const likeBtn = box.querySelector('.like');
@@ -334,98 +370,60 @@
     });
   });
 
-  // Админка (A + D + M, без проверки устройства)
-  const ADMIN_PASS = 'Host_2025_Admin_007';
-  let keysPressed = [];
-
-  window.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
-    keysPressed.push(key);
-    if (keysPressed.length > 3) keysPressed.shift();
-
-    if (keysPressed.join('') === 'adm') {
-      const input = prompt('Enter admin code:');
-      if (input === ADMIN_PASS) {
-        document.getElementById('themePanel').style.display = 'block';
-        alert('Theme panel unlocked!');
-      } else {
-        alert('Wrong password!');
-      }
-      keysPressed = [];
-    }
-  });
-
-  // Рыбки анимация
-  const emojis = ['🐠', '🐳', '🐟', '🐡', '🐬', '🐙'];
-  const fishCount = 20;
-
-  for (let i = 0; i < fishCount; i++) {
+  // 🐠 Рыбки
+  const fishEmojis = ['🐠', '🐳', '🐟', '🐬'];
+  for (let i = 0; i < 10; i++) {
     const fish = document.createElement('div');
-
-    // Выбираем случайный эмодзи из массива
-    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-
-    fish.textContent = emoji;
-    fish.classList.add('fish');
-
-    // Если эмодзи — дельфин, добавляем класс для подпрыгивания
-    if (emoji === '🐬') {
-      fish.classList.add('dolphin');
-    }
-
-    // Случайная позиция по вертикали (от 0 до 90%)
+    fish.className = 'fish';
+    fish.textContent = fishEmojis[Math.floor(Math.random() * fishEmojis.length)];
     fish.style.top = `${Math.random() * 90}%`;
-
-    // Начальная позиция слева (справа за экраном: от 100vw до 150vw)
     fish.style.left = `${100 + Math.random() * 50}vw`;
-
-    // Случайная продолжительность анимации движения (30–60 секунд)
-    const swimDuration = 30 + Math.random() * 30;
-    fish.style.animationDuration = `${swimDuration}s`;
-
-    // Размер шрифта от 1.5 до 3 rem
-    fish.style.fontSize = `${1.5 + Math.random() * 1.5}rem`;
-
+    fish.style.fontSize = `${1.5 + Math.random()}rem`;
+    fish.style.animationDuration = `${30 + Math.random() * 30}s`;
     document.body.appendChild(fish);
   }
 
-  // Пузырьки
-  const bubbleChars = ['О', '0', 'о'];
-  const bubbleCount = 40;
-
-  function createBubble() {
+  // 🫧 Пузырики
+  const bubbles = ['O', '0', 'o'];
+  for (let i = 0; i < 40; i++) {
     const bubble = document.createElement('div');
-    bubble.classList.add('bubble');
-
-    // Выбираем случайный символ пузырька
-    const char = bubbleChars[Math.floor(Math.random() * bubbleChars.length)];
-    bubble.textContent = char;
-
-    // Случайный размер от 10 до 20 пикселей
-    const size = 10 + Math.random() * 10;
-    bubble.style.fontSize = size + 'px';
-
-    // Случайная горизонтальная позиция по ширине окна
-    bubble.style.left = Math.random() * 100 + 'vw';
-
-    // Случайная продолжительность подъёма (от 8 до 15 секунд)
-    bubble.style.animationDuration = (8 + Math.random() * 7) + 's';
-
+    bubble.className = 'bubble';
+    bubble.textContent = bubbles[Math.floor(Math.random() * bubbles.length)];
+    bubble.classList.add(['bubble-small', 'bubble-medium', 'bubble-large'][Math.floor(Math.random() * 3)]);
+    bubble.style.left = `${Math.random() * 100}vw`;
+    bubble.style.position = 'fixed';
+    bubble.style.bottom = '-2rem';
+    bubble.style.opacity = 0.3 + Math.random() * 0.4;
+    bubble.style.color = '#fff';
+    bubble.style.fontSize = `${1 + Math.random() * 1.5}rem`;
+    bubble.style.animation = `float-up ${6 + Math.random() * 10}s linear infinite`;
+    bubble.style.pointerEvents = 'none';
+    bubble.style.userSelect = 'none';
     document.body.appendChild(bubble);
-
-    // Удаляем пузырёк после анимации
-    bubble.addEventListener('animationend', () => {
-      bubble.remove();
-    });
   }
 
-  // Запускаем создание пузырьков с интервалом
-  setInterval(createBubble, 400);
+  // 🧪 Админка (A+D+M)
+  const pass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
+  let admA = false, admD = false;
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'a') admA = true;
+    if (e.key.toLowerCase() === 'd' && admA) admD = true;
+    if (e.key.toLowerCase() === 'm' && admD) {
+      const input = prompt('Enter admin code:');
+      if (input === pass) {
+        alert('Admin mode activated!');
+        document.getElementById('themePanel').style.display = 'block';
+      }
+      admA = false;
+      admD = false;
+    }
+  });
 
-  // Создаём стартовый набор пузырьков сразу
-  for(let i = 0; i < bubbleCount; i++) {
-    setTimeout(createBubble, i * 400);
-  }
+  // Кнопки в панели админки
+  document.querySelectorAll('#themePanel button').forEach(btn => {
+    btn.onclick = () => setTheme(btn.dataset.theme);
+  });
 </script>
+
 </body>
 </html>
