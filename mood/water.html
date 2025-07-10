@@ -25,16 +25,6 @@
       color: var(--text-color);
       transition: background 0.5s, color 0.5s;
     }
-    body.winter {
-      --bg1: linear-gradient(to bottom, #cde6f7, #5b91bf);
-      --text-color: #112244;
-      --caption-color: #003366;
-      --btn-bg: #005f99;
-      --btn-bg-hover: #003f66;
-      --wallpaper-bg: rgba(240, 248, 255, 0.9);
-      --wallpaper-shadow: rgba(0, 30, 70, 0.2);
-      --vote-selected-glow: #3fa9f5;
-    }
     h1 {
       text-align: center;
       font-size: 2.7em;
@@ -183,152 +173,106 @@
     .bubble-small  { font-size: 1rem; }
     .bubble-large  { font-size: 2rem; }
     .bubble-medium { font-size: 1.5rem; }
-
-    /* Панель админки - скрыта */
-    #themePanel {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--wallpaper-bg);
-      box-shadow: 0 0 15px var(--wallpaper-shadow);
-      border-radius: 12px;
-      padding: 15px;
-      display: none;
-      user-select: none;
-      max-width: 300px;
-      z-index: 1100;
-    }
-    #themePanel button {
-      background: var(--btn-bg);
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 0 5px;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    #themePanel button:hover {
-      background: var(--btn-bg-hover);
-    }
   </style>
 </head>
 <body>
 
 <h1>Water Mood Wallpapers</h1>
 
-<button id="themeToggleBtn" title="Switch Theme" style="display:block;margin: 0 auto 40px; cursor:pointer; font-size:1.2em; padding:8px 16px; border:none; border-radius:8px; background:#004d66; color:#fff; user-select:none;">
-  Switch Theme
-</button>
-
 <div class="wallpaper" data-id="phone">
-  <img src="Water_phone.png" alt="Water Phone" />
+  <img src="Water_phone1.png" alt="Water Phone" />
   <div class="caption">Phone size</div>
   <div class="buttons">
-    <button class="vote-btn like">🐬</button>
-    <button class="vote-btn dislike">🐡</button>
+    <button class="vote-btn like" title="Like">🐬</button>
+    <button class="vote-btn dislike" title="Dislike">🐡</button>
   </div>
   <div class="counter"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
   <button class="download" data-type="phone">Download</button>
 </div>
 
 <div class="wallpaper" data-id="laptop">
-  <img src="Water_laptop_tablet.png" alt="Water Laptop" />
+  <img src="Water_laptop1.png" alt="Water Laptop" />
   <div class="caption">Laptop / Tablet size</div>
   <div class="buttons">
-    <button class="vote-btn like">🐬</button>
-    <button class="vote-btn dislike">🐡</button>
+    <button class="vote-btn like" title="Like">🐬</button>
+    <button class="vote-btn dislike" title="Dislike">🐡</button>
   </div>
   <div class="counter"><span class="like-count">0</span> / <span class="dislike-count">0</span></div>
   <button class="download" data-type="laptop">Download</button>
 </div>
 
 <!-- MODAL -->
-<div id="downloadModal">
+<div id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-content">
-    <h2>Choose a version to download</h2>
+    <h2 id="modalTitle">Choose a version to download</h2>
     <div class="variant-options" id="variantOptions"></div>
-    <button class="close-modal">Close</button>
+    <button class="close-modal" aria-label="Close download modal">Close</button>
   </div>
 </div>
 
-<!-- Админка: панель переключения темы -->
-<div id="themePanel">
-  <div><strong>Theme Panel</strong></div>
-  <button data-theme="water">Water</button>
-  <button data-theme="winter">Winter</button>
-</div>
-
 <script>
-  // Темы
-  function setTheme(name) {
-    if (name === 'winter') {
-      document.body.classList.add('winter');
-      localStorage.setItem('theme', 'winter');
-    } else {
-      document.body.classList.remove('winter');
-      localStorage.setItem('theme', 'water');
-    }
-  }
-  // При загрузке восстанавливаем тему
-  const savedTheme = localStorage.getItem('theme') || 'water';
-  setTheme(savedTheme);
-
-  // Кнопка переключения темы (без админки)
-  document.getElementById('themeToggleBtn').onclick = () => {
-    if (document.body.classList.contains('winter')) {
-      setTheme('water');
-    } else {
-      setTheme('winter');
-    }
-  };
-
-  // Варианты картинок
+  // Массив вариантов только морские картинки
   const variants = {
     phone: [
-      'Winter_phone.png',
-      'Winter_phone2.png',
-      'Winter_phone3.png'
+      'Water_phone1.png',
+      'Water_phone2.png',
+      'Water_phone3.png'
     ],
     laptop: [
-      'Winter_laptop_tablet.png',
-      'Winter_laptop_tablet2.png',
-      'Winter_laptop_tablet3.png'
+      'Water_laptop1.png',
+      'Water_laptop2.png',
+      'Water_laptop3.png'
     ]
   };
 
-  // Открытие модального окна для скачивания
-  document.querySelectorAll('.download').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.dataset.type;
-      const container = document.getElementById('variantOptions');
-      container.innerHTML = '';
+  // Открытие модалки с выбором картинки
+  document.querySelectorAll('.download').forEach(button => {
+    button.addEventListener('click', () => {
+      const type = button.dataset.type;
+      const variantContainer = document.getElementById('variantOptions');
+      variantContainer.innerHTML = '';
       variants[type].forEach(src => {
         const img = document.createElement('img');
         img.src = src;
-        img.alt = src;
-        img.title = 'Download ' + src;
-        img.onclick = () => {
+        img.alt = `Download ${src}`;
+        img.title = `Download ${src}`;
+        img.tabIndex = 0;
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => {
           const a = document.createElement('a');
           a.href = src;
           a.download = src;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          document.getElementById('downloadModal').style.display = 'none';
-        };
-        container.appendChild(img);
+          closeModal();
+        });
+        variantContainer.appendChild(img);
       });
-      document.getElementById('downloadModal').style.display = 'flex';
+      openModal();
     });
   });
 
-  document.querySelector('.close-modal').addEventListener('click', () => {
-    document.getElementById('downloadModal').style.display = 'none';
+  // Функции открытия и закрытия модалки
+  const modal = document.getElementById('downloadModal');
+  function openModal() {
+    modal.style.display = 'flex';
+    // Фокус на первый вариант для удобства
+    const firstImg = modal.querySelector('.variant-options img');
+    if (firstImg) firstImg.focus();
+  }
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+  document.querySelector('.close-modal').addEventListener('click', closeModal);
+  // Закрытие по Escape
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.style.display === 'flex') {
+      closeModal();
+    }
   });
 
-  // Голосование
+  // Голосование (лайк / дизлайк) с локальным сохранением
   document.querySelectorAll('.wallpaper').forEach(box => {
     const id = box.dataset.id;
     const likeBtn = box.querySelector('.like');
@@ -338,7 +282,7 @@
 
     let state = localStorage.getItem('vote-' + id) || 'none';
 
-    function update() {
+    function updateUI() {
       likeBtn.classList.remove('selected');
       dislikeBtn.classList.remove('selected');
       if (state === 'like') {
@@ -355,22 +299,22 @@
       }
     }
 
-    update();
+    updateUI();
 
     likeBtn.addEventListener('click', () => {
       state = (state === 'like') ? 'none' : 'like';
       localStorage.setItem('vote-' + id, state);
-      update();
+      updateUI();
     });
 
     dislikeBtn.addEventListener('click', () => {
       state = (state === 'dislike') ? 'none' : 'dislike';
       localStorage.setItem('vote-' + id, state);
-      update();
+      updateUI();
     });
   });
 
-  // 🐠 Рыбки
+  // Рыбки анимация
   const fishEmojis = ['🐠', '🐳', '🐟', '🐬'];
   for (let i = 0; i < 10; i++) {
     const fish = document.createElement('div');
@@ -383,7 +327,7 @@
     document.body.appendChild(fish);
   }
 
-  // 🫧 Пузырики
+  // Пузырики анимация
   const bubbles = ['O', '0', 'o'];
   for (let i = 0; i < 40; i++) {
     const bubble = document.createElement('div');
@@ -401,28 +345,6 @@
     bubble.style.userSelect = 'none';
     document.body.appendChild(bubble);
   }
-
-  // 🧪 Админка (A+D+M)
-  const pass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
-  let admA = false, admD = false;
-  window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'a') admA = true;
-    if (e.key.toLowerCase() === 'd' && admA) admD = true;
-    if (e.key.toLowerCase() === 'm' && admD) {
-      const input = prompt('Enter admin code:');
-      if (input === pass) {
-        alert('Admin mode activated!');
-        document.getElementById('themePanel').style.display = 'block';
-      }
-      admA = false;
-      admD = false;
-    }
-  });
-
-  // Кнопки в панели админки
-  document.querySelectorAll('#themePanel button').forEach(btn => {
-    btn.onclick = () => setTheme(btn.dataset.theme);
-  });
 </script>
 
 </body>
