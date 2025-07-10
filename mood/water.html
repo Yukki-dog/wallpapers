@@ -295,19 +295,80 @@
     }
   });
 
-  const emojis = ['🐠','🐳','🐟','🐡','🐬','🐙'];
-  for(let i = 0; i < 20; i++) {
-    const e = document.createElement('div');
-    const emoji = emojis[Math.floor(Math.random()*emojis.length)];
-    e.textContent = emoji;
-    e.className = 'fish';
-    if (emoji === '🐬') e.classList.add('dolphin');
-    e.style.top = `${Math.random()*90}%`;
-    e.style.left = `${100 + Math.random()*50}vw`;
-    e.style.animationDuration = `${30 + Math.random()*30}s`;
-    e.style.fontSize = `${1.5 + Math.random()*1.5}rem`;
-    document.body.appendChild(e);
+const emojis = ['🐠', '🐳', '🐟', '🐡', '🐬', '🐙'];
+const fishCount = 20;
+
+for (let i = 0; i < fishCount; i++) {
+  const fish = document.createElement('div');
+
+  // Выбираем случайный эмодзи из массива
+  const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+  fish.textContent = emoji;
+  fish.classList.add('fish');
+
+  // Если эмодзи — дельфин, добавляем класс для подпрыгивания
+  if (emoji === '🐬') {
+    fish.classList.add('dolphin');
   }
+
+  // Случайная позиция по вертикали (от 0 до 90%)
+  fish.style.top = `${Math.random() * 90}%`;
+
+  // Начальная позиция слева (справа за экраном: от 100vw до 150vw)
+  fish.style.left = `${100 + Math.random() * 50}vw`;
+
+  // Случайная продолжительность анимации движения (30–60 секунд)
+  const swimDuration = 30 + Math.random() * 30;
+  fish.style.animationDuration = `${swimDuration}s`;
+
+  // Размер шрифта от 1.5 до 3 rem
+  fish.style.fontSize = `${1.5 + Math.random() * 1.5}rem`;
+
+  document.body.appendChild(fish);
+}
+css
+Копировать
+Редактировать
+/* Позиционируем рыбок */
+.fish {
+  position: fixed;
+  animation-name: swim-left;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+/* Анимация плывёт влево */
+@keyframes swim-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-150vw);
+  }
+}
+
+/* Подпрыгивание дельфина */
+@keyframes dolphin-jump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Комбинация анимаций для дельфина */
+.dolphin {
+  animation-name: swim-left, dolphin-jump;
+  animation-duration: inherit, 2s;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
 </script>
 </body>
 </html>
