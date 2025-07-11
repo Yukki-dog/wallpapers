@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Dreamy Wallpaper Creator</title>
+<title>Dreamy Wallpapres</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
 
@@ -1136,27 +1136,44 @@
     }
   });
 
-  // --- Secret input for Easter eggs ---
-  const secretInput = document.getElementById('secretInput');
+.mood-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
 
-  // Existing known codes (date, 0103, Bubble_Gum)
-  secretInput.addEventListener('keydown', e => {
-    if(e.key === 'Enter'){
-      const val = secretInput.value.trim().toLowerCase();
-      if(!val) return;
+.mood-popup h3 {
+  margin-top: 0;
+  color: #ff1493;
+}
 
-      if(val === '0103'){
-        alert('Yukki wallpapers unlocked!');
-        fillStickersGrid('default'); // no difference here, but you can add wallpapers later
-        secretInput.value = '';
-      } else if(val === 'bubble_gum'){
-        alert('Bubble Gum mode activated! Stickers 1-25 unlocked!');
-        fillStickersGrid('bubble_gum');
-        secretInput.value = '';
-      } else {
-        alert('Unknown code');
-        secretInput.value = '';
-      }
+.mood-popup ul {
+  list-style: none;
+  padding-left: 0;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.mood-popup li {
+  margin: 8px 0;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #333;
+}
+
+.mood-popup li:hover {
+  color: #ff1493;
+}
+
     }
   });
 
