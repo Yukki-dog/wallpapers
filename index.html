@@ -1,138 +1,1170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cute Wallpapers</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #f0f0f5; /* светлый нежный фон */
-      color: #222;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dreamy Wallpaper Creator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    background: linear-gradient(135deg, #f5d0ff 0%, #b3d4ff 100%);
+    font-family: 'Comfortaa', cursive, sans-serif;
+    color: #222;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Container for all */
+  #app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 16px 100px;
+  }
+
+  /* Header section */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #4a266a;
+    text-shadow:
+      0 0 6px #ff99cc88,
+      0 0 15px #cc66ffaa;
+  }
+  header p {
+    font-size: 1.2rem;
+    margin-top: 12px;
+    color: #5a4a7a;
+  }
+  header button#scrollToEditor {
+    margin-top: 20px;
+    padding: 14px 32px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #ff69b4, #993399);
+    border: none;
+    border-radius: 32px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 12px #ff69b4aa;
+    transition: all 0.3s ease;
+  }
+  header button#scrollToEditor:hover {
+    box-shadow: 0 0 24px #ff1493dd;
+    transform: scale(1.05);
+  }
+
+  /* Editor section */
+  #editor {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow:
+      0 10px 20px rgb(0 0 0 / 0.1),
+      inset 0 0 40px rgb(255 182 193 / 0.2);
+    user-select: none;
+    max-width: 100%;
+  }
+
+  /* Canvas container */
+  #canvasContainer {
+    background: #eee;
+    border-radius: 14px;
+    box-shadow: inset 0 0 25px #cc99ffaa;
+    max-width: 100%;
+    position: relative;
+    margin-bottom: 20px;
+    touch-action: none;
+  }
+  canvas {
+    display: block;
+    max-width: 100%;
+    border-radius: 14px;
+    cursor: crosshair;
+    background: var(--canvas-bg, #fefaff);
+  }
+
+  /* Controls panel */
+  #controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    user-select: none;
+  }
+  .panel {
+    background: #f9f1ff;
+    box-shadow:
+      0 4px 12px rgb(204 102 255 / 0.25);
+    border-radius: 14px;
+    padding: 16px 20px;
+    min-width: 180px;
+    max-width: 320px;
+    flex: 1 1 280px;
+  }
+  .panel h3 {
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #7a3d99;
+    text-align: center;
+    user-select: text;
+  }
+
+  /* Color sliders */
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .slider-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #5a3d7a;
+    margin-bottom: 4px;
+    user-select: text;
+  }
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    background: linear-gradient(to right, #cc66ff, #ff69b4);
+    outline: none;
+    cursor: pointer;
+    box-shadow:
+      inset 0 1px 3px rgb(255 255 255 / 0.7),
+      inset 0 -1px 3px rgb(0 0 0 / 0.15);
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ff69b4;
+    cursor: pointer;
+    box-shadow: 0 0 8px #ff69b4aa;
+    border: 2px solid #cc66ff;
+    transition: background-color 0.3s ease;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ff69b4;
+    cursor: pointer;
+    border: 2px solid #cc66ff;
+    box-shadow: 0 0 8px #ff69b4aa;
+  }
+
+  /* Buttons */
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-family: 'Comfortaa', cursive, sans-serif;
+    font-size: 1rem;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 0 8px #cc66ff99;
+    background: linear-gradient(45deg, #cc66ff, #ff69b4);
+    color: white;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  button:hover {
+    box-shadow: 0 0 18px #ff1493cc;
+    background: linear-gradient(45deg, #ff1493, #cc33cc);
+    transform: scale(1.05);
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    background: #bbb;
+  }
+
+  /* Sticker grid */
+  #stickersGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(54px,1fr));
+    gap: 12px;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 6px;
+    user-select: none;
+  }
+  #stickersGrid img {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow:
+      0 0 8px #cc66ff66;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    background: #f8e7ff;
+  }
+  #stickersGrid img:hover {
+    transform: scale(1.25);
+    box-shadow:
+      0 0 16px #ff69b4bb;
+  }
+
+  /* Text input and controls */
+  #textControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  #textControls > * {
+    min-width: 120px;
+  }
+  #textInput {
+    flex: 1 1 auto;
+    border: 2px solid #cc66ff;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-family: 'Comfortaa', cursive, sans-serif;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: inset 0 0 8px #cc66ff88;
+  }
+  #textInput::placeholder {
+    color: #b399cc;
+  }
+
+  /* Layers panel */
+  #layersPanel {
+    max-height: 180px;
+    overflow-y: auto;
+    margin-top: 12px;
+    border-top: 1px solid #cc66ff88;
+    padding-top: 8px;
+  }
+  #layersPanel h4 {
+    margin: 8px 0 8px;
+    color: #7a3d99;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  #layersList {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  #layersList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    background: #f3e8ffcc;
+    margin-bottom: 6px;
+    transition: background-color 0.2s ease;
+  }
+  #layersList li.selected {
+    background: #d299ffcc;
+    font-weight: 700;
+  }
+  #layersList li:hover {
+    background: #e6ccffdd;
+  }
+  .layer-controls {
+    display: flex;
+    gap: 6px;
+  }
+  .layer-controls button {
+    min-width: 26px;
+    min-height: 26px;
+    font-size: 0.9rem;
+    padding: 0;
+    background: #bb66ffcc;
+    box-shadow: none;
+  }
+  .layer-controls button:hover {
+    background: #dd99ffdd;
+  }
+
+  /* Secret input */
+  #secretInput {
+    opacity: 0.3;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1.5px solid #888;
+    background: transparent;
+    color: #666;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 140px;
+    padding: 6px 10px;
+    outline: none;
+    transition: opacity 0.3s, color 0.3s, border-color 0.3s;
+    border-radius: 6px 6px 0 0;
+    user-select: text;
+    z-index: 9999;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+  #secretInput:focus {
+    opacity: 1;
+    color: #222;
+    border-color: #ff69b4;
+    background: #fff;
+    box-shadow: 0 0 12px #ff69b4aa;
+  }
+
+  /* Scrollbar for layers and stickers */
+  #layersPanel::-webkit-scrollbar,
+  #stickersGrid::-webkit-scrollbar {
+    width: 8px;
+  }
+  #layersPanel::-webkit-scrollbar-track,
+  #stickersGrid::-webkit-scrollbar-track {
+    background: #f5e9ff;
+    border-radius: 10px;
+  }
+  #layersPanel::-webkit-scrollbar-thumb,
+  #stickersGrid::-webkit-scrollbar-thumb {
+    background: #cc66ffbb;
+    border-radius: 10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    #controls {
       flex-direction: column;
+      max-width: 100%;
     }
-
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-      color: #444;
+    .panel {
+      max-width: 100%;
+      min-width: auto;
     }
-
-    /* Секретное поле */
-    #secretInput {
-      opacity: 0.4;
-      font-size: 14px;
-      border: none;
-      border-bottom: 1.5px solid #888;
-      background: transparent;
-      color: #666;
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      width: 120px;
-      padding: 4px 8px;
-      outline: none;
-      transition: opacity 0.3s, color 0.3s, border-color 0.3s;
-      border-radius: 4px 4px 0 0;
-      user-select: text;
-    }
-
-    #secretInput:focus {
-      opacity: 1;
-      color: #222;
-      border-color: #ff69b4; /* розоватый акцент */
-      background: #fff;
-      box-shadow: 0 0 8px #ff69b4aa;
-    }
-
-    /* Тест */
-    .mood-popup {
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      color: #000;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-    }
-
-    .mood-popup h3 {
-      margin-top: 0;
-      color: #ff1493;
-    }
-
-    .mood-popup ul {
-      list-style: none;
-      padding-left: 0;
-      font-size: 16px;
-      margin-bottom: 0;
-    }
-
-    .mood-popup li {
-      margin: 8px 0;
-      cursor: pointer;
-      transition: 0.2s;
-      color: #333;
-    }
-
-    .mood-popup li:hover {
-      color: #ff1493;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-  <h1>Welcome to Cute Wallpapers</h1>
+<header>
+  <h1>Design your own dreamy wallpapers</h1>
+  <p>Cute, creative, magical — and fully yours.</p>
+  <button id="scrollToEditor" aria-label="Scroll to editor">🎨 Start creating</button>
+</header>
 
-  <!-- Секретное поле -->
-  <input type="text" id="secretInput" placeholder="..." autocomplete="off" spellcheck="false" />
+<div id="app">
 
-  <script>
-    document.getElementById('secretInput').addEventListener('input', function () {
-      const value = this.value.trim();
-      const today = new Date().getDate().toString().padStart(2, '0');
+  <section id="editor" aria-label="Wallpaper editor">
 
-      if (value === '0103') {
-        window.location.href = 'secret/yukki.html';
-      } else if (value === today) {
-        showMoodTest();
+    <div id="canvasContainer">
+      <canvas id="canvas" width="800" height="450" aria-label="Drawing canvas"></canvas>
+    </div>
+
+    <div id="controls">
+
+      <section class="panel" id="backgroundPanel" aria-label="Background color controls">
+        <h3>Background Color</h3>
+        <div class="slider-group">
+          <label class="slider-label" for="bgHue">Hue</label>
+          <input type="range" min="0" max="360" value="270" id="bgHue" aria-valuemin="0" aria-valuemax="360" aria-valuenow="270" />
+        </div>
+        <div class="slider-group">
+          <label class="slider-label" for="bgSaturation">Saturation</label>
+          <input type="range" min="0" max="100" value="50" id="bgSaturation" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" />
+        </div>
+        <div class="slider-group">
+          <label class="slider-label" for="bgLightness">Lightness</label>
+          <input type="range" min="0" max="100" value="95" id="bgLightness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="95" />
+        </div>
+        <button id="resetBg">Reset Background</button>
+      </section>
+
+      <section class="panel" id="drawPanel" aria-label="Drawing controls">
+        <h3>Draw</h3>
+        <button id="toggleDraw">Start Drawing</button>
+        <div class="slider-group" style="margin-top:10px;">
+          <label class="slider-label" for="drawHue">Color Hue</label>
+          <input type="range" min="0" max="360" value="300" id="drawHue" />
+        </div>
+        <div class="slider-group">
+          <label class="slider-label" for="drawSaturation">Saturation</label>
+          <input type="range" min="0" max="100" value="80" id="drawSaturation" />
+        </div>
+        <div class="slider-group">
+          <label class="slider-label" for="drawLightness">Lightness</label>
+          <input type="range" min="0" max="100" value="60" id="drawLightness" />
+        </div>
+        <div class="slider-group" style="margin-top:10px;">
+          <label class="slider-label" for="brushSize">Brush Size</label>
+          <input type="range" min="1" max="50" value="12" id="brushSize" />
+        </div>
+        <div style="font-size:0.9rem; color:#555; margin-top:4px; user-select:none;">Use mouse or touch to draw on canvas</div>
+      </section>
+
+      <section class="panel" id="stickersPanel" aria-label="Stickers selection">
+        <h3>Stickers</h3>
+        <div id="stickersGrid" aria-live="polite" aria-relevant="additions"></div>
+      </section>
+
+      <section class="panel" id="textPanel" aria-label="Add text">
+        <h3>Add Text</h3>
+        <input type="text" id="textInput" placeholder="Write your text or emoji..." aria-label="Text input" />
+        <div id="textControls">
+          <button id="addTextBtn" title="Add Text">Add</button>
+          <label for="textHue">Hue</label>
+          <input type="range" min="0" max="360" value="320" id="textHue" title="Text Color Hue" />
+          <label for="textSat">Sat</label>
+          <input type="range" min="0" max="100" value="80" id="textSat" title="Text Color Saturation" />
+          <label for="textLight">Light</label>
+          <input type="range" min="0" max="100" value="50" id="textLight" title="Text Color Lightness" />
+          <button id="rotateTextBtn" title="Rotate Selected Text">↻ Rotate</button>
+          <button id="deleteSelectedBtn" title="Delete Selected Object">✖ Delete</button>
+        </div>
+      </section>
+
+      <section class="panel" id="templatesPanel" aria-label="Wallpaper templates">
+        <h3>Templates</h3>
+        <select id="templateSelect" aria-label="Select wallpaper template">
+          <option value="">-- Choose template --</option>
+          <option value="cute_day">Cute Day ☁️</option>
+          <option value="water_paradise">Water Paradise 🐟</option>
+          <option value="ice_magic">Ice & Magic ❄️</option>
+          <option value="star_flight">Star Flight 🌠</option>
+          <option value="bubble_gum">Bubble Gum 🍬</option>
+        </select>
+        <button id="applyTemplateBtn">Apply</button>
+      </section>
+
+      <section class="panel" id="magicAutoPanel" aria-label="Magic auto generation">
+        <h3>Magic Auto 😻</h3>
+        <button id="magicAutoBtn">Generate Random</button>
+      </section>
+
+      <section class="panel" id="layersPanel" aria-label="Layers and objects">
+        <h3>Layers</h3>
+        <ul id="layersList" tabindex="0" aria-label="List of objects on wallpaper"></ul>
+      </section>
+
+      <section class="panel" id="savePanel" aria-label="Save your wallpaper">
+        <h3>Save</h3>
+        <button id="saveBtn">Download Wallpaper</button>
+        <button id="clearAllBtn" style="margin-left:8px;background:#ff8db2;">Clear All</button>
+      </section>
+
+    </div>
+  </section>
+</div>
+
+<input type="text" id="secretInput" placeholder="..." autocomplete="off" spellcheck="false" aria-label="Secret code input" />
+
+<script>
+(() => {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const canvasContainer = document.getElementById('canvasContainer');
+
+  // --- State ---
+  const state = {
+    backgroundH: 270,
+    backgroundS: 50,
+    backgroundL: 95,
+
+    drawing: false,
+    drawColor: {h:300, s:80, l:60},
+    brushSize: 12,
+
+    objects: [], // {type:'sticker'|'text'|'drawing', id, ...props}
+    selectedObjectId: null,
+    isDrawingMode: false,
+    isMouseDown: false,
+  };
+
+  // --- Utils ---
+  function hslToString(h,s,l) {
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  }
+
+  // --- Background controls ---
+  const bgHue = document.getElementById('bgHue');
+  const bgSat = document.getElementById('bgSaturation');
+  const bgLight = document.getElementById('bgLightness');
+  const resetBgBtn = document.getElementById('resetBg');
+
+  function updateBackground() {
+    state.backgroundH = +bgHue.value;
+    state.backgroundS = +bgSat.value;
+    state.backgroundL = +bgLight.value;
+    canvas.style.setProperty('--canvas-bg', hslToString(state.backgroundH,state.backgroundS,state.backgroundL));
+    redraw();
+  }
+  bgHue.addEventListener('input', updateBackground);
+  bgSat.addEventListener('input', updateBackground);
+  bgLight.addEventListener('input', updateBackground);
+  resetBgBtn.addEventListener('click', () => {
+    bgHue.value = 270; bgSat.value=50; bgLight.value=95;
+    updateBackground();
+  });
+
+  // --- Drawing controls ---
+  const toggleDrawBtn = document.getElementById('toggleDraw');
+  const drawHue = document.getElementById('drawHue');
+  const drawSat = document.getElementById('drawSaturation');
+  const drawLight = document.getElementById('drawLightness');
+  const brushSizeInput = document.getElementById('brushSize');
+
+  toggleDrawBtn.addEventListener('click', () => {
+    state.isDrawingMode = !state.isDrawingMode;
+    toggleDrawBtn.textContent = state.isDrawingMode ? 'Stop Drawing' : 'Start Drawing';
+    if(state.isDrawingMode) {
+      canvas.style.cursor = 'crosshair';
+    } else {
+      canvas.style.cursor = 'default';
+    }
+  });
+
+  function updateDrawColor() {
+    state.drawColor.h = +drawHue.value;
+    state.drawColor.s = +drawSat.value;
+    state.drawColor.l = +drawLight.value;
+  }
+  drawHue.addEventListener('input', updateDrawColor);
+  drawSat.addEventListener('input', updateDrawColor);
+  drawLight.addEventListener('input', updateDrawColor);
+  brushSizeInput.addEventListener('input', () => {
+    state.brushSize = +brushSizeInput.value;
+  });
+  updateDrawColor();
+
+  // --- Canvas drawing ---
+  let lastPos = null;
+
+  function getPointerPos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    if(evt.touches && evt.touches[0]) {
+      clientX = evt.touches[0].clientX;
+      clientY = evt.touches[0].clientY;
+    } else {
+      clientX = evt.clientX;
+      clientY = evt.clientY;
+    }
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    };
+  }
+
+  canvas.addEventListener('pointerdown', evt => {
+    if(!state.isDrawingMode) return;
+    state.isDrawingMode = true; // safety
+    state.isMouseDown = true;
+    lastPos = getPointerPos(evt);
+    // Start a new drawing path
+    const newDraw = {
+      type: 'drawing',
+      id: crypto.randomUUID(),
+      points: [lastPos],
+      color: {...state.drawColor},
+      size: state.brushSize,
+    };
+    state.objects.push(newDraw);
+    state.selectedObjectId = newDraw.id;
+    redraw();
+  });
+
+  canvas.addEventListener('pointermove', evt => {
+    if(!state.isDrawingMode || !state.isMouseDown) return;
+    const pos = getPointerPos(evt);
+    const currentDraw = state.objects.find(o => o.id === state.selectedObjectId && o.type === 'drawing');
+    if(currentDraw) {
+      currentDraw.points.push(pos);
+      redraw();
+    }
+  });
+
+  canvas.addEventListener('pointerup', evt => {
+    state.isMouseDown = false;
+  });
+  canvas.addEventListener('pointercancel', evt => {
+    state.isMouseDown = false;
+  });
+
+  // --- Objects & layers ---
+
+  // Draw all objects on canvas
+  function redraw() {
+    // Clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Fill background
+    ctx.fillStyle = hslToString(state.backgroundH,state.backgroundS,state.backgroundL);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw each object in order (lowest index is bottom layer)
+    for(let obj of state.objects){
+      if(obj.type === 'drawing'){
+        drawPath(obj);
+      } else if(obj.type === 'sticker'){
+        drawSticker(obj);
+      } else if(obj.type === 'text'){
+        drawText(obj);
       }
-    });
-
-    function showMoodTest() {
-      if (document.querySelector('.mood-popup')) return;
-
-      const container = document.createElement('div');
-      container.className = 'mood-popup';
-      container.innerHTML = `
-        <h3>✨ What mood are you feeling today?</h3>
-        <ul>
-          <li onclick="goToMood('cute')">• Cute and cozy</li>
-          <li onclick="goToMood('fire')">• Fiery, explosive, intense</li>
-          <li onclick="goToMood('water')">• Watery, soft, like little fish 🐟❤️</li>
-          <li onclick="goToMood('sweet')">• Sweet like candy</li>
-          <li onclick="goToMood('salty')">• Something salty...</li>
-          <li onclick="goToMood('summer')">• Summery ☀️</li>
-          <li onclick="goToMood('winter')">• Wintry ❄️</li>
-        </ul>
-      `;
-      document.body.appendChild(container);
     }
 
-    function goToMood(mood) {
-      window.location.href = `mood/${mood}.html`;
+    drawSelection();
+  }
+
+  function drawPath(drawObj) {
+    if(drawObj.points.length < 2) return;
+    ctx.strokeStyle = hslToString(drawObj.color.h, drawObj.color.s, drawObj.color.l);
+    ctx.lineWidth = drawObj.size;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(drawObj.points[0].x, drawObj.points[0].y);
+    for(let i=1; i<drawObj.points.length; i++){
+      ctx.lineTo(drawObj.points[i].x, drawObj.points[i].y);
     }
-  </script>
+    ctx.stroke();
+  }
+
+  function drawSticker(sticker) {
+    if(!sticker.img) return;
+    const {x, y, scale, rotation} = sticker;
+    const w = sticker.img.width * scale;
+    const h = sticker.img.height * scale;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.drawImage(sticker.img, -w/2, -h/2, w, h);
+    ctx.restore();
+  }
+
+  function drawText(textObj) {
+    const {x, y, text, fontSize, colorH, colorS, colorL, rotation} = textObj;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.fillStyle = hslToString(colorH, colorS, colorL);
+    ctx.font = `${fontSize}px 'Comfortaa', cursive, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+  }
+
+  // Draw selection highlight
+  function drawSelection() {
+    if(!state.selectedObjectId) return;
+    const obj = state.objects.find(o=>o.id === state.selectedObjectId);
+    if(!obj) return;
+
+    ctx.save();
+    ctx.strokeStyle = '#ff1493';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6,4]);
+
+    if(obj.type === 'text'){
+      ctx.font = `${obj.fontSize}px 'Comfortaa', cursive, sans-serif`;
+      const metrics = ctx.measureText(obj.text);
+      const w = metrics.width;
+      const h = obj.fontSize;
+      ctx.translate(obj.x, obj.y);
+      ctx.rotate(obj.rotation);
+      ctx.strokeRect(-w/2 - 8, -h/2 - 8, w + 16, h + 16);
+    } else if(obj.type === 'sticker'){
+      if(obj.img){
+        const w = obj.img.width * obj.scale;
+        const h = obj.img.height * obj.scale;
+        ctx.translate(obj.x, obj.y);
+        ctx.rotate(obj.rotation);
+        ctx.strokeRect(-w/2 - 8, -h/2 - 8, w + 16, h + 16);
+      }
+    } else if(obj.type === 'drawing'){
+      // For drawing, no exact bounding box - skip highlight
+    }
+    ctx.restore();
+  }
+
+  // --- Stickers ---
+  const stickersGrid = document.getElementById('stickersGrid');
+  let currentStickerSet = 'default';
+
+  // Preload stickers 1.png ... 15.png, Bubble_Gum adds 10 more (16.png - 25.png)
+  let stickerImages = {};
+
+  function preloadStickers(countStart, countEnd, prefix = '') {
+    for(let i=countStart; i<=countEnd; i++){
+      const num = i.toString();
+      const img = new Image();
+      img.src = `stickers/${prefix}${num}.png`;
+      stickerImages[`${prefix}${num}`] = img;
+    }
+  }
+
+  // Default stickers: 1.png - 15.png
+  preloadStickers(1, 15);
+
+  // Bubble_Gum stickers: 1.png - 25.png (extra 16-25)
+  preloadStickers(1, 25, '');
+
+  // Fill stickers grid with current set
+  function fillStickersGrid(setName) {
+    stickersGrid.innerHTML = '';
+    let maxCount = setName === 'bubble_gum' ? 25 : 15;
+    for(let i=1; i<=maxCount; i++){
+      const key = i.toString();
+      const img = new Image();
+      img.src = `stickers/${key}.png`;
+      img.alt = `Sticker ${i}`;
+      img.tabIndex = 0;
+      img.setAttribute('role','button');
+      img.setAttribute('aria-label',`Add sticker ${i}`);
+      img.addEventListener('click', () => {
+        addSticker(i);
+      });
+      img.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          addSticker(i);
+        }
+      });
+      stickersGrid.appendChild(img);
+    }
+  }
+  fillStickersGrid('default');
+
+  // Add sticker to center canvas
+  function addSticker(index) {
+    const key = index.toString();
+    const img = stickerImages[key];
+    if(!img) return alert('Sticker not loaded yet');
+    // Clone image element for drawSticker
+    const newImg = new Image();
+    newImg.src = img.src;
+    newImg.onload = () => {
+      const obj = {
+        type: 'sticker',
+        id: crypto.randomUUID(),
+        img: newImg,
+        x: canvas.width/2,
+        y: canvas.height/2,
+        scale: 1,
+        rotation: 0,
+      };
+      state.objects.push(obj);
+      state.selectedObjectId = obj.id;
+      redraw();
+      updateLayersPanel();
+    };
+  }
+
+  // --- Text controls ---
+  const textInput = document.getElementById('textInput');
+  const addTextBtn = document.getElementById('addTextBtn');
+  const textHue = document.getElementById('textHue');
+  const textSat = document.getElementById('textSat');
+  const textLight = document.getElementById('textLight');
+  const rotateTextBtn = document.getElementById('rotateTextBtn');
+  const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+
+  addTextBtn.addEventListener('click', () => {
+    const text = textInput.value.trim();
+    if(!text) return;
+    const obj = {
+      type: 'text',
+      id: crypto.randomUUID(),
+      text: text,
+      x: canvas.width/2,
+      y: canvas.height/2,
+      fontSize: 42,
+      colorH: +textHue.value,
+      colorS: +textSat.value,
+      colorL: +textLight.value,
+      rotation: 0,
+    };
+    state.objects.push(obj);
+    state.selectedObjectId = obj.id;
+    textInput.value = '';
+    redraw();
+    updateLayersPanel();
+  });
+
+  rotateTextBtn.addEventListener('click', () => {
+    const obj = getSelectedObject();
+    if(!obj || obj.type !== 'text') return;
+    obj.rotation += Math.PI/2;
+    redraw();
+  });
+
+  deleteSelectedBtn.addEventListener('click', () => {
+    if(!state.selectedObjectId) return;
+    const index = state.objects.findIndex(o => o.id === state.selectedObjectId);
+    if(index === -1) return;
+    state.objects.splice(index, 1);
+    state.selectedObjectId = null;
+    redraw();
+    updateLayersPanel();
+  });
+
+  // --- Layers panel ---
+  const layersList = document.getElementById('layersList');
+
+  function updateLayersPanel() {
+    layersList.innerHTML = '';
+    // Show layers from top to bottom (last is top)
+    for(let i=state.objects.length-1; i>=0; i--){
+      const obj = state.objects[i];
+      const li = document.createElement('li');
+      li.textContent = `${obj.type[0].toUpperCase() + obj.type.slice(1)} ${obj.id.slice(0,6)}`;
+      if(obj.id === state.selectedObjectId) li.classList.add('selected');
+      li.tabIndex = 0;
+      li.setAttribute('role', 'button');
+      li.addEventListener('click', () => {
+        state.selectedObjectId = obj.id;
+        redraw();
+        updateLayersPanel();
+      });
+      li.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          state.selectedObjectId = obj.id;
+          redraw();
+          updateLayersPanel();
+        }
+      });
+
+      const controlsDiv = document.createElement('div');
+      controlsDiv.classList.add('layer-controls');
+
+      const upBtn = document.createElement('button');
+      upBtn.title = 'Move layer up';
+      upBtn.textContent = '↑';
+      upBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        moveLayer(obj.id, +1);
+      });
+      controlsDiv.appendChild(upBtn);
+
+      const downBtn = document.createElement('button');
+      downBtn.title = 'Move layer down';
+      downBtn.textContent = '↓';
+      downBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        moveLayer(obj.id, -1);
+      });
+      controlsDiv.appendChild(downBtn);
+
+      li.appendChild(controlsDiv);
+      layersList.appendChild(li);
+    }
+  }
+
+  function moveLayer(id, direction) {
+    const index = state.objects.findIndex(o=>o.id===id);
+    if(index === -1) return;
+    const newIndex = index + direction;
+    if(newIndex < 0 || newIndex >= state.objects.length) return;
+    const temp = state.objects[newIndex];
+    state.objects[newIndex] = state.objects[index];
+    state.objects[index] = temp;
+    redraw();
+    updateLayersPanel();
+  }
+
+  // --- Select object by click on canvas ---
+  canvas.addEventListener('click', e => {
+    if(state.isDrawingMode) return; // don't select while drawing
+    const pos = getPointerPos(e);
+
+    // Reverse order (top to bottom) to select first top object under cursor
+    for(let i=state.objects.length-1; i>=0; i--){
+      const obj = state.objects[i];
+      if(obj.type === 'sticker'){
+        if(pointInSticker(pos, obj)){
+          state.selectedObjectId = obj.id;
+          redraw();
+          updateLayersPanel();
+          return;
+        }
+      } else if(obj.type === 'text'){
+        if(pointInText(pos, obj)){
+          state.selectedObjectId = obj.id;
+          redraw();
+          updateLayersPanel();
+          return;
+        }
+      }
+    }
+    // If no object selected by click, deselect all
+    state.selectedObjectId = null;
+    redraw();
+    updateLayersPanel();
+  });
+
+  function pointInSticker(point, sticker) {
+    if(!sticker.img) return false;
+    const w = sticker.img.width * sticker.scale;
+    const h = sticker.img.height * sticker.scale;
+    const dx = point.x - sticker.x;
+    const dy = point.y - sticker.y;
+    // Rotate point back inverse rotation
+    const angle = -sticker.rotation;
+    const rx = dx * Math.cos(angle) - dy * Math.sin(angle);
+    const ry = dx * Math.sin(angle) + dy * Math.cos(angle);
+    return rx > -w/2 && rx < w/2 && ry > -h/2 && ry < h/2;
+  }
+
+  function pointInText(point, textObj) {
+    ctx.font = `${textObj.fontSize}px 'Comfortaa', cursive, sans-serif`;
+    const metrics = ctx.measureText(textObj.text);
+    const w = metrics.width;
+    const h = textObj.fontSize;
+    const dx = point.x - textObj.x;
+    const dy = point.y - textObj.y;
+    const angle = -textObj.rotation;
+    const rx = dx * Math.cos(angle) - dy * Math.sin(angle);
+    const ry = dx * Math.sin(angle) + dy * Math.cos(angle);
+    return rx > -w/2 - 8 && rx < w/2 + 8 && ry > -h/2 - 8 && ry < h/2 + 8;
+  }
+
+  // --- Move selected object with mouse drag ---
+  let dragOffset = null;
+  canvas.addEventListener('pointerdown', e => {
+    if(state.isDrawingMode) return;
+    if(!state.selectedObjectId) return;
+    const pos = getPointerPos(e);
+    const obj = getSelectedObject();
+    if(!obj) return;
+    if(obj.type === 'sticker' && pointInSticker(pos,obj) || obj.type==='text' && pointInText(pos,obj)) {
+      dragOffset = {x: pos.x - obj.x, y: pos.y - obj.y};
+      canvas.setPointerCapture(e.pointerId);
+    }
+  });
+  canvas.addEventListener('pointermove', e => {
+    if(!dragOffset) return;
+    const pos = getPointerPos(e);
+    const obj = getSelectedObject();
+    if(!obj) return;
+    obj.x = pos.x - dragOffset.x;
+    obj.y = pos.y - dragOffset.y;
+    redraw();
+  });
+  canvas.addEventListener('pointerup', e => {
+    dragOffset = null;
+  });
+  canvas.addEventListener('pointercancel', e => {
+    dragOffset = null;
+  });
+
+  function getSelectedObject() {
+    if(!state.selectedObjectId) return null;
+    return state.objects.find(o => o.id === state.selectedObjectId) || null;
+  }
+
+  // --- Templates ---
+  const templateSelect = document.getElementById('templateSelect');
+  const applyTemplateBtn = document.getElementById('applyTemplateBtn');
+
+  applyTemplateBtn.addEventListener('click', () => {
+    const val = templateSelect.value;
+    applyTemplate(val);
+  });
+
+  function clearCanvasObjects() {
+    state.objects = [];
+    state.selectedObjectId = null;
+  }
+
+  function applyTemplate(name) {
+    clearCanvasObjects();
+
+    if(name === 'cute_day'){
+      bgHue.value = 270; bgSat.value=50; bgLight.value=95;
+      updateBackground();
+      // Add some random stickers
+      addStickerAt('1', 200, 200, 0.9, 0);
+      addStickerAt('5', 400, 300, 1.2, 0.3);
+      addStickerAt('3', 600, 180, 1, -0.2);
+    } else if(name === 'water_paradise'){
+      bgHue.value = 190; bgSat.value=80; bgLight.value=85;
+      updateBackground();
+      addStickerAt('7', 250, 250, 1.3, 0.1);
+      addStickerAt('12', 600, 280, 1.1, 0);
+      addStickerAt('14', 520, 150, 1, 0.2);
+    } else if(name === 'ice_magic'){
+      bgHue.value = 210; bgSat.value=70; bgLight.value=90;
+      updateBackground();
+      addStickerAt('8', 300, 220, 1, 0);
+      addStickerAt('10', 500, 260, 1.2, 0.15);
+      addStickerAt('2', 620, 180, 0.9, -0.3);
+    } else if(name === 'star_flight'){
+      bgHue.value = 260; bgSat.value=60; bgLight.value=40;
+      updateBackground();
+      addStickerAt('4', 350, 200, 1.4, 0.4);
+      addStickerAt('9', 620, 270, 1, 0);
+      addStickerAt('11', 480, 180, 1.1, -0.1);
+    } else if(name === 'bubble_gum'){
+      bgHue.value = 320; bgSat.value=70; bgLight.value=90;
+      updateBackground();
+      fillStickersGrid('bubble_gum');
+      // Add some random bubble gum stickers
+      addStickerAt('16', 300, 240, 1, 0);
+      addStickerAt('20', 520, 200, 1.1, 0.2);
+      addStickerAt('22', 650, 280, 1.3, -0.25);
+    } else {
+      // Default
+      bgHue.value = 270; bgSat.value=50; bgLight.value=95;
+      updateBackground();
+      fillStickersGrid('default');
+    }
+    redraw();
+    updateLayersPanel();
+  }
+
+  function addStickerAt(index, x, y, scale=1, rotation=0) {
+    const key = index.toString();
+    const img = new Image();
+    img.src = `stickers/${key}.png`;
+    img.onload = () => {
+      const obj = {
+        type: 'sticker',
+        id: crypto.randomUUID(),
+        img: img,
+        x: x,
+        y: y,
+        scale: scale,
+        rotation: rotation,
+      };
+      state.objects.push(obj);
+      state.selectedObjectId = obj.id;
+      redraw();
+      updateLayersPanel();
+    };
+  }
+
+  // --- Magic auto 😻 ---
+  const magicAutoBtn = document.getElementById('magicAutoBtn');
+  magicAutoBtn.addEventListener('click', () => {
+    magicAutoGenerate();
+  });
+
+  function magicAutoGenerate() {
+    clearCanvasObjects();
+    // Random background soft pastel
+    state.backgroundH = Math.floor(Math.random()*360);
+    state.backgroundS = 50 + Math.floor(Math.random()*30);
+    state.backgroundL = 90 + Math.floor(Math.random()*10);
+    bgHue.value = state.backgroundH;
+    bgSat.value = state.backgroundS;
+    bgLight.value = state.backgroundL;
+    updateBackground();
+    fillStickersGrid('default');
+
+    // Add 6-10 random stickers from default set
+    const count = 6 + Math.floor(Math.random()*5);
+    for(let i=0; i<count; i++){
+      const idx = 1 + Math.floor(Math.random()*15);
+      const x = 100 + Math.random()*(canvas.width-200);
+      const y = 100 + Math.random()*(canvas.height-200);
+      const scale = 0.7 + Math.random()*0.9;
+      const rotation = (Math.random()*2 - 1)*0.5;
+      addStickerAt(idx.toString(), x, y, scale, rotation);
+    }
+    // Add 1-3 random texts
+    const texts = ['💜', '✨', '🌈', 'Hello!', '🎉', '😍', '🌸'];
+    for(let i=0; i<2; i++){
+      const txt = texts[Math.floor(Math.random()*texts.length)];
+      const obj = {
+        type: 'text',
+        id: crypto.randomUUID(),
+        text: txt,
+        x: 100 + Math.random()*(canvas.width-200),
+        y: 100 + Math.random()*(canvas.height-200),
+        fontSize: 36 + Math.floor(Math.random()*20),
+        colorH: Math.floor(Math.random()*360),
+        colorS: 80,
+        colorL: 50,
+        rotation: (Math.random()*2 - 1)*Math.PI/4,
+      };
+      state.objects.push(obj);
+    }
+    redraw();
+    updateLayersPanel();
+  }
+
+  // --- Save ---
+  const saveBtn = document.getElementById('saveBtn');
+  const clearAllBtn = document.getElementById('clearAllBtn');
+
+  saveBtn.addEventListener('click', () => {
+    // Hide selection before save
+    const prevSelected = state.selectedObjectId;
+    state.selectedObjectId = null;
+    redraw();
+    const dataUrl = canvas.toDataURL('image/png');
+    state.selectedObjectId = prevSelected;
+    redraw();
+
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = 'wallpaper.png';
+    link.click();
+  });
+
+  clearAllBtn.addEventListener('click', () => {
+    if(confirm('Clear everything and start fresh?')) {
+      clearCanvasObjects();
+      fillStickersGrid('default');
+      redraw();
+      updateLayersPanel();
+    }
+  });
+
+  // --- Secret input for Easter eggs ---
+  const secretInput = document.getElementById('secretInput');
+
+  // Existing known codes (date, 0103, Bubble_Gum)
+  secretInput.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){
+      const val = secretInput.value.trim().toLowerCase();
+      if(!val) return;
+
+      if(val === '0103'){
+        alert('Yukki wallpapers unlocked!');
+        fillStickersGrid('default'); // no difference here, but you can add wallpapers later
+        secretInput.value = '';
+      } else if(val === 'bubble_gum'){
+        alert('Bubble Gum mode activated! Stickers 1-25 unlocked!');
+        fillStickersGrid('bubble_gum');
+        secretInput.value = '';
+      } else {
+        alert('Unknown code');
+        secretInput.value = '';
+      }
+    }
+  });
+
+  // --- Init ---
+  updateBackground();
+  fillStickersGrid('default');
+  updateLayersPanel();
+
+})();</script>
 </body>
 </html>
