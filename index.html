@@ -1,1298 +1,916 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>~Dreamy Wallpapres creator~</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
-
-  /* Reset and base */
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    background: linear-gradient(135deg, #f5d0ff 0%, #b3d4ff 100%);
-    font-family: 'Comfortaa', cursive, sans-serif;
-    color: #222;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Container for all */
-  #app {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 24px 16px 100px;
-  }
-
-  /* Header section */
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  header h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #4a266a;
-    text-shadow:
-      0 0 6px #ff99cc88,
-      0 0 15px #cc66ffaa;
-  }
-  header p {
-    font-size: 1.2rem;
-    margin-top: 12px;
-    color: #5a4a7a;
-  }
-  header button#scrollToEditor {
-    margin-top: 20px;
-    padding: 14px 32px;
-    font-size: 1.15rem;
-    font-weight: 700;
-    background: linear-gradient(45deg, #ff69b4, #993399);
-    border: none;
-    border-radius: 32px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 0 12px #ff69b4aa;
-    transition: all 0.3s ease;
-  }
-  header button#scrollToEditor:hover {
-    box-shadow: 0 0 24px #ff1493dd;
-    transform: scale(1.05);
-  }
-
-  /* Editor section */
-  #editor {
-    background: #fff;
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow:
-      0 10px 20px rgb(0 0 0 / 0.1),
-      inset 0 0 40px rgb(255 182 193 / 0.2);
-    user-select: none;
-    max-width: 100%;
-  }
-
-  /* Canvas container */
-  #canvasContainer {
-    background: #eee;
-    border-radius: 14px;
-    box-shadow: inset 0 0 25px #cc99ffaa;
-    max-width: 100%;
-    position: relative;
-    margin-bottom: 20px;
-    touch-action: none;
-  }
-  canvas {
-    display: block;
-    max-width: 100%;
-    border-radius: 14px;
-    cursor: crosshair;
-    background: var(--canvas-bg, #fefaff);
-  }
-
-  /* Controls panel */
-  #controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
-    user-select: none;
-  }
-  .panel {
-    background: #f9f1ff;
-    box-shadow:
-      0 4px 12px rgb(204 102 255 / 0.25);
-    border-radius: 14px;
-    padding: 16px 20px;
-    min-width: 180px;
-    max-width: 320px;
-    flex: 1 1 280px;
-  }
-  .panel h3 {
-    font-weight: 700;
-    margin: 0 0 12px 0;
-    color: #7a3d99;
-    text-align: center;
-    user-select: text;
-  }
-
-  /* Color sliders */
-  .slider-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .slider-label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: #5a3d7a;
-    margin-bottom: 4px;
-    user-select: text;
-  }
-  input[type=range] {
-    width: 100%;
-    -webkit-appearance: none;
-    height: 10px;
-    border-radius: 6px;
-    background: linear-gradient(to right, #cc66ff, #ff69b4);
-    outline: none;
-    cursor: pointer;
-    box-shadow:
-      inset 0 1px 3px rgb(255 255 255 / 0.7),
-      inset 0 -1px 3px rgb(0 0 0 / 0.15);
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #ff69b4;
-    cursor: pointer;
-    box-shadow: 0 0 8px #ff69b4aa;
-    border: 2px solid #cc66ff;
-    transition: background-color 0.3s ease;
-  }
-  input[type=range]::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #ff69b4;
-    cursor: pointer;
-    border: 2px solid #cc66ff;
-    box-shadow: 0 0 8px #ff69b4aa;
-  }
-
-  /* Buttons */
-  button {
-    cursor: pointer;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 18px;
-    font-weight: 700;
-    font-family: 'Comfortaa', cursive, sans-serif;
-    font-size: 1rem;
-    transition: background-color 0.25s ease, box-shadow 0.25s ease;
-    box-shadow: 0 0 8px #cc66ff99;
-    background: linear-gradient(45deg, #cc66ff, #ff69b4);
-    color: white;
-    user-select: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  button:hover {
-    box-shadow: 0 0 18px #ff1493cc;
-    background: linear-gradient(45deg, #ff1493, #cc33cc);
-    transform: scale(1.05);
-  }
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
-    background: #bbb;
-  }
-
-  /* Sticker grid */
-  #stickersGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(54px,1fr));
-    gap: 12px;
-    max-height: 240px;
-    overflow-y: auto;
-    padding: 6px;
-    user-select: none;
-  }
-  #stickersGrid img {
-    width: 54px;
-    height: 54px;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow:
-      0 0 8px #cc66ff66;
-    cursor: pointer;
-    transition: transform 0.15s ease;
-    background: #f8e7ff;
-  }
-  #stickersGrid img:hover {
-    transform: scale(1.25);
-    box-shadow:
-      0 0 16px #ff69b4bb;
-  }
-
-  /* Text input and controls */
-  #textControls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 8px;
-  }
-  #textControls > * {
-    min-width: 120px;
-  }
-  #textInput {
-    flex: 1 1 auto;
-    border: 2px solid #cc66ff;
-    border-radius: 20px;
-    padding: 8px 14px;
-    font-family: 'Comfortaa', cursive, sans-serif;
-    font-size: 1rem;
-    outline: none;
-    box-shadow: inset 0 0 8px #cc66ff88;
-  }
-  #textInput::placeholder {
-    color: #b399cc;
-  }
-
-  /* Layers panel */
-  #layersPanel {
-    max-height: 180px;
-    overflow-y: auto;
-    margin-top: 12px;
-    border-top: 1px solid #cc66ff88;
-    padding-top: 8px;
-  }
-  #layersPanel h4 {
-    margin: 8px 0 8px;
-    color: #7a3d99;
-    font-weight: 700;
-    font-size: 1.1rem;
-  }
-  #layersList {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-  }
-  #layersList li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 10px;
-    cursor: pointer;
-    user-select: none;
-    background: #f3e8ffcc;
-    margin-bottom: 6px;
-    transition: background-color 0.2s ease;
-  }
-  #layersList li.selected {
-    background: #d299ffcc;
-    font-weight: 700;
-  }
-  #layersList li:hover {
-    background: #e6ccffdd;
-  }
-  .layer-controls {
-    display: flex;
-    gap: 6px;
-  }
-  .layer-controls button {
-    min-width: 26px;
-    min-height: 26px;
-    font-size: 0.9rem;
-    padding: 0;
-    background: #bb66ffcc;
-    box-shadow: none;
-  }
-  .layer-controls button:hover {
-    background: #dd99ffdd;
-  }
-
-  /* Secret input */
-  #secretInput {
-    opacity: 0.3;
-    font-size: 14px;
-    border: none;
-    border-bottom: 1.5px solid #888;
-    background: transparent;
-    color: #666;
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    width: 140px;
-    padding: 6px 10px;
-    outline: none;
-    transition: opacity 0.3s, color 0.3s, border-color 0.3s;
-    border-radius: 6px 6px 0 0;
-    user-select: text;
-    z-index: 9999;
-    font-family: 'Comfortaa', cursive, sans-serif;
-  }
-  #secretInput:focus {
-    opacity: 1;
-    color: #222;
-    border-color: #ff69b4;
-    background: #fff;
-    box-shadow: 0 0 12px #ff69b4aa;
-  }
-
-  /* Scrollbar for layers and stickers */
-  #layersPanel::-webkit-scrollbar,
-  #stickersGrid::-webkit-scrollbar {
-    width: 8px;
-  }
-  #layersPanel::-webkit-scrollbar-track,
-  #stickersGrid::-webkit-scrollbar-track {
-    background: #f5e9ff;
-    border-radius: 10px;
-  }
-  #layersPanel::-webkit-scrollbar-thumb,
-  #stickersGrid::-webkit-scrollbar-thumb {
-    background: #cc66ffbb;
-    border-radius: 10px;
-  }
-
-  /* Responsive */
-  @media (max-width: 720px) {
-    #controls {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cute Wallpapers Editor — Full Version</title>
+  <style>
+    /* --- Reset & base styles --- */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f0f5;
+      color: #222;
+      overflow: hidden;
+      user-select: none;
+    }
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    /* --- Layout --- */
+    #app {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      background: #fafafa;
+      overflow: hidden;
+    }
+    /* --- Sidebar for tools --- */
+    #sidebar {
+      width: 300px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
       flex-direction: column;
-      max-width: 100%;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+      overflow-y: auto;
+      user-select: text;
     }
-    .panel {
-      max-width: 100%;
-      min-width: auto;
+    #sidebar h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #ff1493;
+      font-weight: 700;
+      font-size: 20px;
+      text-align: center;
     }
-  }
-</style>
+
+    /* --- Canvas container --- */
+    #canvas-container {
+      flex-grow: 1;
+      background: linear-gradient(45deg, #e0e0eb 25%, transparent 25%), 
+                  linear-gradient(-45deg, #e0e0eb 25%, transparent 25%), 
+                  linear-gradient(45deg, transparent 75%, #e0e0eb 75%), 
+                  linear-gradient(-45deg, transparent 75%, #e0e0eb 75%);
+      background-size: 40px 40px;
+      background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      background: #fff;
+      display: block;
+      margin: auto;
+      max-width: 100%;
+      max-height: 100vh;
+      cursor: crosshair;
+      user-select: none;
+    }
+
+    /* --- Secret input --- */
+    #secretInput {
+      opacity: 0.4;
+      font-size: 14px;
+      border: none;
+      border-bottom: 1.5px solid #888;
+      background: transparent;
+      color: #666;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 140px;
+      padding: 6px 10px;
+      outline: none;
+      transition: opacity 0.3s, color 0.3s, border-color 0.3s;
+      border-radius: 6px 6px 0 0;
+      z-index: 10000;
+      user-select: text;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    #secretInput:focus {
+      opacity: 1;
+      color: #222;
+      border-color: #ff69b4;
+      background: #fff;
+      box-shadow: 0 0 12px #ff69b4aa;
+    }
+
+    /* --- Mood popup --- */
+    .mood-popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #000;
+      padding: 28px 30px;
+      border-radius: 18px;
+      max-width: 420px;
+      box-shadow: 0 0 28px rgba(0,0,0,0.25);
+      z-index: 10010;
+      font-weight: 600;
+      user-select: none;
+      font-size: 18px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .mood-popup h3 {
+      margin-top: 0;
+      color: #ff1493;
+      font-weight: 900;
+      margin-bottom: 14px;
+      font-size: 24px;
+      text-align: center;
+    }
+    .mood-popup ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .mood-popup li {
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+      color: #333;
+      user-select: none;
+      text-align: center;
+      background-color: #fafafa;
+    }
+    .mood-popup li:hover {
+      background-color: #ffe0f7;
+      border-color: #ff1493;
+      color: #ff1493;
+    }
+
+    /* --- Next button --- */
+    #nextBtn {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ff69b4;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 14px 38px;
+      border: none;
+      border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(255,105,180,0.6);
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      z-index: 10001;
+      user-select: none;
+    }
+    #nextBtn:hover {
+      background-color: #ff85c1;
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    /* --- Stickers grid --- */
+    #stickersGrid {
+      display: grid;
+      grid-template-columns: repeat(5, 50px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-top: 6px;
+      user-select: none;
+    }
+    #stickersGrid img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      cursor: grab;
+      border-radius: 8px;
+      box-shadow: 0 0 6px #aaa;
+      transition: box-shadow 0.25s ease;
+    }
+    #stickersGrid img:hover {
+      box-shadow: 0 0 14px #ff1493;
+      cursor: pointer;
+    }
+
+    /* --- Layers panel --- */
+    #layersPanel {
+      margin-top: 20px;
+      border-top: 1px solid #ddd;
+      padding-top: 12px;
+      font-size: 14px;
+      max-height: 140px;
+      overflow-y: auto;
+      user-select: text;
+    }
+    #layersPanel h3 {
+      margin-top: 0;
+      font-weight: 600;
+      color: #ff1493;
+      font-size: 18px;
+      margin-bottom: 8px;
+      user-select: none;
+      text-align: center;
+    }
+    #layersPanel ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 0;
+    }
+    #layersPanel li {
+      padding: 6px 12px;
+      background: #fafafa;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    #layersPanel li:hover {
+      background-color: #ffdef0;
+      color: #ff1493;
+    }
+    #layersPanel li.active {
+      background-color: #ff1493;
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 0 10px #ff1493aa;
+    }
+
+    /* --- Controls --- */
+    .control-group {
+      margin-bottom: 18px;
+    }
+    .control-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
+    .control-group input[type="range"] {
+      width: 100%;
+    }
+    .control-group input[type="text"], 
+    .control-group input[type="number"], 
+    .control-group select {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      transition: border-color 0.25s ease;
+      font-weight: 600;
+    }
+    .control-group input[type="text"]:focus, 
+    .control-group input[type="number"]:focus, 
+    .control-group select:focus {
+      border-color: #ff1493;
+      outline: none;
+    }
+    .small-button {
+      background: #ff1493;
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      margin-left: 8px;
+    }
+    .small-button:hover {
+      background: #ff69b4;
+    }
+
+    /* --- Text editing panel --- */
+    #textControls {
+      margin-top: 20px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+    }
+
+    /* --- Canvas overlay for selection highlights --- */
+    #canvasOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+    }
+
+    /* --- Tooltip --- */
+    .tooltip {
+      position: fixed;
+      background: #ff1493dd;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 11000;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>Design your own dreamy wallpapers</h1>
-  <p>Cute, creative, magical — and fully yours.</p>
-  <button id="scrollToEditor" aria-label="Scroll to editor">🎨 Start creating</button>
-</header>
+  <div id="app">
+    <aside id="sidebar">
+      <h2>Tools & Stickers</h2>
+      
+      <div class="control-group">
+        <label for="bgColor">Background Color</label>
+        <input type="color" id="bgColor" value="#ffffff" title="Set background color" />
+      </div>
+      <div class="control-group">
+        <label for="brightnessRange">Brightness</label>
+        <input type="range" id="brightnessRange" min="50" max="150" value="100" />
+      </div>
+      <div class="control-group">
+        <label for="saturationRange">Saturation</label>
+        <input type="range" id="saturationRange" min="0" max="200" value="100" />
+      </div>
 
-<div id="app">
+      <hr style="margin: 20px 0; border-color: #eee" />
 
-  <section id="editor" aria-label="Wallpaper editor">
-
-    <div id="canvasContainer">
-      <canvas id="canvas" width="800" height="450" aria-label="Drawing canvas"></canvas>
-    </div>
-
-    <div id="controls">
-
-      <section class="panel" id="backgroundPanel" aria-label="Background color controls">
-        <h3>Background Color</h3>
-        <div class="slider-group">
-          <label class="slider-label" for="bgHue">Hue</label>
-          <input type="range" min="0" max="360" value="270" id="bgHue" aria-valuemin="0" aria-valuemax="360" aria-valuenow="270" />
+      <h3>Text Tool</h3>
+      <div id="textControls">
+        <div class="control-group">
+          <label for="textInput">Text</label>
+          <input type="text" id="textInput" placeholder="Type here..." />
         </div>
-        <div class="slider-group">
-          <label class="slider-label" for="bgSaturation">Saturation</label>
-          <input type="range" min="0" max="100" value="50" id="bgSaturation" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" />
+        <div class="control-group">
+          <label for="fontSizeInput">Font size (px)</label>
+          <input type="number" id="fontSizeInput" min="8" max="200" value="32" />
         </div>
-        <div class="slider-group">
-          <label class="slider-label" for="bgLightness">Lightness</label>
-          <input type="range" min="0" max="100" value="95" id="bgLightness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="95" />
+        <div class="control-group">
+          <label for="textColorInput">Text color</label>
+          <input type="color" id="textColorInput" value="#ff1493" />
         </div>
-        <button id="resetBg">Reset Background</button>
-      </section>
-
-      <section class="panel" id="drawPanel" aria-label="Drawing controls">
-        <h3>Draw</h3>
-        <button id="toggleDraw">Start Drawing</button>
-        <div class="slider-group" style="margin-top:10px;">
-          <label class="slider-label" for="drawHue">Color Hue</label>
-          <input type="range" min="0" max="360" value="300" id="drawHue" />
+        <div class="control-group">
+          <label for="textRotateInput">Rotation (degrees)</label>
+          <input type="number" id="textRotateInput" min="0" max="360" value="0" />
         </div>
-        <div class="slider-group">
-          <label class="slider-label" for="drawSaturation">Saturation</label>
-          <input type="range" min="0" max="100" value="80" id="drawSaturation" />
-        </div>
-        <div class="slider-group">
-          <label class="slider-label" for="drawLightness">Lightness</label>
-          <input type="range" min="0" max="100" value="60" id="drawLightness" />
-        </div>
-        <div class="slider-group" style="margin-top:10px;">
-          <label class="slider-label" for="brushSize">Brush Size</label>
-          <input type="range" min="1" max="50" value="12" id="brushSize" />
-        </div>
-        <div style="font-size:0.9rem; color:#555; margin-top:4px; user-select:none;">Use mouse or touch to draw on canvas</div>
-      </section>
+        <button id="addTextBtn" class="small-button">Add Text</button>
+      </div>
 
-      <section class="panel" id="stickersPanel" aria-label="Stickers selection">
-        <h3>Stickers</h3>
-        <div id="stickersGrid" aria-live="polite" aria-relevant="additions"></div>
-      </section>
+      <hr style="margin: 20px 0; border-color: #eee" />
 
-      <section class="panel" id="textPanel" aria-label="Add text">
-        <h3>Add Text</h3>
-        <input type="text" id="textInput" placeholder="Write your text or emoji..." aria-label="Text input" />
-        <div id="textControls">
-          <button id="addTextBtn" title="Add Text">Add</button>
-          <label for="textHue">Hue</label>
-          <input type="range" min="0" max="360" value="320" id="textHue" title="Text Color Hue" />
-          <label for="textSat">Sat</label>
-          <input type="range" min="0" max="100" value="80" id="textSat" title="Text Color Saturation" />
-          <label for="textLight">Light</label>
-          <input type="range" min="0" max="100" value="50" id="textLight" title="Text Color Lightness" />
-          <button id="rotateTextBtn" title="Rotate Selected Text">↻ Rotate</button>
-          <button id="deleteSelectedBtn" title="Delete Selected Object">✖ Delete</button>
-        </div>
-      </section>
+      <h3>Brush Tool</h3>
+      <div class="control-group">
+        <label for="brushColorInput">Brush Color</label>
+        <input type="color" id="brushColorInput" value="#ff1493" />
+      </div>
+      <div class="control-group">
+        <label for="brushSizeInput">Brush Size</label>
+        <input type="range" id="brushSizeInput" min="1" max="50" value="5" />
+      </div>
+      <button id="toggleBrushBtn" class="small-button">Start Drawing</button>
 
-      <section class="panel" id="templatesPanel" aria-label="Wallpaper templates">
-        <h3>Templates</h3>
-        <select id="templateSelect" aria-label="Select wallpaper template">
-          <option value="">-- Choose template --</option>
-          <option value="cute_day">Cute Day ☁️</option>
-          <option value="water_paradise">Water Paradise 🐟</option>
-          <option value="ice_magic">Ice & Magic ❄️</option>
-          <option value="star_flight">Star Flight 🌠</option>
-          <option value="bubble_gum">Bubble Gum 🍬</option>
-        </select>
-        <button id="applyTemplateBtn">Apply</button>
-      </section>
+      <hr style="margin: 20px 0; border-color: #eee" />
 
-      <section class="panel" id="magicAutoPanel" aria-label="Magic auto generation">
-        <h3>Magic Auto 😻</h3>
-        <button id="magicAutoBtn">Generate Random</button>
-      </section>
+      <h3>Stickers</h3>
+      <div id="stickersGrid" title="Click to add sticker"></div>
 
-      <section class="panel" id="layersPanel" aria-label="Layers and objects">
-        <h3>Layers</h3>
-        <ul id="layersList" tabindex="0" aria-label="List of objects on wallpaper"></ul>
-      </section>
+      <hr style="margin: 20px 0; border-color: #eee" />
 
-      <section class="panel" id="savePanel" aria-label="Save your wallpaper">
-        <h3>Save</h3>
-        <button id="saveBtn">Download Wallpaper</button>
-        <button id="clearAllBtn" style="margin-left:8px;background:#ff8db2;">Clear All</button>
-      </section>
+      <h3>Layers</h3>
+      <div id="layersPanel">
+        <ul></ul>
+      </div>
 
-    </div>
-  </section>
-</div>
+      <button id="clearCanvasBtn" class="small-button" style="width: 100%; margin-top: 12px;">Clear Canvas</button>
+    </aside>
 
-<input type="text" id="secretInput" placeholder="..." autocomplete="off" spellcheck="false" aria-label="Secret code input" />
+    <main id="canvas-container">
+      <canvas id="canvas" width="800" height="600"></canvas>
+      <canvas id="canvasOverlay" width="800" height="600"></canvas>
+    </main>
+  </div>
+
+  <input type="text" id="secretInput" placeholder="..." autocomplete="off" spellcheck="false" />
+
+  <button id="nextBtn">Next →</button>
+
+  <div class="tooltip" id="tooltip" style="opacity:0; pointer-events:none;">Tooltip</div>
 
 <script>
 (() => {
+  // --- State ---
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  const canvasContainer = document.getElementById('canvasContainer');
+  const overlay = document.getElementById('canvasOverlay');
+  const octx = overlay.getContext('2d');
 
-  // --- State ---
-  const state = {
-    backgroundH: 270,
-    backgroundS: 50,
-    backgroundL: 95,
+  const bgColorInput = document.getElementById('bgColor');
+  const brightnessRange = document.getElementById('brightnessRange');
+  const saturationRange = document.getElementById('saturationRange');
 
-    drawing: false,
-    drawColor: {h:300, s:80, l:60},
-    brushSize: 12,
+  const textInput = document.getElementById('textInput');
+  const fontSizeInput = document.getElementById('fontSizeInput');
+  const textColorInput = document.getElementById('textColorInput');
+  const textRotateInput = document.getElementById('textRotateInput');
+  const addTextBtn = document.getElementById('addTextBtn');
 
-    objects: [], // {type:'sticker'|'text'|'drawing', id, ...props}
-    selectedObjectId: null,
-    isDrawingMode: false,
-    isMouseDown: false,
-  };
+  const brushColorInput = document.getElementById('brushColorInput');
+  const brushSizeInput = document.getElementById('brushSizeInput');
+  const toggleBrushBtn = document.getElementById('toggleBrushBtn');
 
-  // --- Utils ---
-  function hslToString(h,s,l) {
-    return `hsl(${h}, ${s}%, ${l}%)`;
-  }
-
-  // --- Background controls ---
-  const bgHue = document.getElementById('bgHue');
-  const bgSat = document.getElementById('bgSaturation');
-  const bgLight = document.getElementById('bgLightness');
-  const resetBgBtn = document.getElementById('resetBg');
-
-  function updateBackground() {
-    state.backgroundH = +bgHue.value;
-    state.backgroundS = +bgSat.value;
-    state.backgroundL = +bgLight.value;
-    canvas.style.setProperty('--canvas-bg', hslToString(state.backgroundH,state.backgroundS,state.backgroundL));
-    redraw();
-  }
-  bgHue.addEventListener('input', updateBackground);
-  bgSat.addEventListener('input', updateBackground);
-  bgLight.addEventListener('input', updateBackground);
-  resetBgBtn.addEventListener('click', () => {
-    bgHue.value = 270; bgSat.value=50; bgLight.value=95;
-    updateBackground();
-  });
-
-  // --- Drawing controls ---
-  const toggleDrawBtn = document.getElementById('toggleDraw');
-  const drawHue = document.getElementById('drawHue');
-  const drawSat = document.getElementById('drawSaturation');
-  const drawLight = document.getElementById('drawLightness');
-  const brushSizeInput = document.getElementById('brushSize');
-
-  toggleDrawBtn.addEventListener('click', () => {
-    state.isDrawingMode = !state.isDrawingMode;
-    toggleDrawBtn.textContent = state.isDrawingMode ? 'Stop Drawing' : 'Start Drawing';
-    if(state.isDrawingMode) {
-      canvas.style.cursor = 'crosshair';
-    } else {
-      canvas.style.cursor = 'default';
-    }
-  });
-
-  function updateDrawColor() {
-    state.drawColor.h = +drawHue.value;
-    state.drawColor.s = +drawSat.value;
-    state.drawColor.l = +drawLight.value;
-  }
-  drawHue.addEventListener('input', updateDrawColor);
-  drawSat.addEventListener('input', updateDrawColor);
-  drawLight.addEventListener('input', updateDrawColor);
-  brushSizeInput.addEventListener('input', () => {
-    state.brushSize = +brushSizeInput.value;
-  });
-  updateDrawColor();
-
-  // --- Canvas drawing ---
-  let lastPos = null;
-
-  function getPointerPos(evt) {
-    const rect = canvas.getBoundingClientRect();
-    let clientX, clientY;
-    if(evt.touches && evt.touches[0]) {
-      clientX = evt.touches[0].clientX;
-      clientY = evt.touches[0].clientY;
-    } else {
-      clientX = evt.clientX;
-      clientY = evt.clientY;
-    }
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    };
-  }
-
-  canvas.addEventListener('pointerdown', evt => {
-    if(!state.isDrawingMode) return;
-    state.isDrawingMode = true; // safety
-    state.isMouseDown = true;
-    lastPos = getPointerPos(evt);
-    // Start a new drawing path
-    const newDraw = {
-      type: 'drawing',
-      id: crypto.randomUUID(),
-      points: [lastPos],
-      color: {...state.drawColor},
-      size: state.brushSize,
-    };
-    state.objects.push(newDraw);
-    state.selectedObjectId = newDraw.id;
-    redraw();
-  });
-
-  canvas.addEventListener('pointermove', evt => {
-    if(!state.isDrawingMode || !state.isMouseDown) return;
-    const pos = getPointerPos(evt);
-    const currentDraw = state.objects.find(o => o.id === state.selectedObjectId && o.type === 'drawing');
-    if(currentDraw) {
-      currentDraw.points.push(pos);
-      redraw();
-    }
-  });
-
-  canvas.addEventListener('pointerup', evt => {
-    state.isMouseDown = false;
-  });
-  canvas.addEventListener('pointercancel', evt => {
-    state.isMouseDown = false;
-  });
-
-  // --- Objects & layers ---
-
-  // Draw all objects on canvas
-  function redraw() {
-    // Clear
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Fill background
-    ctx.fillStyle = hslToString(state.backgroundH,state.backgroundS,state.backgroundL);
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw each object in order (lowest index is bottom layer)
-    for(let obj of state.objects){
-      if(obj.type === 'drawing'){
-        drawPath(obj);
-      } else if(obj.type === 'sticker'){
-        drawSticker(obj);
-      } else if(obj.type === 'text'){
-        drawText(obj);
-      }
-    }
-
-    drawSelection();
-  }
-
-  function drawPath(drawObj) {
-    if(drawObj.points.length < 2) return;
-    ctx.strokeStyle = hslToString(drawObj.color.h, drawObj.color.s, drawObj.color.l);
-    ctx.lineWidth = drawObj.size;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(drawObj.points[0].x, drawObj.points[0].y);
-    for(let i=1; i<drawObj.points.length; i++){
-      ctx.lineTo(drawObj.points[i].x, drawObj.points[i].y);
-    }
-    ctx.stroke();
-  }
-
-  function drawSticker(sticker) {
-    if(!sticker.img) return;
-    const {x, y, scale, rotation} = sticker;
-    const w = sticker.img.width * scale;
-    const h = sticker.img.height * scale;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rotation);
-    ctx.drawImage(sticker.img, -w/2, -h/2, w, h);
-    ctx.restore();
-  }
-
-  function drawText(textObj) {
-    const {x, y, text, fontSize, colorH, colorS, colorL, rotation} = textObj;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rotation);
-    ctx.fillStyle = hslToString(colorH, colorS, colorL);
-    ctx.font = `${fontSize}px 'Comfortaa', cursive, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, 0, 0);
-    ctx.restore();
-  }
-
-  // Draw selection highlight
-  function drawSelection() {
-    if(!state.selectedObjectId) return;
-    const obj = state.objects.find(o=>o.id === state.selectedObjectId);
-    if(!obj) return;
-
-    ctx.save();
-    ctx.strokeStyle = '#ff1493';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6,4]);
-
-    if(obj.type === 'text'){
-      ctx.font = `${obj.fontSize}px 'Comfortaa', cursive, sans-serif`;
-      const metrics = ctx.measureText(obj.text);
-      const w = metrics.width;
-      const h = obj.fontSize;
-      ctx.translate(obj.x, obj.y);
-      ctx.rotate(obj.rotation);
-      ctx.strokeRect(-w/2 - 8, -h/2 - 8, w + 16, h + 16);
-    } else if(obj.type === 'sticker'){
-      if(obj.img){
-        const w = obj.img.width * obj.scale;
-        const h = obj.img.height * obj.scale;
-        ctx.translate(obj.x, obj.y);
-        ctx.rotate(obj.rotation);
-        ctx.strokeRect(-w/2 - 8, -h/2 - 8, w + 16, h + 16);
-      }
-    } else if(obj.type === 'drawing'){
-      // For drawing, no exact bounding box - skip highlight
-    }
-    ctx.restore();
-  }
-
-  // --- Stickers ---
   const stickersGrid = document.getElementById('stickersGrid');
-  let currentStickerSet = 'default';
+  const layersPanel = document.getElementById('layersPanel').querySelector('ul');
+  const clearCanvasBtn = document.getElementById('clearCanvasBtn');
 
-  // Preload stickers 1.png ... 15.png, Bubble_Gum adds 10 more (16.png - 25.png)
-  let stickerImages = {};
+  const secretInput = document.getElementById('secretInput');
+  const nextBtn = document.getElementById('nextBtn');
+  const tooltip = document.getElementById('tooltip');
 
-  function preloadStickers(countStart, countEnd, prefix = '') {
-    for(let i=countStart; i<=countEnd; i++){
-      const num = i.toString();
-      const img = new Image();
-      img.src = `stickers/${prefix}${num}.png`;
-      stickerImages[`${prefix}${num}`] = img;
-    }
+  // Canvas size constants
+  const CANVAS_WIDTH = canvas.width;
+  const CANVAS_HEIGHT = canvas.height;
+  overlay.width = CANVAS_WIDTH;
+  overlay.height = CANVAS_HEIGHT;
+
+  // Model for elements on canvas: stickers and text objects
+  // Each item: { id, type: 'sticker'|'text'|'drawing', img?, text?, x, y, scale, rotation, color?, fontSize?, brushPath?, brushColor?, brushSize? }
+  let elements = [];
+  let activeElementId = null;
+
+  // Brush drawing state
+  let isDrawing = false;
+  let brushPath = [];
+
+  // Stickers sources (filenames as placeholders)
+  const stickerCountDefault = 15;
+  const stickerCountBubbleGum = 25;
+  // Array to store sticker URLs for 1.png ... 15.png etc
+  // User said: 1.png ... 15.png for default, 25 for Bubble_Gum
+  // Since we don't have real images, placeholders will be colored squares with number
+
+  // For demo, generate stickers as colored SVG data URLs dynamically
+  function generateStickerSVG(number) {
+    const colors = [
+      '#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff',
+      '#bdb2ff', '#ffc6ff', '#fffffc', '#d0f4de', '#f9dcc4', '#fca311',
+      '#14213d', '#f4d35e', '#ee6c4d', '#3d405b', '#81b29a', '#f2cc8f',
+      '#e07a5f', '#f4f1de', '#a5a58d', '#6b4226', '#5f0f40', '#9a031e', '#fb8b24',
+    ];
+    const c = colors[number % colors.length];
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+      <rect width="48" height="48" fill="${c}" rx="12" ry="12"/>
+      <text x="24" y="28" font-size="18" font-family="Arial" fill="#222" text-anchor="middle" font-weight="bold">${number}</text>
+    </svg>`;
+    return 'data:image/svg+xml;base64,' + btoa(svg);
   }
 
-  // Default stickers: 1.png - 15.png
-  preloadStickers(1, 15);
+  // We'll store stickers URLs in an array for convenience
+  let stickersDefault = [];
+  for (let i=1; i<=stickerCountDefault; i++) {
+    stickersDefault.push(generateStickerSVG(i));
+  }
+  let stickersBubbleGum = [];
+  for (let i=1; i<=stickerCountBubbleGum; i++) {
+    stickersBubbleGum.push(generateStickerSVG(i));
+  }
 
-  // Bubble_Gum stickers: 1.png - 25.png (extra 16-25)
-  preloadStickers(1, 25, '');
+  // Current stickers set to display in sidebar
+  let currentStickers = stickersDefault;
 
-  // Fill stickers grid with current set
-  function fillStickersGrid(setName) {
+  // --- Initialize stickers grid ---
+  function fillStickersGrid(type='default') {
     stickersGrid.innerHTML = '';
-    let maxCount = setName === 'bubble_gum' ? 25 : 15;
-    for(let i=1; i<=maxCount; i++){
-      const key = i.toString();
-      const img = new Image();
-      img.src = `stickers/${key}.png`;
-      img.alt = `Sticker ${i}`;
-      img.tabIndex = 0;
-      img.setAttribute('role','button');
-      img.setAttribute('aria-label',`Add sticker ${i}`);
+    currentStickers = (type === 'bubblegum') ? stickersBubbleGum : stickersDefault;
+    currentStickers.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `Sticker ${i+1}.png`;
+      img.title = `Sticker ${i+1}.png`;
+      img.draggable = false;
       img.addEventListener('click', () => {
         addSticker(i);
       });
-      img.addEventListener('keydown', e => {
-        if(e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          addSticker(i);
-        }
-      });
       stickersGrid.appendChild(img);
-    }
+    });
   }
-  fillStickersGrid('default');
 
-  // Add sticker to center canvas
+  // --- Add sticker to canvas ---
   function addSticker(index) {
-    const key = index.toString();
-    const img = stickerImages[key];
-    if(!img) return alert('Sticker not loaded yet');
-    // Clone image element for drawSticker
-    const newImg = new Image();
-    newImg.src = img.src;
-    newImg.onload = () => {
-      const obj = {
+    const id = 'el' + Date.now() + Math.floor(Math.random()*1000);
+    const stickerSrc = currentStickers[index];
+    const img = new Image();
+    img.src = stickerSrc;
+    img.onload = () => {
+      const el = {
+        id,
         type: 'sticker',
-        id: crypto.randomUUID(),
-        img: newImg,
-        x: canvas.width/2,
-        y: canvas.height/2,
+        img,
+        x: CANVAS_WIDTH/2 - img.width/2,
+        y: CANVAS_HEIGHT/2 - img.height/2,
         scale: 1,
         rotation: 0,
+        width: img.width,
+        height: img.height,
       };
-      state.objects.push(obj);
-      state.selectedObjectId = obj.id;
-      redraw();
+      elements.push(el);
+      setActiveElement(id);
+      redrawCanvas();
       updateLayersPanel();
     };
   }
 
-  // --- Text controls ---
-  const textInput = document.getElementById('textInput');
-  const addTextBtn = document.getElementById('addTextBtn');
-  const textHue = document.getElementById('textHue');
-  const textSat = document.getElementById('textSat');
-  const textLight = document.getElementById('textLight');
-  const rotateTextBtn = document.getElementById('rotateTextBtn');
-  const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
-
-  addTextBtn.addEventListener('click', () => {
+  // --- Add text to canvas ---
+  function addText() {
     const text = textInput.value.trim();
-    if(!text) return;
-    const obj = {
+    if (!text) return alert('Enter some text first!');
+    const id = 'el' + Date.now() + Math.floor(Math.random()*1000);
+    const fontSize = parseInt(fontSizeInput.value) || 32;
+    const color = textColorInput.value || '#ff1493';
+    const rotation = parseFloat(textRotateInput.value) || 0;
+    const el = {
+      id,
       type: 'text',
-      id: crypto.randomUUID(),
-      text: text,
-      x: canvas.width/2,
-      y: canvas.height/2,
-      fontSize: 42,
-      colorH: +textHue.value,
-      colorS: +textSat.value,
-      colorL: +textLight.value,
-      rotation: 0,
+      text,
+      x: CANVAS_WIDTH/2,
+      y: CANVAS_HEIGHT/2,
+      scale: 1,
+      rotation,
+      color,
+      fontSize,
     };
-    state.objects.push(obj);
-    state.selectedObjectId = obj.id;
+    elements.push(el);
+    setActiveElement(id);
+    redrawCanvas();
+    updateLayersPanel();
     textInput.value = '';
-    redraw();
-    updateLayersPanel();
-  });
+  }
 
-  rotateTextBtn.addEventListener('click', () => {
-    const obj = getSelectedObject();
-    if(!obj || obj.type !== 'text') return;
-    obj.rotation += Math.PI/2;
-    redraw();
-  });
-
-  deleteSelectedBtn.addEventListener('click', () => {
-    if(!state.selectedObjectId) return;
-    const index = state.objects.findIndex(o => o.id === state.selectedObjectId);
-    if(index === -1) return;
-    state.objects.splice(index, 1);
-    state.selectedObjectId = null;
-    redraw();
-    updateLayersPanel();
-  });
-
-  // --- Layers panel ---
-  const layersList = document.getElementById('layersList');
-
-  function updateLayersPanel() {
-    layersList.innerHTML = '';
-    // Show layers from top to bottom (last is top)
-    for(let i=state.objects.length-1; i>=0; i--){
-      const obj = state.objects[i];
-      const li = document.createElement('li');
-      li.textContent = `${obj.type[0].toUpperCase() + obj.type.slice(1)} ${obj.id.slice(0,6)}`;
-      if(obj.id === state.selectedObjectId) li.classList.add('selected');
-      li.tabIndex = 0;
-      li.setAttribute('role', 'button');
-      li.addEventListener('click', () => {
-        state.selectedObjectId = obj.id;
-        redraw();
-        updateLayersPanel();
-      });
-      li.addEventListener('keydown', e => {
-        if(e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          state.selectedObjectId = obj.id;
-          redraw();
-          updateLayersPanel();
-        }
-      });
-
-      const controlsDiv = document.createElement('div');
-      controlsDiv.classList.add('layer-controls');
-
-      const upBtn = document.createElement('button');
-      upBtn.title = 'Move layer up';
-      upBtn.textContent = '↑';
-      upBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        moveLayer(obj.id, +1);
-      });
-      controlsDiv.appendChild(upBtn);
-
-      const downBtn = document.createElement('button');
-      downBtn.title = 'Move layer down';
-      downBtn.textContent = '↓';
-      downBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        moveLayer(obj.id, -1);
-      });
-      controlsDiv.appendChild(downBtn);
-
-      li.appendChild(controlsDiv);
-      layersList.appendChild(li);
+  // --- Drawing with brush ---
+  function startDrawing() {
+    isDrawing = true;
+    brushPath = [];
+    overlay.style.cursor = 'crosshair';
+    toggleBrushBtn.textContent = 'Stop Drawing';
+  }
+  function stopDrawing() {
+    if (isDrawing && brushPath.length) {
+      // Save brush stroke as new element
+      const id = 'el' + Date.now() + Math.floor(Math.random()*1000);
+      const el = {
+        id,
+        type: 'drawing',
+        brushPath: brushPath.slice(),
+        brushColor: brushColorInput.value,
+        brushSize: parseInt(brushSizeInput.value),
+      };
+      elements.push(el);
+      updateLayersPanel();
+      redrawCanvas();
     }
+    isDrawing = false;
+    brushPath = [];
+    overlay.style.cursor = 'default';
+    toggleBrushBtn.textContent = 'Start Drawing';
   }
 
-  function moveLayer(id, direction) {
-    const index = state.objects.findIndex(o=>o.id===id);
-    if(index === -1) return;
-    const newIndex = index + direction;
-    if(newIndex < 0 || newIndex >= state.objects.length) return;
-    const temp = state.objects[newIndex];
-    state.objects[newIndex] = state.objects[index];
-    state.objects[index] = temp;
-    redraw();
-    updateLayersPanel();
+  // --- Mouse event handlers for brush and drag ---
+  let dragOffset = {x:0,y:0};
+  let isDragging = false;
+  let dragElement = null;
+  let lastMousePos = {x:0,y:0};
+
+  function getMousePos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (evt.clientX - rect.left) * (canvas.width/rect.width),
+      y: (evt.clientY - rect.top) * (canvas.height/rect.height),
+    };
   }
 
-  // --- Select object by click on canvas ---
-  canvas.addEventListener('click', e => {
-    if(state.isDrawingMode) return; // don't select while drawing
-    const pos = getPointerPos(e);
+  // Check if mouse is inside element bounds (rough box)
+  function isPointInElement(x,y,el) {
+    if (el.type === 'sticker' || el.type === 'drawing') {
+      // Use bounding box
+      // For rotation, approximate with circle radius (max dimension)
+      const cx = el.x + (el.width ? el.width*el.scale/2 : 0);
+      const cy = el.y + (el.height ? el.height*el.scale/2 : 0);
+      const maxDim = Math.max(el.width || 0, el.height || 0)*el.scale/2;
+      const dist = Math.sqrt((x-cx)**2 + (y-cy)**2);
+      return dist <= maxDim;
+    } else if (el.type === 'text') {
+      // Approximate text bounding box (centered at x,y)
+      const ctxTemp = ctx;
+      ctxTemp.font = `${el.fontSize}px Segoe UI, Tahoma, Geneva, Verdana, sans-serif`;
+      const textWidth = ctxTemp.measureText(el.text).width * el.scale;
+      const textHeight = el.fontSize * el.scale;
+      // simple box around (x,y)
+      const left = el.x - textWidth/2;
+      const right = el.x + textWidth/2;
+      const top = el.y - textHeight/2;
+      const bottom = el.y + textHeight/2;
+      return x>=left && x<=right && y>=top && y<=bottom;
+    }
+    return false;
+  }
 
-    // Reverse order (top to bottom) to select first top object under cursor
-    for(let i=state.objects.length-1; i>=0; i--){
-      const obj = state.objects[i];
-      if(obj.type === 'sticker'){
-        if(pointInSticker(pos, obj)){
-          state.selectedObjectId = obj.id;
-          redraw();
-          updateLayersPanel();
-          return;
-        }
-      } else if(obj.type === 'text'){
-        if(pointInText(pos, obj)){
-          state.selectedObjectId = obj.id;
-          redraw();
-          updateLayersPanel();
-          return;
-        }
+  // Select element on mouse down
+  function onMouseDown(evt) {
+    const pos = getMousePos(evt);
+    lastMousePos = pos;
+    if (isDrawing) {
+      brushPath.push(pos);
+      return;
+    }
+    // Check elements in reverse order (top first)
+    for(let i=elements.length-1; i>=0; i--) {
+      if (isPointInElement(pos.x, pos.y, elements[i])) {
+        setActiveElement(elements[i].id);
+        dragOffset.x = pos.x - elements[i].x;
+        dragOffset.y = pos.y - elements[i].y;
+        isDragging = true;
+        dragElement = elements[i];
+        redrawCanvas();
+        return;
       }
     }
-    // If no object selected by click, deselect all
-    state.selectedObjectId = null;
-    redraw();
-    updateLayersPanel();
-  });
-
-  function pointInSticker(point, sticker) {
-    if(!sticker.img) return false;
-    const w = sticker.img.width * sticker.scale;
-    const h = sticker.img.height * sticker.scale;
-    const dx = point.x - sticker.x;
-    const dy = point.y - sticker.y;
-    // Rotate point back inverse rotation
-    const angle = -sticker.rotation;
-    const rx = dx * Math.cos(angle) - dy * Math.sin(angle);
-    const ry = dx * Math.sin(angle) + dy * Math.cos(angle);
-    return rx > -w/2 && rx < w/2 && ry > -h/2 && ry < h/2;
+    // If clicked outside elements, clear selection
+    setActiveElement(null);
+    redrawCanvas();
   }
-
-  function pointInText(point, textObj) {
-    ctx.font = `${textObj.fontSize}px 'Comfortaa', cursive, sans-serif`;
-    const metrics = ctx.measureText(textObj.text);
-    const w = metrics.width;
-    const h = textObj.fontSize;
-    const dx = point.x - textObj.x;
-    const dy = point.y - textObj.y;
-    const angle = -textObj.rotation;
-    const rx = dx * Math.cos(angle) - dy * Math.sin(angle);
-    const ry = dx * Math.sin(angle) + dy * Math.cos(angle);
-    return rx > -w/2 - 8 && rx < w/2 + 8 && ry > -h/2 - 8 && ry < h/2 + 8;
-  }
-
-  // --- Move selected object with mouse drag ---
-  let dragOffset = null;
-  canvas.addEventListener('pointerdown', e => {
-    if(state.isDrawingMode) return;
-    if(!state.selectedObjectId) return;
-    const pos = getPointerPos(e);
-    const obj = getSelectedObject();
-    if(!obj) return;
-    if(obj.type === 'sticker' && pointInSticker(pos,obj) || obj.type==='text' && pointInText(pos,obj)) {
-      dragOffset = {x: pos.x - obj.x, y: pos.y - obj.y};
-      canvas.setPointerCapture(e.pointerId);
+  function onMouseMove(evt) {
+    const pos = getMousePos(evt);
+    if (isDrawing) {
+      brushPath.push(pos);
+      redrawOverlay();
+      return;
     }
-  });
-  canvas.addEventListener('pointermove', e => {
-    if(!dragOffset) return;
-    const pos = getPointerPos(e);
-    const obj = getSelectedObject();
-    if(!obj) return;
-    obj.x = pos.x - dragOffset.x;
-    obj.y = pos.y - dragOffset.y;
-    redraw();
-  });
-  canvas.addEventListener('pointerup', e => {
-    dragOffset = null;
-  });
-  canvas.addEventListener('pointercancel', e => {
-    dragOffset = null;
-  });
-
-  function getSelectedObject() {
-    if(!state.selectedObjectId) return null;
-    return state.objects.find(o => o.id === state.selectedObjectId) || null;
+    if (isDragging && dragElement) {
+      dragElement.x = pos.x - dragOffset.x;
+      dragElement.y = pos.y - dragOffset.y;
+      redrawCanvas();
+      redrawOverlay();
+      return;
+    }
+    // Tooltip
+    tooltip.style.opacity = 0;
+  }
+  function onMouseUp(evt) {
+    if (isDrawing) {
+      stopDrawing();
+      redrawCanvas();
+      redrawOverlay();
+      return;
+    }
+    if (isDragging) {
+      isDragging = false;
+      dragElement = null;
+    }
   }
 
-  // --- Templates ---
-  const templateSelect = document.getElementById('templateSelect');
-  const applyTemplateBtn = document.getElementById('applyTemplateBtn');
+  // --- Redraw canvas ---
+  function redrawCanvas() {
+    // Clear canvas & apply background color + filters
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  applyTemplateBtn.addEventListener('click', () => {
-    const val = templateSelect.value;
-    applyTemplate(val);
-  });
+    // Apply filters
+    const brightness = brightnessRange.value / 100;
+    const saturation = saturationRange.value / 100;
+    ctx.filter = `brightness(${brightness}) saturate(${saturation})`;
 
-  function clearCanvasObjects() {
-    state.objects = [];
-    state.selectedObjectId = null;
+    // Fill background
+    ctx.fillStyle = bgColorInput.value;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Draw all elements in order
+    elements.forEach(el => {
+      ctx.save();
+      ctx.translate(el.x, el.y);
+      ctx.rotate((el.rotation||0)*Math.PI/180);
+      ctx.scale(el.scale || 1, el.scale || 1);
+
+      if (el.type === 'sticker' && el.img) {
+        ctx.drawImage(el.img, -el.img.width/2, -el.img.height/2);
+      } else if (el.type === 'text' && el.text) {
+        ctx.fillStyle = el.color || '#000';
+        ctx.font = `${el.fontSize || 32}px Segoe UI, Tahoma, Geneva, Verdana, sans-serif`;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.fillText(el.text, 0, 0);
+      } else if (el.type === 'drawing' && el.brushPath) {
+        ctx.strokeStyle = el.brushColor || '#000';
+        ctx.lineWidth = el.brushSize || 5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        el.brushPath.forEach((pt, i) => {
+          if(i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    ctx.filter = 'none';
+
+    redrawOverlay();
   }
 
-  function applyTemplate(name) {
-    clearCanvasObjects();
+  // --- Redraw overlay for selection ---
+  function redrawOverlay() {
+    octx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    if (!activeElementId) return;
+    const el = elements.find(e => e.id === activeElementId);
+    if (!el) return;
+    octx.save();
+    octx.translate(el.x, el.y);
+    octx.rotate((el.rotation||0)*Math.PI/180);
+    octx.scale(el.scale || 1, el.scale || 1);
+    octx.strokeStyle = '#ff1493';
+    octx.lineWidth = 3;
+    octx.setLineDash([8,6]);
+    if (el.type === 'sticker' && el.img) {
+      octx.strokeRect(-el.img.width/2, -el.img.height/2, el.img.width, el.img.height);
+    } else if (el.type === 'text' && el.text) {
+      const textWidth = ctx.measureText(el.text).width * (el.scale||1);
+      const textHeight = el.fontSize * (el.scale||1);
+      octx.strokeRect(-textWidth/2, -textHeight/2, textWidth, textHeight);
+    } else if (el.type === 'drawing' && el.brushPath) {
+      // For drawing, highlight bounding box of points
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      el.brushPath.forEach(p => {
+        if(p.x < minX) minX = p.x;
+        if(p.y < minY) minY = p.y;
+        if(p.x > maxX) maxX = p.x;
+        if(p.y > maxY) maxY = p.y;
+      });
+      octx.strokeRect(minX, minY, maxX-minX, maxY-minY);
+    }
+    octx.restore();
+  }
 
-    if(name === 'cute_day'){
-      bgHue.value = 270; bgSat.value=50; bgLight.value=95;
-      updateBackground();
-      // Add some random stickers
-      addStickerAt('1', 200, 200, 0.9, 0);
-      addStickerAt('5', 400, 300, 1.2, 0.3);
-      addStickerAt('3', 600, 180, 1, -0.2);
-    } else if(name === 'water_paradise'){
-      bgHue.value = 190; bgSat.value=80; bgLight.value=85;
-      updateBackground();
-      addStickerAt('7', 250, 250, 1.3, 0.1);
-      addStickerAt('12', 600, 280, 1.1, 0);
-      addStickerAt('14', 520, 150, 1, 0.2);
-    } else if(name === 'ice_magic'){
-      bgHue.value = 210; bgSat.value=70; bgLight.value=90;
-      updateBackground();
-      addStickerAt('8', 300, 220, 1, 0);
-      addStickerAt('10', 500, 260, 1.2, 0.15);
-      addStickerAt('2', 620, 180, 0.9, -0.3);
-    } else if(name === 'star_flight'){
-      bgHue.value = 260; bgSat.value=60; bgLight.value=40;
-      updateBackground();
-      addStickerAt('4', 350, 200, 1.4, 0.4);
-      addStickerAt('9', 620, 270, 1, 0);
-      addStickerAt('11', 480, 180, 1.1, -0.1);
-    } else if(name === 'bubble_gum'){
-      bgHue.value = 320; bgSat.value=70; bgLight.value=90;
-      updateBackground();
-      fillStickersGrid('bubble_gum');
-      // Add some random bubble gum stickers
-      addStickerAt('16', 300, 240, 1, 0);
-      addStickerAt('20', 520, 200, 1.1, 0.2);
-      addStickerAt('22', 650, 280, 1.3, -0.25);
+  // --- Set active element ---
+  function setActiveElement(id) {
+    activeElementId = id;
+    updateLayersPanel();
+    redrawOverlay();
+  }
+
+  // --- Update layers panel ---
+  function updateLayersPanel() {
+    layersPanel.innerHTML = '';
+    for (let i = elements.length -1; i>=0; i--) {
+      const el = elements[i];
+      const li = document.createElement('li');
+      li.textContent = `${el.type === 'sticker' ? 'Sticker' : el.type === 'text' ? 'Text' : 'Drawing'} #${i+1}`;
+      if (el.id === activeElementId) {
+        li.classList.add('active');
+      }
+      li.addEventListener('click', () => {
+        setActiveElement(el.id);
+      });
+      layersPanel.appendChild(li);
+    }
+  }
+
+  // --- Clear canvas and reset ---
+  function clearCanvas() {
+    if (!confirm('Clear canvas and remove all elements?')) return;
+    elements = [];
+    activeElementId = null;
+    redrawCanvas();
+    updateLayersPanel();
+  }
+
+  // --- Update background ---
+  function updateBackground() {
+    redrawCanvas();
+  }
+
+  // --- Secret Input handling ---
+  secretInput.addEventListener('input', () => {
+    const val = secretInput.value.trim();
+    const today = new Date().getDate().toString().padStart(2,'0');
+
+    if (val === '0103') {
+      // Redirect to yukki secret page
+      window.location.href = 'secret/yukki.html';
+    } else if (val.toLowerCase() === 'bubble_gum'.toLowerCase()) {
+      // Switch to Bubble Gum stickers (25)
+      fillStickersGrid('bubblegum');
+      alert('Bubble Gum mode: Stickers set changed.');
+      secretInput.value = '';
+    } else if (val === today) {
+      showMoodPopup();
+      secretInput.value = '';
+    }
+    // No message on wrong code, do nothing
+  });
+
+  // --- Mood popup ---
+  function showMoodPopup() {
+    if(document.querySelector('.mood-popup')) return;
+    const container = document.createElement('div');
+    container.className = 'mood-popup';
+    container.innerHTML = `
+      <h3>✨ What mood are you feeling today?</h3>
+      <ul>
+        <li data-mood="cute">• Cute and cozy</li>
+        <li data-mood="fire">• Fiery, explosive, intense</li>
+        <li data-mood="water">• Watery, soft, like little fish 🐟❤️</li>
+        <li data-mood="sweet">• Sweet and sugary 🍬</li>
+        <li data-mood="creative">• Creative, inspired, artistic 🎨</li>
+      </ul>
+    `;
+    document.body.appendChild(container);
+    container.querySelectorAll('li').forEach(li => {
+      li.addEventListener('click', () => {
+        alert(`You chose mood: "${li.textContent.trim()}"! Cool!`);
+        container.remove();
+      });
+    });
+  }
+
+  // --- Next button handler ---
+  nextBtn.addEventListener('click', () => {
+    // Go to second page/site (example)
+    window.location.href = 'index2.html';
+  });
+
+  // --- Brush tool toggle ---
+  toggleBrushBtn.addEventListener('click', () => {
+    if (isDrawing) {
+      stopDrawing();
     } else {
-      // Default
-      bgHue.value = 270; bgSat.value=50; bgLight.value=95;
-      updateBackground();
-      fillStickersGrid('default');
-    }
-    redraw();
-    updateLayersPanel();
-  }
-
-  function addStickerAt(index, x, y, scale=1, rotation=0) {
-    const key = index.toString();
-    const img = new Image();
-    img.src = `stickers/${key}.png`;
-    img.onload = () => {
-      const obj = {
-        type: 'sticker',
-        id: crypto.randomUUID(),
-        img: img,
-        x: x,
-        y: y,
-        scale: scale,
-        rotation: rotation,
-      };
-      state.objects.push(obj);
-      state.selectedObjectId = obj.id;
-      redraw();
-      updateLayersPanel();
-    };
-  }
-
-  // --- Magic auto 😻 ---
-  const magicAutoBtn = document.getElementById('magicAutoBtn');
-  magicAutoBtn.addEventListener('click', () => {
-    magicAutoGenerate();
-  });
-
-  function magicAutoGenerate() {
-    clearCanvasObjects();
-    // Random background soft pastel
-    state.backgroundH = Math.floor(Math.random()*360);
-    state.backgroundS = 50 + Math.floor(Math.random()*30);
-    state.backgroundL = 90 + Math.floor(Math.random()*10);
-    bgHue.value = state.backgroundH;
-    bgSat.value = state.backgroundS;
-    bgLight.value = state.backgroundL;
-    updateBackground();
-    fillStickersGrid('default');
-
-    // Add 6-10 random stickers from default set
-    const count = 6 + Math.floor(Math.random()*5);
-    for(let i=0; i<count; i++){
-      const idx = 1 + Math.floor(Math.random()*15);
-      const x = 100 + Math.random()*(canvas.width-200);
-      const y = 100 + Math.random()*(canvas.height-200);
-      const scale = 0.7 + Math.random()*0.9;
-      const rotation = (Math.random()*2 - 1)*0.5;
-      addStickerAt(idx.toString(), x, y, scale, rotation);
-    }
-    // Add 1-3 random texts
-    const texts = ['💜', '✨', '🌈', 'Hello!', '🎉', '😍', '🌸'];
-    for(let i=0; i<2; i++){
-      const txt = texts[Math.floor(Math.random()*texts.length)];
-      const obj = {
-        type: 'text',
-        id: crypto.randomUUID(),
-        text: txt,
-        x: 100 + Math.random()*(canvas.width-200),
-        y: 100 + Math.random()*(canvas.height-200),
-        fontSize: 36 + Math.floor(Math.random()*20),
-        colorH: Math.floor(Math.random()*360),
-        colorS: 80,
-        colorL: 50,
-        rotation: (Math.random()*2 - 1)*Math.PI/4,
-      };
-      state.objects.push(obj);
-    }
-    redraw();
-    updateLayersPanel();
-  }
-
-  // --- Save ---
-  const saveBtn = document.getElementById('saveBtn');
-  const clearAllBtn = document.getElementById('clearAllBtn');
-
-  saveBtn.addEventListener('click', () => {
-    // Hide selection before save
-    const prevSelected = state.selectedObjectId;
-    state.selectedObjectId = null;
-    redraw();
-    const dataUrl = canvas.toDataURL('image/png');
-    state.selectedObjectId = prevSelected;
-    redraw();
-
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'wallpaper.png';
-    link.click();
-  });
-
-  clearAllBtn.addEventListener('click', () => {
-    if(confirm('Clear everything and start fresh?')) {
-      clearCanvasObjects();
-      fillStickersGrid('default');
-      redraw();
-      updateLayersPanel();
+      startDrawing();
     }
   });
 
-.mood-popup {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  color: #000;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 400px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  z-index: 9999;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-}
+  // --- Add text button ---
+  addTextBtn.addEventListener('click', addText);
 
-.mood-popup h3 {
-  margin-top: 0;
-  color: #ff1493;
-}
+  // --- Clear canvas button ---
+  clearCanvasBtn.addEventListener('click', clearCanvas);
 
-.mood-popup ul {
-  list-style: none;
-  padding-left: 0;
-  font-size: 16px;
-  margin-bottom: 0;
-}
+  // --- Input handlers for background controls ---
+  bgColorInput.addEventListener('input', updateBackground);
+  brightnessRange.addEventListener('input', updateBackground);
+  saturationRange.addEventListener('input', updateBackground);
 
-.mood-popup li {
-  margin: 8px 0;
-  cursor: pointer;
-  transition: 0.2s;
-  color: #333;
-}
+  // --- Canvas mouse events ---
+  canvas.addEventListener('mousedown', onMouseDown);
+  canvas.addEventListener('mousemove', onMouseMove);
+  canvas.addEventListener('mouseup', onMouseUp);
+  canvas.addEventListener('mouseleave', onMouseUp);
 
-.mood-popup li:hover {
-  color: #ff1493;
-}
+  overlay.addEventListener('mousedown', onMouseDown);
+  overlay.addEventListener('mousemove', onMouseMove);
+  overlay.addEventListener('mouseup', onMouseUp);
+  overlay.addEventListener('mouseleave', onMouseUp);
 
-    }
-  });
-
-// --- Secret input for Easter eggs ---
-const secretInput = document.getElementById('secretInput');
-
-secretInput.addEventListener('input', () => {
-  const val = secretInput.value.trim().toLowerCase();
-  const today = new Date().getDate().toString().padStart(2, '0');
-
-  if (val === '0103') {
-    window.location.href = 'secret/yukki.html';
-  } else if (val === today) {
-    showMoodTest();
-  } else if (val === 'bubble_gum') {
-    alert('Bubble Gum mode activated! Stickers 1-25 unlocked!');
-    fillStickersGrid('bubble_gum');
-    secretInput.value = '';
-  }
-});
-
-// mood-popup
-function showMoodTest() {
-  if (document.querySelector('.mood-popup')) return;
-
-  const container = document.createElement('div');
-  container.className = 'mood-popup';
-  container.innerHTML = `
-    <h3>✨ What mood are you feeling today?</h3>
-    <ul>
-      <li onclick="goToMood('cute')">• Cute and cozy</li>
-      <li onclick="goToMood('fire')">• Fiery, explosive, intense</li>
-      <li onclick="goToMood('water')">• Watery, soft, like little fish 🐟❤️</li>
-      <li onclick="goToMood('sweet')">• Sweet like candy</li>
-      <li onclick="goToMood('salty')">• Something salty...</li>
-      <li onclick="goToMood('summer')">• Summery ☀️</li>
-      <li onclick="goToMood('winter')">• Wintry ❄️</li>
-    </ul>
-  `;
-  document.body.appendChild(container);
-}
-
-function goToMood(mood) {
-  window.location.href = `mood/${mood}.html`;
-}
-
-
-
-  // --- Init ---
-  updateBackground();
+  // --- Initialize ---
   fillStickersGrid('default');
+  updateBackground();
   updateLayersPanel();
 
-  // --- Next button logic ---
-  const nextBtn = document.createElement('button');
-  nextBtn.id = 'nextBtn';
-  nextBtn.textContent = 'Next →';
-  document.body.appendChild(nextBtn);
-
-  nextBtn.addEventListener('click', () => {
-    window.location.href = 'page2.html'; 
+  // --- Keyboard shortcuts ---
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (activeElementId) {
+        elements = elements.filter(el => el.id !== activeElementId);
+        activeElementId = null;
+        updateLayersPanel();
+        redrawCanvas();
+      }
+    }
   });
 
-})();</script>
+  // --- Tooltip example ---
+  canvas.addEventListener('mousemove', (evt) => {
+    const pos = getMousePos(evt);
+    tooltip.style.opacity = 0;
+    for(let i=elements.length-1; i>=0; i--) {
+      if (isPointInElement(pos.x, pos.y, elements[i])) {
+        tooltip.textContent = `${elements[i].type.charAt(0).toUpperCase() + elements[i].type.slice(1)} — Click & drag to move`;
+        tooltip.style.left = evt.clientX + 15 + 'px';
+        tooltip.style.top = evt.clientY + 15 + 'px';
+        tooltip.style.opacity = 1;
+        break;
+      }
+    }
+  });
+  canvas.addEventListener('mouseleave', () => {
+    tooltip.style.opacity = 0;
+  });
 
-<style>
-  #nextBtn {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff69b4;
-    color: white;
-    font-size: 16px;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 999px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    z-index: 9999;
-  }
-
-  #nextBtn:hover {
-    background-color: #ff85c1;
-    transform: translateX(-50%) scale(1.05);
-  }
-</style>
-
-<button id="nextBtn">Next →</button>
-
-<style>
-  #nextBtn {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff69b4;
-    color: white;
-    font-size: 16px;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 999px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    z-index: 9999;
-  }
-  #nextBtn:hover {
-    background-color: #ff85c1;
-    transform: translateX(-50%) scale(1.05);
-  }
-</style>
-
-<script>
-document.getElementById('nextBtn').addEventListener('click', () => {
-  window.location.href = 'page2.html'; // Или куда хочешь
-});
+})();
 </script>
-
 </body>
 </html>
