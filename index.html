@@ -1177,6 +1177,51 @@
     }
   });
 
+// --- Secret input for Easter eggs ---
+const secretInput = document.getElementById('secretInput');
+
+secretInput.addEventListener('input', () => {
+  const val = secretInput.value.trim().toLowerCase();
+  const today = new Date().getDate().toString().padStart(2, '0');
+
+  if (val === '0103') {
+    window.location.href = 'secret/yukki.html';
+  } else if (val === today) {
+    showMoodTest();
+  } else if (val === 'bubble_gum') {
+    alert('Bubble Gum mode activated! Stickers 1-25 unlocked!');
+    fillStickersGrid('bubble_gum');
+    secretInput.value = '';
+  }
+});
+
+// mood-popup
+function showMoodTest() {
+  if (document.querySelector('.mood-popup')) return;
+
+  const container = document.createElement('div');
+  container.className = 'mood-popup';
+  container.innerHTML = `
+    <h3>✨ What mood are you feeling today?</h3>
+    <ul>
+      <li onclick="goToMood('cute')">• Cute and cozy</li>
+      <li onclick="goToMood('fire')">• Fiery, explosive, intense</li>
+      <li onclick="goToMood('water')">• Watery, soft, like little fish 🐟❤️</li>
+      <li onclick="goToMood('sweet')">• Sweet like candy</li>
+      <li onclick="goToMood('salty')">• Something salty...</li>
+      <li onclick="goToMood('summer')">• Summery ☀️</li>
+      <li onclick="goToMood('winter')">• Wintry ❄️</li>
+    </ul>
+  `;
+  document.body.appendChild(container);
+}
+
+function goToMood(mood) {
+  window.location.href = `mood/${mood}.html`;
+}
+
+
+
   // --- Init ---
   updateBackground();
   fillStickersGrid('default');
