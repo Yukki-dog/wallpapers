@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>•●Dreamy Wallpaper Creator●•</title>
+<title>•●■Dreamy Wallpaper Creator■●•</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
 
@@ -1160,10 +1160,11 @@
     }
   });
 
-  // --- Init ---
-  updateBackground();
-  fillStickersGrid('default');
-  updateLayersPanel();
+// --- Init ---
+updateBackground();
+fillStickersGrid('default');
+updateLayersPanel();
+
 // Функция для показа панели выбора настроения
 function showMoodSelectorPanel() {
   if(document.getElementById('moodSelectorContainer')) return;
@@ -1208,29 +1209,26 @@ function showMoodSelectorPanel() {
 function goToMood(mood) {
   window.location.href = `mood/${mood}.html`;
 }
-
-
-window.goToMood = goToMood;
-
+window.goToMood = goToMood;  // чтобы была доступна из HTML onclick
 
 // --- Секретный ввод ---
 const secretInput = document.getElementById('secretInput');
 
 secretInput.addEventListener('keydown', e => {
-  if(e.key === 'Enter'){
+  if (e.key === 'Enter') {
     const val = secretInput.value.trim().toLowerCase();
-    if(!val) return;
+    if (!val) return;
 
     const now = new Date();
     const day = String(now.getDate()); // текущий день без ведущих нулей
 
-    if(val === '0103'){
+    if (val === '0103') {
       window.location.href = 'yukki.html';
-    } else if(val === 'bubble_gum'){
+    } else if (val === 'bubble_gum') {
       alert('Bubble Gum mode activated! Stickers 1-25 unlocked!');
       fillStickersGrid('bubble_gum');
       secretInput.value = '';
-    } else if(val === day){
+    } else if (val === day) {
       showMoodSelectorPanel();
       // Оставляем поле как есть, не очищаем
     } else {
