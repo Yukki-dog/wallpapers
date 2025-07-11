@@ -1,115 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐟 Water Wallpapers</title>
+  <title>🐟 Water Wallpapers 🐠</title>
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
   <style>
     :root {
-      --theme-blue: linear-gradient(to bottom, #a2d4f2, #057d9f);
-      --theme-darkblue: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-      --theme-black: linear-gradient(to bottom, #111, #222);
-      --theme-lightblue: linear-gradient(to bottom, #cceeff, #66ccff);
-      --theme-azure: linear-gradient(to bottom, #7fcdff, #2193b0);
-      --theme-deepblue: linear-gradient(to bottom, #001f3f, #003366);
+      --theme-bg: linear-gradient(to bottom, #a2d4f2, #057d9f);
       --text-color: #011627;
       --caption-color: #005577;
-      --vote-selected-glow: #00bcd4;
+      --btn-bg: #0077be;
+      --btn-bg-hover: #005f99;
+      --wallpaper-bg: rgba(255, 255, 255, 0.85);
+      --wallpaper-shadow: rgba(0, 0, 0, 0.1);
     }
 
     body {
-      font-family: 'Gloria Hallelujah', cursive;
       margin: 0;
-      padding: 20px;
-      background: var(--theme-blue);
-      overflow-x: hidden;
+      font-family: 'Gloria Hallelujah', cursive;
+      background: var(--theme-bg);
       color: var(--text-color);
-      transition: background 0.5s, color 0.5s;
-      position: relative;
+      overflow: hidden;
+      padding: 20px;
     }
 
     h1 {
       text-align: center;
       font-size: 3em;
       color: var(--caption-color);
-      text-shadow: 0 0 8px rgba(255,255,255,0.6);
-      user-select: none;
     }
 
     .wallpaper {
-      background: rgba(255, 255, 255, 0.85);
+      background: var(--wallpaper-bg);
+      box-shadow: 0 0 12px var(--wallpaper-shadow);
       border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      margin: 30px auto;
       max-width: 600px;
+      margin: 40px auto;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     .wallpaper img {
       max-width: 100%;
-      border-radius: 10px;
+      border-radius: 12px;
     }
 
     .caption {
-      font-size: 1.3em;
-      color: var(--caption-color);
       margin-top: 10px;
+      font-size: 1.4em;
+      color: var(--caption-color);
     }
 
     .buttons {
-      margin-top: 15px;
       display: flex;
       justify-content: center;
-      gap: 60px;
+      gap: 40px;
+      margin-top: 10px;
     }
 
     .vote-btn {
+      font-size: 2em;
       background: none;
       border: none;
-      font-size: 2.4em;
       cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .vote-btn:hover {
-      transform: scale(1.2);
     }
 
     .vote-btn.selected {
-      filter: drop-shadow(0 0 5px var(--vote-selected-glow));
+      filter: drop-shadow(0 0 4px cyan);
     }
 
     .counter {
+      margin-top: 5px;
       font-size: 1em;
-      margin-top: 8px;
       color: var(--caption-color);
     }
 
     .download {
-      margin-top: 15px;
-      padding: 8px 16px;
-      background: #0077be;
+      display: inline-block;
+      background: var(--btn-bg);
       color: white;
+      padding: 10px 20px;
+      margin-top: 15px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s;
     }
 
     .download:hover {
-      background: #005f99;
+      background: var(--btn-bg-hover);
     }
 
     #downloadModal {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.5);
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
       display: none;
-      justify-content: center;
       align-items: center;
-      z-index: 1000;
+      justify-content: center;
+      z-index: 5;
     }
 
     .modal-content {
@@ -117,36 +111,61 @@
       padding: 20px;
       border-radius: 12px;
       text-align: center;
-      max-width: 600px;
-      width: 90%;
     }
 
     .variant-options img {
-      width: 30%;
+      width: 120px;
       margin: 10px;
       border-radius: 8px;
       cursor: pointer;
     }
 
-    .fish, .bubble {
-      position: absolute;
+    .close-modal {
+      margin-top: 10px;
+      background: gray;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #adminPanel {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      z-index: 10;
+    }
+
+    #adminPanel select {
+      padding: 6px;
+      border-radius: 8px;
+    }
+
+    .floating {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
+      z-index: 0;
+    }
+
+    .bubble, .fish {
+      position: absolute;
       user-select: none;
       opacity: 0.3;
     }
 
-    .fish {
-      animation: swim-left linear infinite;
-    }
-
-    @keyframes swim-left {
-      from { transform: translateX(150vw); }
-      to { transform: translateX(-150vw); }
-    }
-
     .bubble {
       animation: float-up linear infinite;
-      color: white;
+      font-size: 1.2rem;
+      color: #fff;
     }
 
     @keyframes float-up {
@@ -154,24 +173,23 @@
       to { transform: translateY(-10vh); opacity: 0; }
     }
 
-    #adminPanel {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(255,255,255,0.95);
-      padding: 15px;
-      border-radius: 10px;
-      z-index: 9999;
+    .fish {
+      animation: swim-left linear infinite;
+      font-size: 2rem;
+    }
+
+    @keyframes swim-left {
+      from { transform: translateX(150vw); }
+      to { transform: translateX(-150vw); }
     }
   </style>
 </head>
 <body>
-  <h1>Water Mood Wallpapers</h1>
+  <h1>Water Wallpapers</h1>
 
   <div class="wallpaper" data-id="phone">
-    <img src="Water_phone.png" alt="Phone Wallpaper">
-    <div class="caption">Phone size</div>
+    <img src="Water_phone.png" alt="Phone">
+    <div class="caption">Phone</div>
     <div class="buttons">
       <button class="vote-btn like">🐟</button>
       <button class="vote-btn dislike">🐠</button>
@@ -181,8 +199,8 @@
   </div>
 
   <div class="wallpaper" data-id="laptop">
-    <img src="Water_laptop_tablet.png" alt="Laptop Wallpaper">
-    <div class="caption">Laptop / Tablet size</div>
+    <img src="Water_laptop.png" alt="Laptop">
+    <div class="caption">Laptop / Tablet</div>
     <div class="buttons">
       <button class="vote-btn like">🐟</button>
       <button class="vote-btn dislike">🐠</button>
@@ -195,144 +213,162 @@
     <div class="modal-content">
       <h2>Choose a version</h2>
       <div class="variant-options" id="variantOptions"></div>
-      <button onclick="document.getElementById('downloadModal').style.display='none'">Close</button>
+      <button class="close-modal">Close</button>
     </div>
   </div>
 
   <div id="adminPanel">
-    <label for="themeSelect">Select Theme:</label>
+    <label for="themeSelect">Theme:</label>
     <select id="themeSelect">
       <option value="blue">Blue</option>
-      <option value="deepblue">Dark Blue</option>
+      <option value="darkblue">Dark Blue</option>
       <option value="black">Black</option>
       <option value="lightblue">Light Blue</option>
       <option value="azure">Azure</option>
-      <option value="darkblue">Navy</option>
+      <option value="deepblue">Deep Blue</option>
     </select>
   </div>
 
-<script>
-  const themes = {
-    blue: 'var(--theme-blue)',
-    deepblue: 'var(--theme-deepblue)',
-    black: 'var(--theme-black)',
-    lightblue: 'var(--theme-lightblue)',
-    azure: 'var(--theme-azure)',
-    darkblue: 'var(--theme-darkblue)',
-  };
+  <div class="floating" id="floating"></div>
 
-  const themeSelect = document.getElementById('themeSelect');
-  themeSelect.addEventListener('change', () => {
-    document.body.style.background = themes[themeSelect.value];
-    localStorage.setItem('theme', themeSelect.value);
-  });
+  <script>
+    const fishEmojis = ['🐟','🐠','🐬','🐳'];
+    const bubbleChars = ['o','O','0'];
+    const float = document.getElementById('floating');
 
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme && themes[savedTheme]) {
-    document.body.style.background = themes[savedTheme];
-    themeSelect.value = savedTheme;
-  }
+    for (let i = 0; i < 15; i++) {
+      const fish = document.createElement('div');
+      fish.className = 'fish';
+      fish.textContent = fishEmojis[Math.floor(Math.random()*fishEmojis.length)];
+      fish.style.top = `${Math.random()*100}%`;
+      fish.style.left = `${100 + Math.random()*50}vw`;
+      fish.style.animationDuration = `${20 + Math.random()*20}s`;
+      float.appendChild(fish);
+    }
 
-  // Админка (A + D + M)
-  const adminPass = atob('SG9zdF8yMDI1X0FkbWluXzAwNw==');
-  let keys = [];
-  window.addEventListener('keydown', (e) => {
-    keys.push(e.key.toLowerCase());
-    if (keys.slice(-3).join('') === 'adm') {
-      const input = prompt('Enter admin code:');
-      if (input === adminPass) {
-        document.getElementById('adminPanel').style.display = 'block';
-        alert('Admin mode enabled.');
-      } else {
-        alert('Wrong password.');
+    for (let i = 0; i < 30; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = bubbleChars[Math.floor(Math.random()*bubbleChars.length)];
+      bubble.style.left = `${Math.random()*100}vw`;
+      bubble.style.bottom = '-2rem';
+      bubble.style.animationDuration = `${4 + Math.random()*6}s`;
+      float.appendChild(bubble);
+    }
+
+    // Voting logic
+    document.querySelectorAll('.wallpaper').forEach(box => {
+      const id = box.dataset.id;
+      const likeBtn = box.querySelector('.like');
+      const dislikeBtn = box.querySelector('.dislike');
+      const likeCount = box.querySelector('.like-count');
+      const dislikeCount = box.querySelector('.dislike-count');
+      let state = localStorage.getItem('vote-'+id) || 'none';
+
+      function update() {
+        likeBtn.classList.remove('selected');
+        dislikeBtn.classList.remove('selected');
+        if(state === 'like') {
+          likeBtn.classList.add('selected');
+          likeCount.textContent = '1';
+          dislikeCount.textContent = '0';
+        } else if(state === 'dislike') {
+          dislikeBtn.classList.add('selected');
+          likeCount.textContent = '0';
+          dislikeCount.textContent = '1';
+        } else {
+          likeCount.textContent = '0';
+          dislikeCount.textContent = '0';
+        }
       }
-      keys = [];
-    }
-  });
 
-  // Голосование
-  document.querySelectorAll('.wallpaper').forEach(w => {
-    const id = w.dataset.id;
-    const like = w.querySelector('.like');
-    const dislike = w.querySelector('.dislike');
-    const likeCount = w.querySelector('.like-count');
-    const dislikeCount = w.querySelector('.dislike-count');
-    let state = localStorage.getItem('vote-' + id);
+      likeBtn.onclick = () => {
+        state = (state === 'like') ? 'none' : 'like';
+        localStorage.setItem('vote-'+id, state);
+        update();
+      };
+      dislikeBtn.onclick = () => {
+        state = (state === 'dislike') ? 'none' : 'dislike';
+        localStorage.setItem('vote-'+id, state);
+        update();
+      };
 
-    function updateVotes() {
-      like.classList.toggle('selected', state === 'like');
-      dislike.classList.toggle('selected', state === 'dislike');
-      likeCount.textContent = state === 'like' ? '1' : '0';
-      dislikeCount.textContent = state === 'dislike' ? '1' : '0';
-    }
-
-    like.onclick = () => {
-      state = state === 'like' ? null : 'like';
-      localStorage.setItem('vote-' + id, state || '');
-      updateVotes();
-    };
-
-    dislike.onclick = () => {
-      state = state === 'dislike' ? null : 'dislike';
-      localStorage.setItem('vote-' + id, state || '');
-      updateVotes();
-    };
-
-    updateVotes();
-  });
-
-  // Скачать с выбором вариантов
-  const variants = {
-    phone: ['Water_phone.png', 'Water_phone2.png', 'Water_phone3.png'],
-    laptop: ['Water_laptop_tablet.png', 'Water_laptop_tablet2.png', 'Water_laptop_tablet3.png']
-  };
-
-  document.querySelectorAll('.download').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.dataset.type;
-      const container = document.getElementById('variantOptions');
-      container.innerHTML = '';
-      variants[type].forEach(src => {
-        const img = document.createElement('img');
-        img.src = src;
-        img.onclick = () => {
-          const a = document.createElement('a');
-          a.href = src;
-          a.download = src;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          document.getElementById('downloadModal').style.display = 'none';
-        };
-        container.appendChild(img);
-      });
-      document.getElementById('downloadModal').style.display = 'flex';
+      update();
     });
-  });
 
-  // Рыбки и пузыри
-  const fishTypes = ['🐟', '🐬', '🐠'];
-  for (let i = 0; i < 10; i++) {
-    const fish = document.createElement('div');
-    fish.className = 'fish';
-    fish.textContent = fishTypes[Math.floor(Math.random() * fishTypes.length)];
-    fish.style.top = `${Math.random() * 90}%`;
-    fish.style.left = `${100 + Math.random() * 50}vw`;
-    fish.style.fontSize = `${1.5 + Math.random()}rem`;
-    fish.style.animationDuration = `${20 + Math.random() * 40}s`;
-    document.body.appendChild(fish);
-  }
+    // Download Modal
+  const variants = {
+  phone: [
+    'Water_phone.png',
+    'Water_phone2.png',
+    'Water_phone3.png'
+  ],
+  laptop: [
+    'Water_laptop_tablet.png',
+    'Water_laptop_tablet2.png',
+    'Water_laptop_tablet3.png'
+  ]
+};
 
-  for (let i = 0; i < 40; i++) {
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.textContent = ['o', 'O', '0'][Math.floor(Math.random() * 3)];
-    bubble.style.left = `${Math.random() * 100}vw`;
-    bubble.style.bottom = '-2rem';
-    bubble.style.fontSize = `${1 + Math.random() * 1.5}rem`;
-    bubble.style.animationDuration = `${6 + Math.random() * 10}s`;
-    document.body.appendChild(bubble);
-  }
-</script>
+
+    document.querySelectorAll('.download').forEach(btn => {
+      btn.onclick = () => {
+        const type = btn.dataset.type;
+        const container = document.getElementById('variantOptions');
+        container.innerHTML = '';
+        variants[type].forEach(src => {
+          const img = document.createElement('img');
+          img.src = src;
+          img.onclick = () => {
+            const a = document.createElement('a');
+            a.href = src;
+            a.download = src;
+            a.click();
+          };
+          container.appendChild(img);
+        });
+        document.getElementById('downloadModal').style.display = 'flex';
+      }
+    });
+
+    document.querySelector('.close-modal').onclick = () => {
+      document.getElementById('downloadModal').style.display = 'none';
+    };
+
+    // Admin Panel A+D+M
+    let keys = [];
+    window.addEventListener('keydown', e => {
+      keys.push(e.key.toLowerCase());
+      if (keys.slice(-3).join('') === 'adm') {
+       const encryptedPass = 'SG9zdF8yMDI1X0FkbWluXzAwNw=='; 
+const pass = prompt('Enter admin password:');
+if (pass === atob(encryptedPass)) {
+
+          document.getElementById('adminPanel').style.display = 'block';
+        } else {
+          alert('Incorrect password');
+        }
+        keys = [];
+      }
+    });
+
+    document.getElementById('themeSelect').addEventListener('change', e => {
+      const theme = e.target.value;
+      switch(theme) {
+        case 'blue':
+          document.body.style.background = 'linear-gradient(to bottom, #a2d4f2, #057d9f)'; break;
+        case 'darkblue':
+          document.body.style.background = 'linear-gradient(to bottom, #1e3c72, #2a5298)'; break;
+        case 'black':
+          document.body.style.background = 'linear-gradient(to bottom, #000000, #434343)'; break;
+        case 'lightblue':
+          document.body.style.background = 'linear-gradient(to bottom, #c2e9fb, #a1c4fd)'; break;
+        case 'azure':
+          document.body.style.background = 'linear-gradient(to bottom, #7fdbff, #39cccc)'; break;
+        case 'deepblue':
+          document.body.style.background = 'linear-gradient(to bottom, #000046, #1cb5e0)'; break;
+      }
+    });
+  </script>
 </body>
 </html>
