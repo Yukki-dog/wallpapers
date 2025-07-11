@@ -1227,6 +1227,41 @@ function goToMood(mood) {
   fillStickersGrid('default');
   updateLayersPanel();
 
+  // --- Next button logic ---
+  const nextBtn = document.createElement('button');
+  nextBtn.id = 'nextBtn';
+  nextBtn.textContent = 'Next →';
+  document.body.appendChild(nextBtn);
+
+  nextBtn.addEventListener('click', () => {
+    window.location.href = 'page2.html'; // сюда можно вставить другой URL при желании
+  });
+
 })();</script>
+
+<style>
+  #nextBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff69b4;
+    color: white;
+    font-size: 16px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    z-index: 9999;
+  }
+
+  #nextBtn:hover {
+    background-color: #ff85c1;
+    transform: translateX(-50%) scale(1.05);
+  }
+</style>
+
 </body>
 </html>
