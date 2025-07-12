@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Main Site - Wallpaper Maker & More</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin:0; padding:0; height:100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f5;
+    color: #222;
+    overflow-x: hidden;
+    transition: background-color 0.8s ease, color 0.8s ease;
+  }
+
+  /* Container */
+  .container {
+    max-width: 900px;
+    margin: 40px auto 80px auto;
+    padding: 0 20px;
+  }
+
+  /* Header */
+  h1 {
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    color: #5a2a82;
+    user-select: none;
+  }
+
+  /* Description text */
+  .description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    color: #444;
+  }
+
+  /* Links list */
+  .links-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 48px;
+  }
+  .links-list li {
+    margin: 8px 0;
+    font-size: 1rem;
+  }
+  .links-list li a {
+    color: #5a2a82;
+    text-decoration: none;
+    border-bottom: 1px dotted #5a2a82;
+    transition: color 0.3s ease;
+  }
+  .links-list li a:hover {
+    color: #9c58d1;
+  }
+
+  /* Footer small text */
+  footer {
+    position: fixed;
+    bottom: 8px;
+    left: 20px;
+    font-size: 0.75rem;
+    color: #777;
+    user-select: none;
+  }
+  footer .small-note {
+    font-style: italic;
+  }
+
+  /* Bottom right controls */
+  #secret-toggle {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    font-size: 22px;
+    font-weight: 900;
+    color: rgba(90,42,130,0.15);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.4s ease;
+    padding: 0 6px;
+    border-radius: 4px;
+  }
+  #secret-toggle:hover {
+    color: rgba(90,42,130,0.6);
+  }
+
+  #secretInputContainer {
+    position: fixed;
+    bottom: 44px;
+    right: 8px;
+    background: rgba(255 255 255 / 0.9);
+    border: 1px solid #5a2a82;
+    border-radius: 6px;
+    padding: 6px 8px;
+    display: none;
+    box-shadow: 0 0 8px rgba(90,42,130,0.3);
+  }
+
+  #secretInput {
+    font-size: 1rem;
+    padding: 4px 8px;
+    width: 140px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+  }
+  #secretInput:focus {
+    border-color: #5a2a82;
+    box-shadow: 0 0 5px #9c58d1;
+  }
+
+  /* Mood selector panel */
+  #moodSelectorContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255,255,255,0.97);
+    padding: 22px 26px;
+    border: 2px solid #5a2a82;
+    border-radius: 12px;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(90,42,130,0.4);
+    z-index: 1000;
+    user-select: none;
+  }
+  #moodSelectorContainer h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    font-size: 1.4rem;
+    color: #5a2a82;
+  }
+  #moodSelectorContainer ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 16px;
+  }
+  #moodSelectorContainer li {
+    cursor: pointer;
+    margin: 8px 0;
+    font-size: 1.05rem;
+    user-select: none;
+    transition: color 0.3s ease;
+  }
+  #moodSelectorContainer li:hover {
+    text-decoration: underline;
+  }
+  #moodSelectorContainer li:nth-child(1) { color: #b83280; }
+  #moodSelectorContainer li:nth-child(2) { color: #e03b3b; }
+  #moodSelectorContainer li:nth-child(3) { color: #3b90e0; }
+  #moodSelectorContainer li:nth-child(4) { color: #f08a5d; }
+  #moodSelectorContainer li:nth-child(5) { color: #3b3b3b; }
+  #moodSelectorContainer li:nth-child(6) { color: #f2d45c; }
+  #moodSelectorContainer li:nth-child(7) { color: #6cc2f5; }
+  #closeMoodSelector {
+    cursor: pointer;
+    border: none;
+    background-color: #5a2a82;
+    color: white;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  #closeMoodSelector:hover {
+    background-color: #9c58d1;
+  }
+
+  /* Theme switcher */
+  #themeSwitcher {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    background: #5a2a82;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 6px rgba(90,42,130,0.8);
+    transition: background-color 0.4s ease;
+    z-index: 1000;
+  }
+  #themeSwitcher:hover {
+    background-color: #9c58d1;
+  }
+
+  /* Effects button and panel */
+  #effectsBtn {
+    position: fixed;
+    top: 12px;
+    right: 130px;
+    background: #5a2a82;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 6px rgba(90,42,130,0.8);
+    transition: background-color 0.4s ease;
+    z-index: 1000;
+  }
+  #effectsBtn:hover {
+    background-color: #9c58d1;
+  }
+  #effectsPanel {
+    position: fixed;
+    top: 54px;
+    right: 130px;
+    width: 220px;
+    background: rgba(255 255 255 / 0.98);
+    border: 2px solid #5a2a82;
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(90,42,130,0.4);
+    padding: 12px 14px;
+    display: none;
+    z-index: 1000;
+    user-select: none;
+  }
+  #effectsPanel label {
+    display: block;
+    margin: 8px 0;
+    font-weight: 600;
+    color: #5a2a82;
+    cursor: pointer;
+  }
+  #effectsPanel input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  /* Animations for effects */
+  .effect-rain {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    background: transparent;
+    animation: rainAnim 10s linear infinite;
+    z-index: 0;
+  }
+  @keyframes rainAnim {
+    0% {background-position: 0 0;}
+    100% {background-position: 0 100%;}
+  }
+  .effect-stars {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    background: transparent url('https://cdn.pixabay.com/photo/2016/11/29/03/53/star-1869716_1280.png') repeat;
+    background-size: 40px 40px;
+    animation: starTwinkle 3s infinite alternate;
+    opacity: 0.7;
+    z-index: 0;
+  }
+  @keyframes starTwinkle {
+    0% {opacity: 0.7;}
+    100% {opacity: 1;}
+  }
+  .effect-bubbles {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    background: transparent url('https://cdn.pixabay.com/photo/2014/04/03/11/56/bubbles-311124_1280.png') repeat;
+    background-size: 60px 60px;
+    animation: bubbleFloat 6s ease-in-out infinite;
+    opacity: 0.5;
+    z-index: 0;
+  }
+  @keyframes bubbleFloat {
+    0%, 100% {background-position: 0 0;}
+    50% {background-position: 0 30px;}
+  }
+
+  /* Dark theme overrides */
+  body.dark-theme {
+    background-color: #181823;
+    color: #ddd;
+  }
+  body.dark-theme a {
+    color: #d9b2ff;
+  }
+  body.dark-theme #themeSwitcher {
+    background-color: #ad77f5;
+    color: #222;
+  }
+  body.dark-theme #effectsBtn {
+    background-color: #ad77f5;
+    color: #222;
+  }
+  body.dark-theme #secret-toggle {
+    color: rgba(217, 178, 255, 0.15);
+  }
+  body.dark-theme #secret-toggle:hover {
+    color: rgba(217, 178, 255, 0.6);
+  }
+  body.dark-theme #secretInputContainer {
+    background: rgba(40 20 60 / 0.9);
+    border-color: #ad77f5;
+    box-shadow: 0 0 10px #ad77f5;
+  }
+  body.dark-theme #secretInput {
+    background: #2c1f4d;
+    border-color: #ad77f5;
+    color: #eee;
+  }
+  body.dark-theme #moodSelectorContainer {
+    background-color: rgba(30,20,50,0.95);
+    border-color: #ad77f5;
+    box-shadow: 0 0 18px #ad77f5;
+    color: #ddd;
+  }
+  body.dark-theme #closeMoodSelector {
+    background-color: #ad77f5;
+    color: #222;
+  }
+  body.dark-theme #closeMoodSelector:hover {
+    background-color: #5a2a82;
+    color: #eee;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Welcome to the Main Site</h1>
+  <p class="description">
+    This is the main hub where you can explore my sites, create unique wallpapers, and discover more creative projects.<br />
+    Links to my other sites:
+  </p>
+  <ul class="links-list">
+    <li>◍ <a href="https://yukki-dog.github.io/wallpapers" target="_blank" rel="noopener">Wallpaper Maker</a> — Create your own wallpapers!</li>
+    <li>◍ <a href="https://yukki-dog.github.io/another-site" target="_blank" rel="noopener">Another Cool Site</a> — Coming soon!</li>
+    <li>◍ <a href="https://yukki-dog.github.io/more-stuff" target="_blank" rel="noopener">More Projects</a> — Explore my creative works.</li>
+  </ul>
+  <p style="font-style: italic; color: #666; user-select:none;">Today is a wonderful day!</p>
+</div>
+
+<footer>
+  <span class="small-note">0103</span>
+</footer>
+
+<!-- Theme Switcher -->
+<button id="themeSwitcher" aria-label="Toggle Theme">Switch Theme</button>
+
+<!-- Effects Button -->
+<button id="effectsBtn" aria-label="Toggle Effects Panel">Effects</button>
+
+<!-- Effects Panel -->
+<div id="effectsPanel" role="region" aria-label="Background Effects Panel">
+  <label><input type="radio" name="effect" value="none" checked /> No Effects</label>
+  <label><input type="radio" name="effect" value="rain" /> Rain</label>
+  <label><input type="radio" name="effect" value="stars" /> Stars</label>
+  <label><input type="radio" name="effect" value="bubbles" /> Bubbles</label>
+</div>
+
+<!-- Secret code toggle and input -->
+<div id="secret-toggle" title="Enter secret code">...</div>
+<div id="secretInputContainer" role="dialog" aria-modal="true" aria-labelledby="secretInputLabel">
+  <input type="text" id="secretInput" aria-label="Secret code input" placeholder="Enter code..." autocomplete="off" />
+</div>
+
+<!-- Mood Selector Panel - hidden by default -->
+<div id="moodSelectorContainer" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="moodSelectorTitle">
+  <h3 id="moodSelectorTitle">✨ What mood are you feeling today?</h3>
+  <ul>
+    <li onclick="goToMood('cute')">• Cute and cozy</li>
+    <li onclick="goToMood('fire')">• Fiery, explosive</li>
+    <li onclick="goToMood('water')">• Watery, soft 🐟</li>
+    <li onclick="goToMood('sweet')">• Sweet like candy</li>
+    <li onclick="goToMood('salty')">• Something salty...</li>
+    <li onclick="goToMood('summer')">• Summery ☀️</li>
+    <li onclick="goToMood('winter')">• Wintry ❄️</li>
+  </ul>
+  <button id="closeMoodSelector">Close</button>
+</div>
+
+<script>
+  // Theme switching
+  const themeSwitcher = document.getElementById('themeSwitcher');
+  themeSwitcher.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+  });
+
+  // Effects toggling
+  const effectsBtn = document.getElementById('effectsBtn');
+  const effectsPanel = document.getElementById('effectsPanel');
+  let currentEffectEl = null;
+
+  effectsBtn.addEventListener('click', () => {
+    if (effectsPanel.style.display === 'block') {
+      effectsPanel.style.display = 'none';
+      removeEffect();
+    } else {
+      effectsPanel.style.display = 'block';
+    }
+  });
+
+  function removeEffect() {
+    if (currentEffectEl) {
+      currentEffectEl.remove();
+      currentEffectEl = null;
+    }
+  }
+
+  effectsPanel.addEventListener('change', e => {
+    if (!e.target.matches('input[type="radio"]')) return;
+    removeEffect();
+    const val = e.target.value;
+    if (val === 'rain') {
+      const rainDiv = document.createElement('div');
+      rainDiv.className = 'effect-rain';
+      document.body.appendChild(rainDiv);
+      currentEffectEl = rainDiv;
+    } else if (val === 'stars') {
+      const starsDiv = document.createElement('div');
+      starsDiv.className = 'effect-stars';
+      document.body.appendChild(starsDiv);
+      currentEffectEl = starsDiv;
+    } else if (val === 'bubbles') {
+      const bubblesDiv = document.createElement('div');
+      bubblesDiv.className = 'effect-bubbles';
+      document.body.appendChild(bubblesDiv);
+      currentEffectEl = bubblesDiv;
+    }
+    // none = do nothing
+  });
+
+  // Secret code toggle
+  const secretToggle = document.getElementById('secret-toggle');
+  const secretInputContainer = document.getElementById('secretInputContainer');
+  const secretInput = document.getElementById('secretInput');
+
+  secretToggle.addEventListener('click', () => {
+    if (secretInputContainer.style.display === 'block') {
+      secretInputContainer.style.display = 'none';
+      secretInput.value = '';
+      secretInput.style.border = '';
+    } else {
+      secretInputContainer.style.display = 'block';
+      secretInput.focus();
+    }
+  });
+
+  // Navigate to mood page function
+  function goToMood(mood) {
+    window.location.href = `mood/${mood}.html`;
+  }
+  window.goToMood = goToMood;
+
+  // Handle secret input enter key
+  secretInput.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const val = secretInput.value.trim().toLowerCase();
+    if (!val) return;
+
+    const now = new Date();
+    const day = String(now.getDate());
+
+    if (val === '0103') {
+      window.location.href = 'yukki.html';
+    } else if (val === day) {
+      showMoodSelectorPanel();
+    } else {
+      secretInput.style.border = '2px solid red';
+    }
+  });
+
+  secretInput.addEventListener('input', () => {
+    secretInput.style.border = '';
+  });
+
+  // Mood selector panel handlers
+  const moodSelectorContainer = document.getElementById('moodSelectorContainer');
+  const closeMoodSelectorBtn = document.getElementById('closeMoodSelector');
+
+  function showMoodSelectorPanel() {
+    moodSelectorContainer.style.display = 'block';
+  }
+  closeMoodSelectorBtn.addEventListener('click', () => {
+    moodSelectorContainer.style.display = 'none';
+  });
+
+</script>
+
+</body>
+</html>
