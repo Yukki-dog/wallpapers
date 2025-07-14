@@ -1,548 +1,470 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Yukki Interactive Site</title>
+<title>Yukki Interactive</title>
 <style>
-  /* --- Reset и базовые стили --- */
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin:0; padding:0;
-    width: 100vw;
-    height: 100vh;
+  body {
+    margin: 0; overflow: hidden;
     background: #f0e8dd;
-    overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
+
   }
 
-  /* --- Контейнер для всего --- */
-  #app {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  /* --- Пол --- */
+  /* Пол */
   #floor {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
     height: 80px;
-    background: #4b2e05;
+    background: #4b2e05; /* темно коричневый */
     box-shadow: inset 0 5px 10px #6a4512;
+    z-index: 10;
+  }
+
+  /* Yukki */
+  #yukki-container {
+    position: fixed;
+    bottom: 80px; /* над полом */
+    right: 20px;
+    width: 140px;
+    cursor: pointer;
+    z-index: 20;
+  }
+  #yukki-img {
+    width: 140px;
+    user-select: none;
+    transition: transform 0.3s ease;
+  }
+
+  /* Пузырь речи (говорит) */
+  #speech-bubble {
+    position: fixed;
+    bottom: 220px;
+    right: 180px;
+    max-width: 180px;
+    padding: 10px 15px;
+    background: #fff;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    font-weight: 600;
+    user-select: none;
+    white-space: nowrap;
+    z-index: 25;
+  }
+  #speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    right: 30px;
+    border: 15px solid transparent;
+    border-top-color: #fff;
+    border-bottom: 0;
+    margin-left: -15px;
+  }
+  #speech-bubble.hidden {
+    display: none;
+  }
+
+  /* Пузырь мысли (эмодзи) */
+  #thought-bubble {
+    position: fixed;
+    bottom: 250px;
+    right: 210px;
+    font-size: 2.5rem;
+    user-select: none;
+    z-index: 24;
+  }
+
+  /* Кнопка уйти */
+  #leave-btn {
+    position: fixed;
+    bottom: 300px;
+    right: 180px;
+    background: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+    z-index: 25;
+    transition: background-color 0.3s ease;
+  }
+  #leave-btn:hover {
+    background-color: #c9302c;
+  }
+
+  /* Вертикальная черта (draggable) */
+  #drag-bar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 8px;
+    height: 80px;
+    background: #333;
+    cursor: grab;
+    border-radius: 4px;
+    user-select: none;
     z-index: 30;
   }
 
-  /* --- Перетаскиваемые полоски | и __ --- */
-  .drag-bar {
-    position: absolute;
-    top: 20px;
-    width: 40px;
-    height: 8px;
-    background: #333;
-    border-radius: 4px;
-    cursor: grab;
+  /* Мяч и цыпленок */
+  #ball, #chick {
+    position: fixed;
+    font-size: 50px;
     user-select: none;
-    z-index: 90;
-    transition: background-color 0.3s ease;
-  }
-  .drag-bar:active {
-    cursor: grabbing;
-    background-color: #555;
-  }
-  #drag-bar1 {
-    left: 20px;
-  }
-  #drag-bar2 {
-    left: 80px;
-    width: 60px;
-    height: 8px;
-  }
-
-  /* --- Контейнер Юкки --- */
-  #yukki-container {
-    position: absolute;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 180px;
-    z-index: 80;
-    user-select: none;
-  }
-
-  #yukki-avatar {
-    width: 150px;
-    height: 150px;
-    object-fit: contain;
-    border-radius: 20px;
-    transition: filter 0.3s ease;
-  }
-
-  /* --- Пузырь мыслей 💭 --- */
-  #thought-bubble {
-    position: absolute;
-    bottom: 180px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255 255 255 / 0.9);
-    border-radius: 25px;
-    padding: 12px 20px;
-    font-size: 20px;
-    line-height: 1;
-    font-weight: 600;
-    color: #333;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-width: 240px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-    user-select: none;
-    font-family: 'Segoe UI Emoji', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  /* --- Пузырь речи 🗨 --- */
-  #speech-bubble {
-    position: absolute;
-    bottom: 210px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #80d0ff;
-    border-radius: 20px;
-    padding: 8px 15px;
-    font-size: 18px;
-    font-weight: 600;
-    color: #012;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-    max-width: 250px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-    user-select: none;
-  }
-
-  /* --- Кнопка "Уйти" --- */
-  #leave-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: #ff6666;
-    border: none;
-    color: white;
-    font-weight: 700;
-    padding: 10px 16px;
-    border-radius: 30px;
+    touch-action: none;
     cursor: pointer;
-    box-shadow: 0 3px 8px rgba(255, 102, 102, 0.6);
-    transition: background-color 0.3s ease;
-    z-index: 100;
-    user-select: none;
+    z-index: 15;
+    transition: transform 0.3s ease;
   }
-  #leave-button:hover {
-    background-color: #cc4c4c;
-  }
-
-  /* --- Игрушки — canvas на весь экран (Matter.js рендер) --- */
-  #matter-canvas {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: none; /* Чтобы клики не мешали Юкки и полоскам */
-  }
-
-  /* --- Птенец и шарик — эмодзи как DOM элементы --- */
-  #chick, #balloon {
-    position: absolute;
-    font-size: 40px;
-    user-select: none;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1s ease;
-    z-index: 85;
+  #ball {
+    display: none;
   }
   #chick {
-    bottom: 120px;
-    left: 20px;
+    display: none;
+    font-size: 48px;
   }
-  #balloon {
-    bottom: 50px;
-    left: 10%;
-  }
-
-  /* --- Анимация полета шарика снизу вверх --- */
-  @keyframes balloon-float {
-    0% { bottom: 50px; opacity: 1; }
-    100% { bottom: 100vh; opacity: 0; }
-  }
-
 </style>
 </head>
 <body>
-<div id="app">
-  <canvas id="matter-canvas"></canvas>
 
-  <div id="floor"></div>
+<div id="floor"></div>
 
-  <div id="drag-bar1" class="drag-bar" title="Drag me |"></div>
-  <div id="drag-bar2" class="drag-bar" title="Drag me __"></div>
-
-  <div id="yukki-container" title="Click Yukki to make her happy!">
-    <img id="yukki-avatar" src="Yukki.png" alt="Yukki avatar" draggable="false" />
-    <div id="thought-bubble" aria-live="polite" role="text">🍗</div>
-    <div id="speech-bubble" aria-live="polite" role="text"></div>
-  </div>
-
-  <button id="leave-button" title="Leave site">Leave</button>
-
-  <div id="chick" title="Chick 🐤" aria-label="Chick emoji">🐤</div>
-  <div id="balloon" title="Balloon 🎈" aria-label="Balloon emoji">🎈</div>
+<div id="yukki-container" title="Click me!">
+  <img id="yukki-img" src="Yukki.png" alt="Yukki" />
 </div>
 
+<div id="speech-bubble" class="hidden">Hello! 🐕</div>
+<div id="thought-bubble">🐕</div>
+<button id="leave-btn">Leave</button>
+
+<div id="drag-bar" title="Drag me">|</div>
+
+<div id="ball">⚽</div>
+<div id="chick">🐤</div>
+
+<!-- Matter.js -->
 <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+
 <script>
 (() => {
-  // --- Инициализация Matter.js ---
-  const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Events, World, Body, Vector } = Matter;
+  const yukkiContainer = document.getElementById('yukki-container');
+  const yukkiImg = document.getElementById('yukki-img');
+  const speechBubble = document.getElementById('speech-bubble');
+  const thoughtBubble = document.getElementById('thought-bubble');
+  const leaveBtn = document.getElementById('leave-btn');
+  const dragBar = document.getElementById('drag-bar');
+  const ball = document.getElementById('ball');
+  const chick = document.getElementById('chick');
 
-  const engine = Engine.create();
-  const world = engine.world;
-  world.gravity.y = 1.2;
-
-  // Размеры окна
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-
-  // --- Рендер Matter.js на canvas ---
-  const canvas = document.getElementById('matter-canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const render = Render.create({
-    canvas: canvas,
-    engine: engine,
-    options: {
-      width: width,
-      height: height,
-      wireframes: false,
-      background: 'transparent',
-      pixelRatio: window.devicePixelRatio
-    }
-  });
-  Render.run(render);
-
-  const runner = Runner.create();
-  Runner.run(runner, engine);
-
-  // --- Пол ---
-  const floor = Bodies.rectangle(width / 2, height - 40, width, 80, {
-    isStatic: true,
-    render: {
-      fillStyle: '#4b2e05',
-      strokeStyle: '#6a4512',
-      lineWidth: 3
-    }
-  });
-  World.add(world, floor);
-
-  // --- Перетаскиваемые полоски | и __ ---
-  const dragBar1 = Bodies.rectangle(40, 60, 40, 8, {
-    isStatic: true,
-    label: 'dragBar',
-    render: { fillStyle: '#333' }
-  });
-  const dragBar2 = Bodies.rectangle(100, 60, 60, 8, {
-    isStatic: true,
-    label: 'dragBar',
-    render: { fillStyle: '#333' }
-  });
-  World.add(world, [dragBar1, dragBar2]);
-
-  // Синхронизация позиций физ тел с DOM элементами (для draggable)
-  const dragDiv1 = document.getElementById('drag-bar1');
-  const dragDiv2 = document.getElementById('drag-bar2');
-
-  function updateBodyFromDiv(body, div) {
-    const rect = div.getBoundingClientRect();
-    Body.setPosition(body, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-  }
-
-  function updateDivFromBody(div, body) {
-    div.style.left = (body.position.x - div.offsetWidth / 2) + 'px';
-    div.style.top = (body.position.y - div.offsetHeight / 2) + 'px';
-  }
-
-  // Инициализация позиции тел и дивов
-  updateBodyFromDiv(dragBar1, dragDiv1);
-  updateBodyFromDiv(dragBar2, dragDiv2);
-
-  // Сделать div перетаскиваемым (горизонтально) и обновлять тело Matter.js
-  function makeDraggable(div, body) {
-    let dragging = false;
-    let offsetX = 0;
-
-    div.addEventListener('mousedown', e => {
-      dragging = true;
-      offsetX = e.clientX - div.getBoundingClientRect().left;
-      div.style.cursor = 'grabbing';
-    });
-    window.addEventListener('mouseup', e => {
-      dragging = false;
-      div.style.cursor = 'grab';
-    });
-    window.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      let newLeft = e.clientX - offsetX;
-      // Ограничим, чтобы не вышли за экран
-      newLeft = Math.max(0, Math.min(window.innerWidth - div.offsetWidth, newLeft));
-      div.style.left = newLeft + 'px';
-      Body.setPosition(body, { x: newLeft + div.offsetWidth / 2, y: body.position.y });
-    });
-  }
-  makeDraggable(dragDiv1, dragBar1);
-  makeDraggable(dragDiv2, dragBar2);
-
-  // --- Игрушки Юкки: мячи и кость ---
-  // Спрайты — это ссылки на эмодзи svg с твемоджи cdn
-  const toysData = [
-    { label: 'ball', radius: 20, sprite: 'https://twemoji.maxcdn.com/v/latest/svg/26bd.svg', startX: width + 50, startY: 120 },  // ⚽
-    { label: 'bone', radius: 18, sprite: 'https://twemoji.maxcdn.com/v/latest/svg/1f356.svg', startX: width + 110, startY: 160 }, // 🦴
-    { label: 'toyBall', radius: 18, sprite: 'https://twemoji.maxcdn.com/v/latest/svg/1f3be.svg', startX: width + 160, startY: 200 } // ⚾
+  // Эмоции и речи Yukki
+  const speechTexts = [
+    "Hello! 🐕",
+    "Let's play! 🎾",
+    "I'm so happy! 🥰",
+    "Don't forget me! 😢",
+    "Yay! More fun! 😄",
+    "Want to pet me? 🐾",
   ];
 
-  const toys = toysData.map(data => {
-    return Bodies.circle(data.startX, data.startY, data.radius, {
-      restitution: 0.7,
-      frictionAir: 0.03,
-      label: data.label,
-      render: {
-        sprite: {
-          texture: data.sprite,
-          xScale: data.radius / 128,
-          yScale: data.radius / 128
-        }
-      }
-    });
-  });
-  World.add(world, toys);
+  const thoughtEmojis = ['🍗', '🥩', '🍖', '😇', '🐾', '🐕', '🥰'];
 
-  // --- Мышь и перетаскивание только игрушек ---
-  const mouse = Mouse.create(render.canvas);
-  const mouseConstraint = MouseConstraint.create(engine, {
+  // Таймеры бездействия
+  let inactivityTime = 0;
+  let ballShownToday = false;
+  let chickShownToday = false;
+  let balloonShownToday = false;
+
+  let inactivityInterval = null;
+
+  // Matter.js setup
+  const { Engine, World, Bodies, Body, Events, Mouse, MouseConstraint } = Matter;
+  const engine = Engine.create();
+  const world = engine.world;
+
+  // Пол - статический объект
+  const floorHeight = 80;
+  const floorBody = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - floorHeight / 2, window.innerWidth, floorHeight, { isStatic: true, label: 'floor' });
+  World.add(world, floorBody);
+
+  // Вертикальная черта (draggable)
+  const dragBarWidth = 8;
+  const dragBarHeight = 80;
+  let dragBarBody = Bodies.rectangle(dragBar.offsetLeft + dragBarWidth / 2, dragBar.offsetTop + dragBarHeight / 2, dragBarWidth, dragBarHeight, { isStatic: true, label: 'dragBar' });
+  World.add(world, dragBarBody);
+
+  // Мячик - будет создан динамически при появлении
+  let ballBody = null;
+  let ballVisible = false;
+
+  // Цыпленок - не физический, управляется через JS
+  let chickVisible = false;
+  let chickPositionX = window.innerWidth;
+  const chickTargetX = window.innerWidth / 2 - 24;
+  const chickStep = 2;
+
+  // Логика бездействия
+  function resetInactivity() {
+    inactivityTime = 0;
+  }
+
+  // Обновление положения dragBarBody по dragBar div
+  function updateDragBarBody() {
+    Body.setPosition(dragBarBody, {
+      x: dragBar.offsetLeft + dragBarWidth / 2,
+      y: dragBar.offsetTop + dragBarHeight / 2
+    });
+  }
+
+  // Обновление DOM по физике мяча
+  function updateBallPosition() {
+    if(!ballBody) return;
+    ball.style.left = (ballBody.position.x - 25) + 'px';
+    ball.style.top = (ballBody.position.y - 25) + 'px';
+    ball.style.transform = `rotate(${ballBody.angle}rad)`;
+  }
+
+  // Добавление мяча в физику и отображение
+  function showBall() {
+    if (ballVisible || ballShownToday) return;
+    ballVisible = true;
+    ballShownToday = true;
+    ball.style.display = 'block';
+
+    // Стартовая позиция — справа за экраном, чуть выше пола
+    const startX = window.innerWidth + 40;
+    const startY = window.innerHeight - floorHeight - 30;
+
+    ballBody = Bodies.circle(startX, startY, 25, {
+      restitution: 0.7,
+      friction: 0.05,
+      frictionAir: 0.02,
+      label: 'ball'
+    });
+
+    World.add(world, ballBody);
+
+    // Даем импульс влево, чтобы катился
+    Body.setVelocity(ballBody, { x: -5, y: 0 });
+  }
+
+  // Убрать мяч
+  function hideBall() {
+    if (!ballVisible) return;
+    ballVisible = false;
+    ball.style.display = 'none';
+    if(ballBody) {
+      World.remove(world, ballBody);
+      ballBody = null;
+    }
+  }
+
+  // Появление цыпленка (движется в центр)
+  function showChick() {
+    if (chickVisible || chickShownToday) return;
+    chickVisible = true;
+    chickShownToday = true;
+    chick.style.display = 'block';
+    chickPositionX = window.innerWidth;
+    chick.style.left = chickPositionX + 'px';
+    chick.style.bottom = (floorHeight + 20) + 'px';
+  }
+
+  // Убрать цыпленка
+  function hideChick() {
+    chickVisible = false;
+    chick.style.display = 'none';
+  }
+
+  // Движение цыпленка к центру и ожидание
+  function moveChick() {
+    if(!chickVisible) return;
+    if(chickPositionX > chickTargetX) {
+      chickPositionX -= chickStep;
+      chick.style.left = chickPositionX + 'px';
+    } else {
+      chick.style.left = chickTargetX + 'px';
+    }
+  }
+
+  // Появление шарика 🎈 снизу вверх — раз в день
+  // (по твоему описанию, но можно добавить потом)
+
+  // Показывать речь Yukki
+  function showSpeech(text, timeout = 4000) {
+    speechBubble.textContent = text;
+    speechBubble.classList.remove('hidden');
+    clearTimeout(speechTimeout);
+    speechTimeout = setTimeout(() => {
+      speechBubble.classList.add('hidden');
+    }, timeout);
+  }
+
+  // Показывать мысли Yukki (эмодзи)
+  function showThought(emoji) {
+    thoughtBubble.textContent = emoji;
+  }
+
+  // Переключить Yukki на грустную и показать сообщение
+  function leaveSite() {
+    yukkiImg.src = 'Yukki_sad.png';
+    showSpeech("Don't go 🥺", 8000);
+  }
+
+  // Показать случайную речь
+  function randomSpeech() {
+    const text = speechTexts[Math.floor(Math.random() * speechTexts.length)];
+    showSpeech(text);
+  }
+
+  // Показать случайную мысль
+  function randomThought() {
+    const emoji = thoughtEmojis[Math.floor(Math.random() * thoughtEmojis.length)];
+    showThought(emoji);
+  }
+
+  // Drag logic для dragBar (тоже обновляет тело Matter)
+  let dragging = false;
+  let dragOffsetX, dragOffsetY;
+
+  dragBar.addEventListener('mousedown', e => {
+    dragging = true;
+    dragOffsetX = e.clientX - dragBar.offsetLeft;
+    dragOffsetY = e.clientY - dragBar.offsetTop;
+    dragBar.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mouseup', e => {
+    dragging = false;
+    dragBar.style.cursor = 'grab';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    let x = e.clientX - dragOffsetX;
+    let y = e.clientY - dragOffsetY;
+
+    x = Math.min(Math.max(x, 0), window.innerWidth - dragBar.offsetWidth);
+    y = Math.min(Math.max(y, 0), window.innerHeight - dragBar.offsetHeight);
+
+    dragBar.style.left = x + 'px';
+    dragBar.style.top = y + 'px';
+    updateDragBarBody();
+  });
+
+  // Нажатия на Yukki
+  yukkiContainer.addEventListener('click', () => {
+    showThought('🥰');
+    setTimeout(() => showThought('🐕'), 3000);
+    resetInactivity();
+
+
+
+
+
+
+  });
+
+  // Нажатие на шарик
+  ball.addEventListener('click', () => {
+    showThought('😳');
+    resetInactivity();
+  });
+
+  // Нажатие на цыпленка - он убегает и думает
+  chick.addEventListener('click', () => {
+    showThought('😳');
+    hideChick();
+    resetInactivity();
+  });
+
+  // Кнопка уйти
+  leaveBtn.addEventListener('click', () => {
+    leaveSite();
+
+
+
+  });
+
+  // Matter.js runner
+  Matter.Runner.run(engine);
+
+
+
+
+
+
+
+  // Добавим mouseConstraint для перетаскивания мяча
+  const mouse = Matter.Mouse.create(document.body);
+  const mouseConstraint = Matter.MouseConstraint.create(engine, {
     mouse: mouse,
     constraint: { stiffness: 0.2, render: { visible: false } }
   });
   World.add(world, mouseConstraint);
-  render.mouse = mouse;
 
-  Events.on(mouseConstraint, 'startdrag', e => {
-    // Запретить перетаскивать dragBar
-    if (e.body && e.body.label === 'dragBar') {
-      mouseConstraint.constraint.bodyB = null;
+  // Обновляем позицию мяча и dragBar в анимации
+  function animate() {
+    if (ballVisible && ballBody) {
+      updateBallPosition();
+      // если мяч слишком слева, убираем
+      if(ballBody.position.x < -30) {
+        hideBall();
+      }
     }
+    moveChick();
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Отслеживаем активность пользователя — любое движение, клик, нажатие клавиш
+  ['mousemove', 'mousedown', 'keydown', 'touchstart'].forEach(evt => {
+    window.addEventListener(evt, () => {
+      resetInactivity();
+    }, { passive: true });
   });
 
-  // --- Спавн мяча через 30 секунд бездействия ---
-  let idleTimer = null;
-  let balloonTimeout = null;
-  let chickTimeout = null;
+  // Таймер бездействия
+  inactivityInterval = setInterval(() => {
+    inactivityTime++;
 
-  // Получаем DOM элементы
-  const yukkiAvatar = document.getElementById('yukki-avatar');
-  const thoughtBubble = document.getElementById('thought-bubble');
-  const speechBubble = document.getElementById('speech-bubble');
-  const leaveButton = document.getElementById('leave-button');
-  const chick = document.getElementById('chick');
-  const balloon = document.getElementById('balloon');
+    if(inactivityTime === 30) { // 30 секунд
+      showBall();
+    }
 
-  // --- Управление состоянием Юкки ---
-
-  // Мысли (emoji)
-  const yukkiThoughts = ['🍗', '🥩', '🍖', '😇', '🐾', '🐕'];
-  function getRandomThought() {
-    return yukkiThoughts[Math.floor(Math.random() * yukkiThoughts.length)];
-  }
-
-  function setThought(text) {
-    thoughtBubble.textContent = text;
-    thoughtBubble.style.opacity = '1';
-  }
-  function hideThought() {
-    thoughtBubble.style.opacity = '0';
-  }
-
-  // Речь (английский текст)
-  function speak(text) {
-    speechBubble.textContent = text;
-    speechBubble.style.opacity = '1';
-    // Автоисчезновение через 4 секунды
-    setTimeout(() => {
-      speechBubble.style.opacity = '0';
-    }, 4000);
-  }
-
-  // Показать начальные мысли
-  setThought(getRandomThought());
-
-  // --- Функции появления игрушек ---
-  function spawnToyWithVelocity(toy, delayMs, velocityX) {
-    setTimeout(() => {
-      Body.setPosition(toy, { x: width + 30, y: 100 + Math.random() * 100 });
-      Body.setVelocity(toy, { x: velocityX, y: 0 });
-      Body.setAngularVelocity(toy, 0);
-      Body.setAngle(toy, 0);
-      Body.setStatic(toy, false);
-    }, delayMs);
-  }
-
-  // Мяч появляется через 30 сек, катится налево
-  spawnToyWithVelocity(toys[0], 30000, -3);
-  // Кость и бейсбольный мяч появляются сразу (статичные в начале)
-  Body.setStatic(toys[1], false);
-  Body.setStatic(toys[2], false);
-
-  // --- Обработка клика на Юкки ---
-  yukkiAvatar.addEventListener('click', () => {
-    setThought('🥰');
-  });
-
-  // --- Птенец 🐤 ---
-
-  function showChick() {
-    chick.style.opacity = '1';
-    chick.style.pointerEvents = 'auto';
-    chick.style.left = '20px';
-    chick.style.bottom = '120px';
-  }
-
-  function hideChick() {
-    chick.style.opacity = '0';
-    chick.style.pointerEvents = 'none';
-  }
-
-  // Птенец появится через 2 минуты бездействия
-  function startChickTimer() {
-    if (chickTimeout) clearTimeout(chickTimeout);
-    chickTimeout = setTimeout(() => {
+    if(inactivityTime === 120) { // 2 минуты
       showChick();
-    }, 120000);
-  }
-  startChickTimer();
+    }
 
-  // Птенец убегает при клике
-  chick.addEventListener('click', () => {
-    hideChick();
-    setThought('😳');
-  });
+  }, 1000);
 
-  // --- Шарик 🎈 ---
+  // Инициализация
+  updateDragBarBody();
 
-  function showBalloon() {
-    balloon.style.opacity = '1';
-    balloon.style.pointerEvents = 'auto';
-    balloon.style.left = '10%';
-    balloon.style.bottom = '50px';
-    balloon.style.animation = 'balloon-float 5s linear forwards';
-    // После анимации скрываем
-    balloon.addEventListener('animationend', () => {
-      balloon.style.opacity = '0';
-      balloon.style.pointerEvents = 'none';
-      balloon.style.animation = '';
-    }, { once: true });
-  }
+  // Начальные речь и мысль
+  showSpeech(speechTexts[0], 5000);
+  showThought(thoughtEmojis[5]);
 
-  function startBalloonTimer() {
-    if (balloonTimeout) clearTimeout(balloonTimeout);
-    balloonTimeout = setTimeout(() => {
-      showBalloon();
-    }, 60000);
-  }
-  startBalloonTimer();
-
-  balloon.addEventListener('click', () => {
-    balloon.style.animation = ''; // Остановим анимацию
-    balloon.style.opacity = '0';
-    balloon.style.pointerEvents = 'none';
-    setThought('😳');
-  });
-
-  // --- Кнопка "Уйти" ---
-  leaveButton.addEventListener('click', () => {
-    yukkiAvatar.src = 'Yukki_sad.png';
-    speak('Please, don\'t leave me 🥺');
-  });
-
-  // --- Таймеры бездействия ---
-  function resetIdleTimer() {
-    if (idleTimer) clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => {
-      // Меняем мысль Юкки случайной
-      setThought(getRandomThought());
-      // Запускаем птенца и шарика
-      startChickTimer();
-      startBalloonTimer();
-    }, 60000);
-  }
-
-  // Обнуляем таймеры при любом движении мыши или клике
-  window.addEventListener('mousemove', resetIdleTimer);
-  window.addEventListener('keydown', resetIdleTimer);
-  window.addEventListener('click', resetIdleTimer);
-  resetIdleTimer();
-
-  // --- Обновление позиций drag bars при ресайзе ---
+  // Обновляем размер пола и тела пола при ресайзе
   window.addEventListener('resize', () => {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-    Render.lookAt(render, { min: { x: 0, y: 0 }, max: { x: width, y: height } });
-    Body.setPosition(floor, { x: width / 2, y: height - 40 });
+    Body.setPosition(floorBody, {
+      x: window.innerWidth / 2,
+      y: window.innerHeight - floorHeight / 2
+    });
+    Body.setVertices(floorBody, [
+      { x: 0, y: window.innerHeight - floorHeight },
+      { x: window.innerWidth, y: window.innerHeight - floorHeight },
+      { x: window.innerWidth, y: window.innerHeight },
+      { x: 0, y: window.innerHeight },
+    ]);
   });
 
-  // --- Основной цикл обновления ---
-  Events.on(engine, 'afterUpdate', () => {
-    // Синхронизируем div с телами (drag bars)
-    updateDivFromBody(dragDiv1, dragBar1);
-    updateDivFromBody(dragDiv2, dragBar2);
-
-    // Ограничиваем игрушки не проходить через drag bars (слегка — отталкивание)
-    toys.forEach(toy => {
-      [dragBar1, dragBar2].forEach(bar => {
-        const distX = toy.position.x - bar.position.x;
-        const distY = toy.position.y - bar.position.y;
-        const dist = Math.sqrt(distX * distX + distY * distY);
-        const minDist = toy.circleRadius + 20; // Радиус + полоса
-
-        if (dist < minDist) {
-          // Отталкиваем toy от бара
-          const overlap = minDist - dist;
-          const pushVector = Vector.normalise({ x: distX, y: distY });
-          Body.translate(toy, Vector.mult(pushVector, overlap + 0.1));
-          // Немного замедляем toy чтобы не пролетал
-          Body.setVelocity(toy, { x: Math.min(toy.velocity.x, 0), y: toy.velocity.y });
-        }
-      });
-    });
-
-    // Плавное замедление игрушек по X (имитация сопротивления воздуха)
-    toys.forEach(toy => {
-      let vx = toy.velocity.x;
-      if (vx < 0.05) vx = 0; // почти остановились
-      else vx *= 0.98;
-      Body.setVelocity(toy, { x: vx, y: toy.velocity.y });
-    });
-  });
 })();
 </script>
+
 </body>
-</html>
