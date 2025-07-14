@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yukki Interactive with Emoji</title>
+<style>
+  body {
+    margin: 0; overflow: hidden;
+    background: #f0f0f0;
+    user-select: none;
+    font-size: 40px;
+  }
+  #yukki-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+  #yukki-img {
+    width: 120px;
+    transition: transform 0.3s ease;
+  }
+  #thought-bubble {
+    position: fixed;
+    top: 140px;
+    right: 30px;
+    font-size: 2.5rem;
+    user-select: none;
+  }
+  #drag-bar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 8px;
+    height: 80px;
+    background: #333;
+    cursor: grab;
+    border-radius: 4px;
+  }
+  #ball {
+    position: fixed;
+    font-size: 50px;
+    user-select: none;
+    touch-action: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="yukki-container" title="Click me!">
+  <img id="yukki-img" src="Yukki.png" alt="Yukki" />
+</div>
+<div id="thought-bubble">🐕</div>
+
+<div id="drag-bar" title="Drag me">|</div>
+
+<div id="ball" style="left: 300px; top: 100px;">⚽</div>
+
+<!-- Matter.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+
+<script>
+  const yukkiContainer = document.getElementById('yukki-container');
+  const yukkiImg = document.getElementById('yukki-img');
+  const thoughtBubble = document.getElementById('thought-bubble');
+  const dragBar = document.getElementById('drag-bar');
+  const ball = document.getElementById('ball');
+
+  // Yukki emotion on click
+  yukkiContainer.addEventListener('click', () => {
+    thoughtBubble.textContent = '🥰';
+    setTimeout(() => {
+      thoughtBubble.textContent = '🐕';
+    }, 3000);
+  });
+
+  // Drag bar dragging logic
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  dragBar.addEventListener('mousedown', e => {
+    isDragging = true;
+    offsetX = e.clientX - dragBar.offsetLeft;
+    offsetY = e.clientY - dragBar.offsetTop;
+    dragBar.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    dragBar.style.cursor = 'grab';
+  });
+  window.addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    let x = e.clientX - offsetX;
+    let y = e.clientY - offsetY;
+
+    x = Math.min(Math.max(x, 0), window.innerWidth - dragBar.offsetWidth);
+    y = Math.min(Math.max(y, 0), window.innerHeight - dragBar.offsetHeight);
+
+    dragBar.style.left = x + 'px';
+    dragBar.style.top = y + 'px';
+  });
+
+  // Matter.js setup
+  const { Engine, Render, Runner, Bodies, World, Body, Events, Mouse, MouseConstraint } = Matter;
+
+  const engine = Engine.create();
+  const world = engine.world;
+
+  // Создаем физические тела для мяча и dragBar
+  const ballBody = Bodies.circle(300, 100, 25, {
+    restitution: 0.7,
+    friction: 0.05,
+    frictionAir: 0.02,
+  });
+
+  const dragBarBody = Bodies.rectangle(dragBar.offsetLeft + 4, dragBar.offsetTop + 40, 8, 80, {
+    isStatic: true,
+  });
+
+  World.add(world, [ballBody, dragBarBody]);
+
+  // Запускаем движок
+  Engine.run(engine);
+
+  // Обновляем позицию dragBarBody под dragBar div
+  Events.on(engine, 'beforeUpdate', () => {
+    Body.setPosition(dragBarBody, {
+      x: dragBar.offsetLeft + dragBar.offsetWidth / 2,
+      y: dragBar.offsetTop + dragBar.offsetHeight / 2
+    });
+  });
+
+  // Обновляем позицию DOM мяча по физике
+  function update() {
+    ball.style.left = (ballBody.position.x - 25) + 'px';
+    ball.style.top = (ballBody.position.y - 25) + 'px';
+    ball.style.transform = `rotate(${ballBody.angle}rad)`;
+    requestAnimationFrame(update);
+  }
+  update();
+
+  // Перетаскиваем мяч мышью через Matter.js MouseConstraint
+  const mouse = Mouse.create(document.body);
+  const mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: { stiffness: 0.2, render: { visible: false } }
+  });
+  World.add(world, mouseConstraint);
+
+  // Чтобы мышь корректно работала
+  mouse.element = document.body;
+
+  // Обновляем размеры на ресайзе
+  window.addEventListener('resize', () => {
+    // ничего не нужно менять, так как физика в абсолютных координатах
+  });
+
+</script>
+
+</body>
+</html>
