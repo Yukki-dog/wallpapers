@@ -3,376 +3,445 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Yukki Home Cozy</title>
+<title>Yukki's Cozy Home</title>
 <style>
-  /* ========== Основные стили ========== */
+  /* --- Reset & basics --- */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
   html, body {
-    margin: 0; padding: 0;
     width: 100vw; height: 100vh;
-    overflow: hidden;
-    background: #fff8f0 url('stickers/paws_bg.png') repeat;
+    background: #fff4ec url('stickers/paws_bg.png') repeat;
     font-family: 'Comic Sans MS', cursive, sans-serif;
+    overflow: hidden;
     user-select: none;
-    position: relative;
+    -webkit-user-select: none;
   }
-  /* Кнопки вверху справа */
-  .controls {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 100;
-  }
-  .controls button {
-    background: #ffe0e6;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 18px;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    transition: background 0.3s ease;
-  }
-  .controls button:hover {
-    background: #ffc2cc;
-  }
-  /* Юкки */
+
+  /* --- Yukki image --- */
   #yukki {
-    position: fixed;
+    position: absolute;
     bottom: 50px;
     left: 50px;
     width: 130px;
-    user-select: none;
     cursor: pointer;
-    transition: filter 0.5s ease;
-    z-index: 90;
+    transition: transform 0.4s ease;
+    z-index: 20;
   }
-  /* Облака речи и мыслей */
+  #yukki.sad {
+    filter: brightness(0.75);
+  }
+
+  /* --- Thought and speech bubbles --- */
   .bubble {
-    position: fixed;
-    max-width: 220px;
-    padding: 10px 16px;
-    background: white;
-    border-radius: 25px;
-    font-size: 14px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-    user-select: none;
+    position: absolute;
+    max-width: 190px;
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 22px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.12);
+    font-size: 15px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #5a4a43;
     pointer-events: none;
-    color: #333;
-    z-index: 95;
+    user-select: none;
     opacity: 0;
     transition: opacity 0.4s ease;
+    z-index: 25;
   }
-  .bubble.visible {
+  .bubble.show {
     opacity: 1;
   }
-  .bubble.speech {
-    bottom: 180px;
-    left: 200px;
-  }
   .bubble.thought {
-    bottom: 220px;
-    left: 170px;
-    background: #fffbf7;
     font-style: italic;
+    font-weight: 700;
   }
-  .bubble.speech::after {
-    content: "";
+  .bubble.thought::after {
+    content: '';
     position: absolute;
     bottom: -12px;
     left: 25px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow:
+      -10px 10px 0 0 #fff,
+      -18px 18px 0 0 #fff;
+  }
+  .bubble.speech::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 30px;
     border-width: 12px;
     border-style: solid;
-    border-color: white transparent transparent transparent;
+    border-color: #fff transparent transparent transparent;
   }
-  .bubble.thought::after {
-    content: "💭";
-    position: absolute;
-    bottom: -20px;
-    left: 30px;
+
+  /* --- Controls in top right --- */
+  .controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    z-index: 50;
+  }
+  .controls button {
+    background: #ffdae4;
+    border-radius: 25px;
+    border: none;
+    padding: 10px 18px;
     font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(255,192,203,0.5);
+    transition: background-color 0.3s ease;
+    user-select: none;
   }
-  /* Канвас (площадка с физикой) */
+  .controls button:hover {
+    background: #ffb0bf;
+  }
+
+  /* --- Canvas for physics --- */
   #world {
     position: fixed;
     top: 0; left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none;
-    z-index: 50;
+    pointer-events: none; /* We'll enable for interactive objects */
+    z-index: 10;
   }
-  /* Полочки */
+
+  /* --- Shelves --- */
   .shelf {
-    position: fixed;
-    background: #a97c50;
-    border-radius: 8px;
-    box-shadow: inset 0 0 6px #6b4f3b;
-    z-index: 70;
+    position: absolute;
+    background: #b9743a;
+    border-radius: 10px;
+    box-shadow: inset 0 4px 8px #7f5a2a;
+    z-index: 15;
   }
-  #shelf-bottom {
-    bottom: 10px;
-    left: 0;
-    width: 100vw;
-    height: 60px;
+  #shelf1 {
+    width: 160px; height: 12px;
+    bottom: 145px; left: 220px;
   }
-  #shelf-left {
-    bottom: 80px;
-    left: 20px;
-    width: 150px;
-    height: 15px;
+  #shelf2 {
+    width: 110px; height: 10px;
+    bottom: 210px; left: 380px;
   }
-  #shelf-right {
-    bottom: 150px;
-    right: 50px;
-    width: 160px;
-    height: 20px;
+
+  /* --- Stickers (toys) --- */
+  .toy-sticker {
+    position: absolute;
+    font-size: 38px;
+    user-select: none;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  /* --- Cursor grab styles --- */
+  .toy-sticker:active {
+    cursor: grabbing;
   }
 </style>
 </head>
 <body>
 
-<!-- Юкки -->
-<img id="yukki" src="Yukki.png" alt="Yukki" draggable="false" />
+<!-- Yukki image -->
+<img id="yukki" src="Yukki.png" alt="Yukki" />
 
-<!-- Облака речи и мыслей -->
-<div id="bubble-speech" class="bubble speech"></div>
-<div id="bubble-thought" class="bubble thought"></div>
+<!-- Thought and speech bubbles -->
+<div id="thoughtBubble" class="bubble thought" style="left: 190px; bottom: 190px;"></div>
+<div id="speechBubble" class="bubble speech" style="left: 190px; bottom: 160px;"></div>
 
-<!-- Кнопки управления -->
+<!-- Shelves -->
+<div id="shelf1" class="shelf"></div>
+<div id="shelf2" class="shelf"></div>
+
+<!-- Controls -->
 <div class="controls">
-  <button id="btn-pet">🐶 Pet Yukki</button>
-  <button id="btn-treat">🦴 Give Treat</button>
-  <button id="btn-bg">🎨 Change Background</button>
-  <button id="btn-leave">🚪 Leave</button>
+  <button id="petBtn" title="Pet Yukki">🐶</button>
+  <button id="treatBtn" title="Give Treat">🦴</button>
+  <button id="bgBtn" title="Change Background">🎨</button>
+  <button id="leaveBtn" title="Leave Site">🚪</button>
 </div>
 
-<!-- Полочки -->
-<div id="shelf-bottom" class="shelf"></div>
-<div id="shelf-left" class="shelf"></div>
-<div id="shelf-right" class="shelf"></div>
-
-<!-- Канвас с физикой -->
+<!-- Canvas for physics -->
 <canvas id="world"></canvas>
 
-<!-- Matter.js physics engine -->
 <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
 <script>
-  // === Основные элементы ===
+(() => {
   const yukki = document.getElementById('yukki');
-  const bubbleSpeech = document.getElementById('bubble-speech');
-  const bubbleThought = document.getElementById('bubble-thought');
-  const btnPet = document.getElementById('btn-pet');
-  const btnTreat = document.getElementById('btn-treat');
-  const btnBg = document.getElementById('btn-bg');
-  const btnLeave = document.getElementById('btn-leave');
-  const worldCanvas = document.getElementById('world');
+  const thoughtBubble = document.getElementById('thoughtBubble');
+  const speechBubble = document.getElementById('speechBubble');
+  const petBtn = document.getElementById('petBtn');
+  const treatBtn = document.getElementById('treatBtn');
+  const bgBtn = document.getElementById('bgBtn');
+  const leaveBtn = document.getElementById('leaveBtn');
 
-  // === Настройки фонов ===
+  // Thought emojis Yukki can "think"
+  const yukkiThoughts = ['💞','🐾','🥰','😇','🍖','🐕'];
+
+  // Backgrounds for switching
   const backgrounds = [
-    'stickers/paws_bg.png',
-    'stickers/stars_bg.png',
-    'stickers/hearts_bg.png',
-    'stickers/clouds_bg.png'
+    "url('stickers/paws_bg.png')",
+    "url('stickers/hearts_bg.png')",
+    "url('stickers/stars_bg.png')"
   ];
   let bgIndex = 0;
 
-  // === Matter.js ===
-  const { Engine, Render, Runner, World, Bodies, Body, Events, Composite, Mouse, MouseConstraint, Vector } = Matter;
-  const engine = Engine.create();
-  const world = engine.world;
+  // State
+  let sadMode = false;
+  let canLeave = false;
 
-  // === Рендер и канвас ===
-  const render = Render.create({
-    canvas: worldCanvas,
-    engine: engine,
-    options: {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      wireframes: false,
-      background: 'transparent'
-    }
-  });
-
-  Render.run(render);
-  const runner = Runner.create();
-  Runner.run(runner, engine);
-
-  // === Платформы (полочки) ===
-  const shelfBottom = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 30, window.innerWidth, 60, {
-    isStatic: true,
-    render: { fillStyle: '#a97c50' },
-    label: 'shelf-bottom'
-  });
-  const shelfLeft = Bodies.rectangle(95, window.innerHeight - 150, 150, 15, {
-    isStatic: true,
-    render: { fillStyle: '#a97c50' },
-    label: 'shelf-left'
-  });
-  const shelfRight = Bodies.rectangle(window.innerWidth - 130, window.innerHeight - 220, 160, 20, {
-    isStatic: true,
-    render: { fillStyle: '#a97c50' },
-    label: 'shelf-right'
-  });
-  World.add(world, [shelfBottom, shelfLeft, shelfRight]);
-
-  // === Гравитация и воздух ===
-  engine.world.gravity.y = 1.1;
-
-  // === Игрушки Юкки ===
-  const toys = [];
-
-  // === Добавляем мяч (⚽) - сразу сверху, падает на полочки ===
-  function spawnBall() {
-    const ball = Bodies.circle(window.innerWidth / 2, -40, 22, {
-      restitution: 0.7,
-      density: 0.0006,
-      friction: 0.2,
-      frictionAir: 0.03,
-      label: 'ball',
-      render: {
-        sprite: {
-          texture: '',
-          content: '⚽'
-        }
-      }
-    });
-    toys.push(ball);
-    World.add(world, ball);
+  // Show bubble with fade in/out
+  function showBubble(bubble, text) {
+    bubble.textContent = text;
+    bubble.classList.add('show');
+    clearTimeout(bubble.hideTimeout);
+    bubble.hideTimeout = setTimeout(() => bubble.classList.remove('show'), 3500);
   }
 
-  // === Косточки (🦴), падают пачками при клике ===
-  function spawnBones(count = 2) {
-    for (let i = 0; i < count; i++) {
-      const size = 12 + Math.random() * 8;
-      const bone = Bodies.rectangle(
-        50 + Math.random() * (window.innerWidth - 100),
-        -50 - Math.random() * 200,
-        size * 1.3,
-        size * 0.6,
-        {
-          restitution: 0.5,
-          density: 0.0008,
-          friction: 0.3,
-          frictionAir: 0.05,
-          label: 'bone',
-          angle: Math.random() * Math.PI,
-          render: {
-            sprite: {
-              texture: '',
-              content: '🦴'
-            }
-          }
-        }
-      );
-      toys.push(bone);
-      World.add(world, bone);
-    }
+  // Yukki's thoughts randomly cycling when petted
+  function petYukki() {
+    const thought = yukkiThoughts[Math.floor(Math.random() * yukkiThoughts.length)];
+    showBubble(thoughtBubble, thought);
   }
 
-  // === Удаление игрушек за экраном снизу ===
-  Events.on(engine, 'afterUpdate', () => {
-    for (let i = toys.length - 1; i >= 0; i--) {
-      const t = toys[i];
-      if (t.position.y > window.innerHeight + 100) {
-        World.remove(world, t);
-        toys.splice(i, 1);
-      }
+  // Give treat: drop 1-2 bones falling down with physics
+  function giveTreat() {
+    const bonesCount = Math.floor(Math.random() * 2) + 1;
+    for(let i = 0; i < bonesCount; i++) {
+      spawnBone();
     }
-  });
+    showBubble(thoughtBubble, '🍗 Yummy!');
+  }
 
-  // === Перетаскивание игрушек мышкой ===
-  const mouse = Mouse.create(render.canvas);
-  const mouseConstraint = MouseConstraint.create(engine, {
-    mouse,
-    constraint: {
-      stiffness: 0.25,
-      render: { visible: false }
-    }
-  });
-  World.add(world, mouseConstraint);
-
-  // === Юкки кликабельна — при нажатии мысли (💭), а также смена состояния арт при уходе ===
-  const yukkiThoughts = ['💞', '🐾', '🥰', '😇', '🍖', '🐕'];
-  const yukkiSpeechLeave = "Don't go 🥺";
-  let hasLeft = false;
-
-  yukki.addEventListener('click', () => {
-    showBubbleThought(randomChoice(yukkiThoughts), 3000);
-  });
-
-  btnPet.addEventListener('click', () => {
-    showBubbleThought(randomChoice(yukkiThoughts), 3000);
-  });
-
-  btnTreat.addEventListener('click', () => {
-    spawnBones(randomInt(1,2));
-  });
-
-  btnBg.addEventListener('click', () => {
+  // Switch background to next
+  function switchBackground() {
     bgIndex = (bgIndex + 1) % backgrounds.length;
-    document.body.style.backgroundImage = `url('${backgrounds[bgIndex]}')`;
-  });
+    document.body.style.backgroundImage = backgrounds[bgIndex];
+  }
 
-  btnLeave.addEventListener('click', () => {
-    if (!hasLeft) {
+  // Leave button logic
+  leaveBtn.addEventListener('click', () => {
+    if (!sadMode) {
       yukki.src = 'Yukki_sad.png';
-      showBubbleSpeech(yukkiSpeechLeave, 4000);
-      hasLeft = true;
+      showBubble(speechBubble, "Don't go 🥺");
+      sadMode = true;
       setTimeout(() => {
         yukki.src = 'Yukki.png';
+        sadMode = false;
       }, 4000);
     } else {
       window.location.href = 'https://yukki-dog.github.io/wallpapers/home_page.html';
     }
   });
 
-  // === Показать речь (🗨) ===
-  function showBubbleSpeech(text, duration=3000) {
-    bubbleSpeech.textContent = text;
-    bubbleSpeech.classList.add('visible');
-    setTimeout(() => bubbleSpeech.classList.remove('visible'), duration);
-  }
-  // === Показать мысли (💭) ===
-  function showBubbleThought(text, duration=3000) {
-    bubbleThought.textContent = text;
-    bubbleThought.classList.add('visible');
-    setTimeout(() => bubbleThought.classList.remove('visible'), duration);
-  }
+  petBtn.addEventListener('click', petYukki);
+  treatBtn.addEventListener('click', giveTreat);
+  bgBtn.addEventListener('click', switchBackground);
 
-  // === Утилиты ===
-  function randomChoice(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-  function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  // Matter.js physics setup
+  const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint, Composite, Events } = Matter;
+  const engine = Engine.create();
+  const world = engine.world;
+  engine.gravity.y = 1.2;
 
-  // === Инициализация ===
-  spawnBall();
-  document.body.style.backgroundImage = `url('${backgrounds[bgIndex]}')`;
+  const canvas = document.getElementById('world');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-  // === Обновление размеров при ресайзе окна ===
-  window.addEventListener('resize', () => {
-    render.bounds.max.x = window.innerWidth;
-    render.bounds.max.y = window.innerHeight;
-    render.options.width = window.innerWidth;
-    render.options.height = window.innerHeight;
-    render.canvas.width = window.innerWidth;
-    render.canvas.height = window.innerHeight;
-
-    Body.setPosition(shelfBottom, { x: window.innerWidth / 2, y: window.innerHeight - 30 });
-    Body.setPosition(shelfLeft, { x: 95, y: window.innerHeight - 150 });
-    Body.setPosition(shelfRight, { x: window.innerWidth - 130, y: window.innerHeight - 220 });
+  const render = Render.create({
+    canvas: canvas,
+    engine: engine,
+    options: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      background: 'transparent',
+      wireframes: false,
+      pixelRatio: window.devicePixelRatio,
+    }
   });
 
-  // === Основной цикл для плавного эффекта ===
-  (function animate() {
-    requestAnimationFrame(animate);
-    // Тут можно добавить анимации Юкки, мыши, игрушек
-  })();
+  // Shelves bodies - static
+  const shelf1Body = Bodies.rectangle(300, window.innerHeight - 180, 160, 12, { isStatic: true, render: { fillStyle: '#b9743a' } });
+  const shelf2Body = Bodies.rectangle(435, window.innerHeight - 250, 110, 10, { isStatic: true, render: { fillStyle: '#b9743a' } });
+  // Floor
+  const floor = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 10, window.innerWidth, 40, { isStatic: true, render: { fillStyle: '#6b4f3b' } });
 
+  World.add(world, [shelf1Body, shelf2Body, floor]);
+
+  // Toys (stickers)
+  const toysData = [
+    { id: 'ball', emoji: '⚽', radius: 24, density: 0.0005, restitution: 0.8 },
+    { id: 'bone', emoji: '🦴', radius: 18, density: 0.0009, restitution: 0.6 },
+  ];
+
+  // Keep track of Matter bodies and their dom stickers
+  const toyBodies = [];
+  const toyElements = [];
+
+  function createToyBody(toy) {
+    const body = Bodies.circle(
+      window.innerWidth / 2,
+      -50,
+      toy.radius,
+      {
+        restitution: toy.restitution,
+        density: toy.density,
+        frictionAir: 0.01,
+        render: { visible: false }
+      }
+    );
+    World.add(world, body);
+
+    // Create dom sticker
+    const el = document.createElement('div');
+    el.classList.add('toy-sticker');
+    el.textContent = toy.emoji;
+    document.body.appendChild(el);
+
+    // Link dom and body
+    el.body = body;
+
+    // Dragging
+    let mouseOffset = { x: 0, y: 0 };
+    let dragging = false;
+
+    function pointerDown(e) {
+      e.preventDefault();
+      dragging = true;
+      mouseOffset.x = e.clientX - el.getBoundingClientRect().left;
+      mouseOffset.y = e.clientY - el.getBoundingClientRect().top;
+      body.isStatic = true;
+      body.positionPrev.x = body.position.x;
+      body.positionPrev.y = body.position.y;
+    }
+    function pointerMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      Body.setPosition(body, { x: e.clientX - mouseOffset.x + body.circleRadius, y: e.clientY - mouseOffset.y + body.circleRadius });
+    }
+    function pointerUp(e) {
+      if (!dragging) return;
+      dragging = false;
+      body.isStatic = false;
+      Body.setVelocity(body, { x: 0, y: 0 });
+    }
+    el.addEventListener('pointerdown', pointerDown);
+    window.addEventListener('pointermove', pointerMove);
+    window.addEventListener('pointerup', pointerUp);
+
+    toyBodies.push(body);
+    toyElements.push(el);
+  }
+
+  // Create initial toys
+  for (const toy of toysData) {
+    createToyBody(toy);
+  }
+
+  // Spawn bones on giveTreat
+  function spawnBone() {
+    const boneToy = toysData.find(t => t.id === 'bone');
+    createToyBody(boneToy);
+  }
+
+  // Immediately spawn the ball (⚽) from top center
+  function spawnBall() {
+    const ballToy = toysData.find(t => t.id === 'ball');
+    const body = Bodies.circle(
+      window.innerWidth / 2,
+      -100,
+      ballToy.radius,
+      {
+        restitution: ballToy.restitution,
+        density: ballToy.density,
+        frictionAir: 0.02,
+        render: { visible: false }
+      }
+    );
+    World.add(world, body);
+
+    // Create DOM sticker
+    const el = document.createElement('div');
+    el.classList.add('toy-sticker');
+    el.textContent = ballToy.emoji;
+    document.body.appendChild(el);
+
+    el.body = body;
+
+    // Drag & drop handlers (same as above)
+    let mouseOffset = { x: 0, y: 0 };
+    let dragging = false;
+
+    function pointerDown(e) {
+      e.preventDefault();
+      dragging = true;
+      mouseOffset.x = e.clientX - el.getBoundingClientRect().left;
+      mouseOffset.y = e.clientY - el.getBoundingClientRect().top;
+      body.isStatic = true;
+      body.positionPrev.x = body.position.x;
+      body.positionPrev.y = body.position.y;
+    }
+    function pointerMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      Body.setPosition(body, { x: e.clientX - mouseOffset.x + body.circleRadius, y: e.clientY - mouseOffset.y + body.circleRadius });
+    }
+    function pointerUp(e) {
+      if (!dragging) return;
+      dragging = false;
+      body.isStatic = false;
+      Body.setVelocity(body, { x: 0, y: 0 });
+    }
+    el.addEventListener('pointerdown', pointerDown);
+    window.addEventListener('pointermove', pointerMove);
+    window.addEventListener('pointerup', pointerUp);
+
+    toyBodies.push(body);
+    toyElements.push(el);
+  }
+
+  // Spawn the ball on start
+  spawnBall();
+
+  // Update loop for syncing DOM stickers with physics bodies
+  function update() {
+    for(let i = 0; i < toyBodies.length; i++) {
+      const body = toyBodies[i];
+      const el = toyElements[i];
+      el.style.left = (body.position.x - body.circleRadius) + 'px';
+      el.style.top = (body.position.y - body.circleRadius) + 'px';
+    }
+    requestAnimationFrame(update);
+  }
+  update();
+
+  // Matter.js runner
+  const runner = Matter.Runner.create();
+  Matter.Runner.run(runner, engine);
+  Matter.Render.run(render);
+
+  // Window resize handling
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    Render.lookAt(render, {
+      min: { x: 0, y: 0 },
+      max: { x: window.innerWidth, y: window.innerHeight }
+    });
+    Body.setPosition(floor, { x: window.innerWidth/2, y: window.innerHeight - 10 });
+    Body.setPosition(shelf1Body, { x: 300, y: window.innerHeight - 180 });
+    Body.setPosition(shelf2Body, { x: 435, y: window.innerHeight - 250 });
+  });
+
+})();
 </script>
 </body>
 </html>
