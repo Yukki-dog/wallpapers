@@ -295,6 +295,10 @@
     <button id="play-again">Play Again</button>
     <button id="go-to-gallery-2">Go to Gallery</button>
   </div>
+<div style="margin-top:10px;">
+  <button id="copy-to-clipboard">📋 Copy Drawing to Clipboard</button>
+</div>
+
 </section>
 
 <!-- 5. Gallery -->
@@ -911,6 +915,25 @@
   window.addEventListener('keyup', e => {
     keysPressed[e.key.toLowerCase()] = false;
   });
+
+// === COPY TO CLIPBOARD BUTTON ===
+const copyBtn = document.getElementById('copy-to-clipboard');
+if (copyBtn) {
+  copyBtn.addEventListener('click', () => {
+    userDrawingCanvas.toBlob(blob => {
+      if (!blob) {
+        showMessage("❌ Nothing to copy!");
+        return;
+      }
+
+      const item = new ClipboardItem({ "image/png": blob });
+      navigator.clipboard.write([item])
+        .then(() => showMessage("✅ Drawing copied to clipboard!"))
+        .catch(() => showMessage("❌ Failed to copy to clipboard."));
+    });
+  });
+}
+
 
   // ===== INIT =====
 
