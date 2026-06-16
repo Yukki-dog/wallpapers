@@ -323,6 +323,9 @@ function createToyBody(toy) {
   document.body.appendChild(el);
 
   el.body = body;
+  
+    toyBodies.push(body);
+  toyElements.push(el);
 }
 
   // Immediately spawn the ball (⚽) from top center
