@@ -323,9 +323,6 @@ function createToyBody(toy) {
   document.body.appendChild(el);
 
   el.body = body;
-
-  toyBodies.push(body);
-  toyElements.push(el);
 }
 
   // Immediately spawn the ball (⚽) from top center
@@ -380,8 +377,6 @@ function createToyBody(toy) {
     window.addEventListener('pointermove', pointerMove);
     window.addEventListener('pointerup', pointerUp);
 
-    toyBodies.push(body);
-    toyElements.push(el);
   }
 
   // Spawn the ball on start
