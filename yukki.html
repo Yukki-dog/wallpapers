@@ -326,10 +326,6 @@ render.mouse = mouse;
     // Link dom and body
     el.body = body;
 
-  // Create initial toys
-  for (const toy of toysData) {
-    createToyBody(toy);
-  }
 
   // Spawn bones on giveTreat
   function spawnBone() {
@@ -396,6 +392,11 @@ render.mouse = mouse;
   // Spawn the ball on start
   spawnBall();
 
+    // Create initial toys
+for (const toy of toysData) {
+  createToyBody(toy);
+}
+    
   // Update loop for syncing DOM stickers with physics bodies
   function update() {
     for(let i = 0; i < toyBodies.length; i++) {
