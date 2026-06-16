@@ -323,38 +323,6 @@ render.mouse = mouse;
     // Link dom and body
     el.body = body;
 
-    // Dragging
-    let mouseOffset = { x: 0, y: 0 };
-    let dragging = false;
-
-    function pointerDown(e) {
-      e.preventDefault();
-      dragging = true;
-      mouseOffset.x = e.clientX - el.getBoundingClientRect().left;
-      mouseOffset.y = e.clientY - el.getBoundingClientRect().top;
-      body.isStatic = true;
-      body.positionPrev.x = body.position.x;
-      body.positionPrev.y = body.position.y;
-    }
-    function pointerMove(e) {
-      if (!dragging) return;
-      e.preventDefault();
-      Body.setPosition(body, { x: e.clientX - mouseOffset.x + body.circleRadius, y: e.clientY - mouseOffset.y + body.circleRadius });
-    }
-    function pointerUp(e) {
-      if (!dragging) return;
-      dragging = false;
-      body.isStatic = false;
-      Body.setVelocity(body, { x: 0, y: 0 });
-    }
-    el.addEventListener('pointerdown', pointerDown);
-    window.addEventListener('pointermove', pointerMove);
-    window.addEventListener('pointerup', pointerUp);
-
-    toyBodies.push(body);
-    toyElements.push(el);
-  }
-
   // Create initial toys
   for (const toy of toysData) {
     createToyBody(toy);
