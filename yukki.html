@@ -258,6 +258,19 @@
 
   const render = Render.create({
     const mouse = Matter.Mouse.create(render.canvas);
+  
+    canvas: canvas,
+    engine: engine,
+    options: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      background: 'transparent',
+      wireframes: false,
+      pixelRatio: window.devicePixelRatio,
+    }
+  });
+
+  const mouse = Matter.Mouse.create(render.canvas);
 
 const mouseConstraint = Matter.MouseConstraint.create(engine, {
   mouse: mouse,
@@ -271,17 +284,7 @@ const mouseConstraint = Matter.MouseConstraint.create(engine, {
 
 Matter.World.add(world, mouseConstraint);
 render.mouse = mouse;
-    canvas: canvas,
-    engine: engine,
-    options: {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      background: 'transparent',
-      wireframes: false,
-      pixelRatio: window.devicePixelRatio,
-    }
-  });
-
+  
   // Shelves bodies - static
   const shelf1Body = Bodies.rectangle(300, window.innerHeight - 180, 160, 12, { isStatic: true, render: { fillStyle: '#b9743a' } });
   const shelf2Body = Bodies.rectangle(435, window.innerHeight - 250, 110, 10, { isStatic: true, render: { fillStyle: '#b9743a' } });
