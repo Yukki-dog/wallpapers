@@ -302,35 +302,31 @@ render.mouse = mouse;
   const toyBodies = [];
   const toyElements = [];
 
-  function createToyBody(toy) {
-    const body = Bodies.circle(
-      window.innerWidth / 2,
-      -50,
-      toy.radius,
-      {
-        restitution: toy.restitution,
-        density: toy.density,
-        frictionAir: 0.01,
-        render: { visible: false }
-      }
-    );
-    World.add(world, body);
+function createToyBody(toy) {
+  const body = Bodies.circle(
+    window.innerWidth / 2,
+    -50,
+    toy.radius,
+    {
+      restitution: toy.restitution,
+      density: toy.density,
+      frictionAir: 0.01,
+      render: { visible: false }
+    }
+  );
 
-    // Create dom sticker
-    const el = document.createElement('div');
-    el.classList.add('toy-sticker');
-    el.textContent = toy.emoji;
-    document.body.appendChild(el);
+  World.add(world, body);
 
-    // Link dom and body
-    el.body = body;
+  const el = document.createElement('div');
+  el.classList.add('toy-sticker');
+  el.textContent = toy.emoji;
+  document.body.appendChild(el);
 
+  el.body = body;
 
-  // Spawn bones on giveTreat
-  function spawnBone() {
-    const boneToy = toysData.find(t => t.id === 'bone');
-    createToyBody(boneToy);
-  }
+  toyBodies.push(body);
+  toyElements.push(el);
+}
 
   // Immediately spawn the ball (⚽) from top center
   function spawnBall() {
