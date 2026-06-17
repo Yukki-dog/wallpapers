@@ -302,6 +302,34 @@ render.mouse = mouse;
   const toyBodies = [];
   const toyElements = [];
 
+  function spawnBone() {
+  const boneToy = toysData.find(t => t.id === 'bone');
+
+  const body = Bodies.circle(
+    window.innerWidth / 2,
+    -100,
+    boneToy.radius,
+    {
+      restitution: boneToy.restitution,
+      density: boneToy.density,
+      frictionAir: 0.02,
+      render: { visible: false }
+    }
+  );
+
+  World.add(world, body);
+
+  const el = document.createElement('div');
+  el.classList.add('toy-sticker');
+  el.textContent = boneToy.emoji;
+  document.body.appendChild(el);
+
+  el.body = body;
+
+  toyBodies.push(body);
+  toyElements.push(el);
+}
+  
 function createToyBody(toy) {
   const body = Bodies.circle(
     window.innerWidth / 2,
