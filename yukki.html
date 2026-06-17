@@ -247,7 +247,7 @@
   bgBtn.addEventListener('click', switchBackground);
 
   // Matter.js physics setup
-  const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint, Composite, Events } = Matter;
+  const { Engine, Render, Runner, World, Bodies, Body, Mouse, MouseConstraint, Composite, Events } = Matter;
   const engine = Engine.create();
   const world = engine.world;
   engine.gravity.y = 1.2;
